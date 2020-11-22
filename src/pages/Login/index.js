@@ -5,11 +5,11 @@ import Axios from 'axios';
 import { Form, Input, Button, Checkbox, Col, Row } from 'antd';
 
 const layout = {
-  labelCol: { span: 8 },
-  wrapperCol: { span: 16 },
+  labelCol: { span: 4 },
+  wrapperCol: { span: 20 },
 };
 const tailLayout = {
-  wrapperCol: { offset: 8, span: 16 },
+  wrapperCol: { offset: 4, span: 20 },
 };
 
 export default class Login extends React.Component {
@@ -43,7 +43,9 @@ export default class Login extends React.Component {
       <div className="login_wrapper">
         <div className="login_header">
           <div className="login_left">Register</div>
-          <div className="login_right"></div>
+          <div className="login_right">
+            <Link to="/index">返回首页</Link>
+          </div>
         </div>
         <div className="login_content">
           <Form
@@ -135,7 +137,6 @@ export default class Login extends React.Component {
               </Button>
             </Form.Item>
           </Form>
-          {/* <Link to="/index">首页</Link> */}
         </div>
       </div>
     );
