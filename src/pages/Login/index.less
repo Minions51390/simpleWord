@@ -1,0 +1,29 @@
+.login_wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    .login_header {
+        position: fixed;
+        display: flex;
+        height: 60px;
+        width: 100%;
+        align-items: center;
+        .login_left {
+            flex: 1;
+            padding-left: 20px;
+            font-size: 20px;
+        }
+        .login_right {
+            flex: 1;
+        }
+    }
+    .login_content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 60%;
+    }
+}
