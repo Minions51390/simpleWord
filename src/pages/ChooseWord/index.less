@@ -1,0 +1,60 @@
+.choose_wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+	bottom: 0;
+    .choose_header {
+        position: fixed;
+        display: flex;
+        height: 60px;
+        width: 100%;
+        align-items: center;
+        .choose_left {
+            flex: 1;
+            padding-left: 20px;
+            font-size: 20px;
+        }
+        .choose_right {
+            display: flex;
+            flex: 1;
+            flex-direction: row-reverse;
+            text-decoration: none;
+            padding-right: 20px;
+            a {
+                color: #000;
+                font-size: 20px;
+            }
+        }
+    }
+    .choose_content {
+		position: absolute;
+        top: 30%;
+        left: 0;
+		right: 0;
+		bottom: 0;
+		text-align: center;
+		justify-content: center;
+        // transform: translate(-50%, -50%);
+        // width: 50%;
+	}
+
+	.word_phonetic_symbol {
+		font-size: 20px;
+		color: #696D65;
+	}
+	.word_text {
+		font-size: 50px;
+	}
+	.word_meaning {
+		font-size: 20px;
+		color: #191D25;
+	}
+	.button_content {
+		margin: auto;
+		margin-top: 5%;
+		width: 30%;
+		display: flex;
+		justify-content: space-between;
+	}
+}

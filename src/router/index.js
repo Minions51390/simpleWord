@@ -7,6 +7,7 @@ import {HashRouter, Route, Switch} from "react-router-dom";
 
 const Index = loadable(() => import('../pages/Index'))
 const Login = loadable(() => import('../pages/Login'))
+const ChooseWord = loadable(() => import('../pages/ChooseWord'))
 
 export default class Root extends Component {
   render() {
@@ -16,7 +17,7 @@ export default class Root extends Component {
             <Route path="/" exact component={Index}/>
             <Route path="/index"  component={Index}/>
             <Route path="/login" component={Login}/>
-            {/*<Route path="/" component={Index}/>*/}
+            <Route path="/chooseWord" component={ChooseWord}/>
           </Switch>
         </HashRouter>
     )
