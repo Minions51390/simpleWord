@@ -36,7 +36,7 @@ module.exports = smart(webpackCommonConf, {
         })
     ],
     devServer: {
-        // host:'10.108.87.14',
+        host:'0.0.0.0',
         port: 8080,
         progress: true,  // 显示打包的进度条
         contentBase: distPath,  // 根目录
@@ -46,14 +46,12 @@ module.exports = smart(webpackCommonConf, {
         historyApiFallback:true,
         // 设置代理
         proxy: {
-            // 将本地 /api/xxx 代理到 localhost:3000/api/xxx
-            '/api': 'http://localhost:3000',
-
-            // 将本地 /api2/xxx 代理到 localhost:3000/xxx
-            '/api2': {
-                target: 'http://localhost:3000',
+            '/api': {
+                target: 'http://47.107.238.126',
+                changeOrigin: true,
+                secure: false,
                 pathRewrite: {
-                    '/api2': ''
+                    '^/api': '/'
                 }
             }
         }

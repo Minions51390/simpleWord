@@ -27,6 +27,10 @@ export default class Index extends React.Component {
           <Link to="/login">登录</Link>
           <br/>
           <Link to="/chooseWord">选词</Link>
+          <br />
+          <Link to="/userMes">个人中心</Link>
+          <br />
+          <Link to="/chooseStore">选词库</Link>
         </div>
     );
   }

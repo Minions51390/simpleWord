@@ -1,0 +1,39 @@
+.store_container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #fff;
+    display: flex;
+    .store_left {
+        position: relative;
+        flex: 2;
+        .confirm {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 60px;
+            width: 180px;
+        }
+    }
+    .store_right {
+        flex: 1;
+    }
+    .am-picker {
+        height: 100%;
+    }
+    .am-picker-col-indicator {
+        width: 10%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+.ant-drawer-body {
+    position: relative;
+    .jumpBtn {
+        position: absolute;
+        width: 180px;
+        bottom: 20px;
+    }
+}
