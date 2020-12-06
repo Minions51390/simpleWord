@@ -2,7 +2,7 @@ import React from 'react';
 import './index.less'
 import { Link } from "react-router-dom";
 import HTTP from '../../utils/api.js';
-import { Form, Input, Button, Checkbox, Col, Row, Radio } from 'antd';
+import { Form, Input, Button, Checkbox, Col, Row, Radio, message } from 'antd';
 
 const layout = {
   labelCol: { span: 4 },
@@ -29,36 +29,38 @@ export default class Login extends React.Component {
   registerFinish(values) {
     console.log('Success:', values);
     HTTP.post("/auth/register", values).then(res => {
-      console.log("请求成功:", res.data);
+      message.success('注册成功!');
+      window.location.href = 'http://0.0.0.0:8080/#/chooseStore';
     }).catch(err => {
-      window.console.log('请求失败:', err);
+      message.error('注册失败!');
     });
   }
 
   registerFinishFailed(errorInfo) {
-    console.log('Failed:', errorInfo);
+    message.error(errorInfo.errorFields[0].errors[0]);
   }
 
   loginFinish(values) {
     console.log('Success:', values);
     HTTP.post("/auth/login", values).then(res => {
-      console.log("请求成功:", res.data);
+      message.success('登录成功!');
+      window.location.href = 'http://0.0.0.0:8080/#/chooseStore';
     }).catch(err => {
-      window.console.log('请求失败:', err);
+      message.error('登录失败!');
     });
   }
 
   loginFinishFailed(errorInfo) {
-    console.log('Failed:', errorInfo);
+    message.error(errorInfo.errorFields[0].errors[0]);
   }
 
   sendEmail() {
     HTTP.post("/auth/email", {
       email: this.state.email
     }).then(res => {
-      console.log("请求成功:", res.data);
+      message.success('验证码发送成功!');
     }).catch(err => {
-      window.console.log('请求失败:', err);
+      message.error('验证码发送失败!');
     });
   }
 
@@ -84,7 +86,7 @@ export default class Login extends React.Component {
           </Radio.Group>
           </div>
           <div className="page_right">
-            <Link to="/index">返回首页</Link>
+            {/* <Link to="/index">返回首页</Link> */}
           </div>
         </div>
         {
