@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import HTTP from '../../utils/api.js';
 import { Form, Input, Button, Checkbox, Col, Row, Radio, Drawer, message } from 'antd';
 import { PickerView, WhiteSpace } from 'antd-mobile';
+import baseUrl from '../../utils/config.js';
 
 const layout = {
   labelCol: { span: 4 },
@@ -153,7 +154,7 @@ export default class Login extends React.Component {
     .then(res => {
       console.log("请求成功:", res.data);
       if (!(res && res.data && res.data.msg && res.data.msg.email)) {
-        location.href = 'http://0.0.0.0:8080/#/login';
+        location.href = `${baseUrl}/#/login`;
       }
       if (!(res && res.data && res.data.msg && res.data.msg.grade)) {
         this.setState({
@@ -174,7 +175,7 @@ export default class Login extends React.Component {
         word_level: res.data.msg.word_level || '暂无'
       });
     }).catch(err => {
-        location.href = 'http://0.0.0.0:8080/#/login';
+        location.href = `${baseUrl}/#/login`;
     });
     HTTP.get("/api/libList", {
       params: {

@@ -3,6 +3,7 @@ import './index.less'
 import { Link } from "react-router-dom";
 import HTTP from '../../utils/api.js';
 import { Form, Input, Button, Checkbox, Col, Row, Radio, message } from 'antd';
+import baseUrl from '../../utils/config.js';
 
 const layout = {
   labelCol: { span: 4 },
@@ -30,7 +31,7 @@ export default class Login extends React.Component {
     console.log('Success:', values);
     HTTP.post("/auth/register", values).then(res => {
       message.success('注册成功!');
-      window.location.href = 'http://0.0.0.0:8080/#/chooseStore';
+      window.location.href = `${baseUrl}/#/chooseStore`;
     }).catch(err => {
       message.error('注册失败!');
     });
@@ -44,7 +45,7 @@ export default class Login extends React.Component {
     console.log('Success:', values);
     HTTP.post("/auth/login", values).then(res => {
       message.success('登录成功!');
-      window.location.href = 'http://0.0.0.0:8080/#/chooseStore';
+      window.location.href = `${baseUrl}/#/chooseStore`;
     }).catch(err => {
       message.error('登录失败!');
     });
