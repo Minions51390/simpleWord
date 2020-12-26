@@ -3,6 +3,7 @@ import './index.less'
 import { Link } from "react-router-dom";
 import HTTP from '../../utils/api.js';
 import { Form, Input, Button, Checkbox, Col, Row, Radio, message } from 'antd';
+import baseUrl from '../../utils/config.js';
 
 const layout = {
   labelCol: { span: 4 },
@@ -110,7 +111,7 @@ export default class Login extends React.Component {
     console.log('Success:', values);
     HTTP.post("/api/profile", values).then(res => {
         message.success('设置成功!');
-        window.location.href = 'http://0.0.0.0:8080/#/chooseStore'
+        window.location.href = `${baseUrl}/#/chooseStore`;
     }).catch(err => {
         message.error('设置失败!');
     });
