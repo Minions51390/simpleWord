@@ -11,6 +11,7 @@ const ChooseWord = loadable(() => import('../pages/ChooseWord'))
 const userMes = loadable(() => import('../pages/userMes'))
 const chooseStore = loadable(() => import('../pages/chooseStore'))
 const reciteWords = loadable(() => import('../pages/ReciteWords'))
+const Home = loadable(() => import('../pages/Home'))
 
 export default class Root extends Component {
   render() {
@@ -18,6 +19,7 @@ export default class Root extends Component {
         <HashRouter basename="/">
           <Switch>
             <Route path="/" exact component={chooseStore}/>
+            <Route path="/home" component={Home}></Route>
             <Route path="/index"  component={Index}/>
             <Route path="/login" component={Login}/>
             <Route path="/chooseWord" component={ChooseWord}/>
