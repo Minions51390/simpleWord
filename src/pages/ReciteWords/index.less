@@ -1,0 +1,109 @@
+.choose_wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+	bottom: 0;
+    .choose_header {
+        position: fixed;
+        display: flex;
+        height: 60px;
+        width: 100%;
+        align-items: center;
+        .choose_left {
+            flex: 1;
+            padding-left: 20px;
+            font-size: 20px;
+        }
+        .choose_right {
+            display: flex;
+            flex: 1;
+            flex-direction: row-reverse;
+            text-decoration: none;
+            padding-right: 20px;
+            a {
+                color: #000;
+                font-size: 20px;
+            }
+        }
+    }
+    .choose_content {
+		position: absolute;
+        top: 30%;
+        left: 0;
+		right: 0;
+		bottom: 0;
+		text-align: center;
+		justify-content: center;
+        // transform: translate(-50%, -50%);
+        // width: 50%;
+	}
+    .progress_content {
+        position: absolute;
+        left: 10%;
+		right: 10%;
+        bottom: 5%;
+		text-align: center;
+        justify-content: center;
+        .progress_text {
+            font-size: 10px;
+            color: #9b9F98;
+        }
+    }
+	.word_phonetic_symbol {
+		font-size: 36px;
+		color: #1A263F;
+	}
+	.word_text {
+		font-size: 64px;
+        color: #1A263F;
+        line-height: 75px;
+        font-weight: 500;
+	}
+	.word_meaning {
+		font-size: 20px;
+		color: #1A263F;
+    }
+    .word_meaning_wrapper {
+        margin-top: 24px;
+    }
+    .button_content_mid {
+        margin: auto;
+		margin-top: 5%;
+		width: 30%;
+		display: flex;
+		justify-content: center;
+    }
+	.button_content_space_between {
+		margin: auto;
+		margin-top: 5%;
+		width: 30%;
+		display: flex;
+		justify-content: space-between;
+    }
+    .style_button {
+        color: #40a9ff;
+        background: #fff;
+        border-color: #40a9ff;
+    }
+    .click-animating-node {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        display: block;
+        border-radius: inherit;
+        -webkit-box-shadow: 0 0 0 0 #1890ff;
+                box-shadow: 0 0 0 0 #1890ff;
+        -webkit-box-shadow: 0 0 0 0 var(--antd-wave-shadow-color);
+                box-shadow: 0 0 0 0 var(--antd-wave-shadow-color);
+        // opacity: 0.2;
+        -webkit-animation: fadeEffect 2s cubic-bezier(0.08, 0.82, 0.17, 1), waveEffect 0.4s cubic-bezier(0.08, 0.82, 0.17, 1);
+                animation: fadeEffect 2s cubic-bezier(0.08, 0.82, 0.17, 1), waveEffect 0.4s cubic-bezier(0.08, 0.82, 0.17, 1);
+        -webkit-animation-fill-mode: forwards;
+                animation-fill-mode: forwards;
+        content: '';
+        pointer-events: none;
+      }
+}
