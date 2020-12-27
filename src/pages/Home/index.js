@@ -42,7 +42,7 @@ export default class Login extends React.Component {
     console.log('Success:', values);
     HTTP.post("/auth/register", values).then(res => {
       message.success('注册成功!');
-      window.location.href = `${baseUrl}/#/chooseStore`;
+      window.location.href = `${baseUrl}/#/Transfer`;
     }).catch(err => {
       message.error('注册失败!');
     });
@@ -55,7 +55,7 @@ export default class Login extends React.Component {
       password: loginPa
     }).then(res => {
       message.success('登录成功!');
-      window.location.href = `${baseUrl}/#/chooseStore`;
+      window.location.href = `${baseUrl}/#/Transfer`;
     }).catch(err => {
       message.error('登录失败!');
     });

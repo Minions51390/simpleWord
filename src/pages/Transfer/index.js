@@ -12,25 +12,184 @@ import chatpng from './assets/weChat.png';
 import btBg from './assets/btBg.png';
 import cirBg from './assets/cirBg.png';
 import GET4 from './assets/CET-4.png';
-import userIcon from './assets/userIcon.jpeg';
+import userIcon from './assets/userIcon.png';
 
 export default class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+        showOver: false,
         todayCount: '20',
         alled: '2400',
         nowDay: '2',
-        allDay: '40'
+        allDay: '40',
+        staticName: '',
+        real_name: '',
+        city: '',
+        phone: '',
+        province: '',
+        email: '',
+        area: '',
+        qq_number: '',
+        school: '',
+        newWord: '',
+        grade: '',
+        DictionaryName: '',
+        DictionaryId: '',
+        Count: ''
     };
+  }
+  // 蒙层
+  handleModeChange(showOver, e) {
+    e.stopPropagation();
+    this.setState({ showOver });
+  };
+  // 获取词库信息
+  getLib() {
+    HTTP.get("/api/dictionary/info").then(res => {
+      if (res.data.data) {
+        const datas = res.data.data[0];
+        this.setState({
+          Count: datas.Count,
+          DictionaryId: datas.DictionaryId,
+          DictionaryName: datas.DictionaryName
+        })
+      }
+      console.log(res);
+    }).catch(err => {
+      console.log(err);
+    });
+  }
+  // 获取用户信息
+  getMes() {
+    HTTP.get("/api/profile")
+    .then(res => {
+        console.log(res);
+        if (res && res.data && res.data.msg) {
+            if (res.data.msg.area) {
+              this.setState({
+                area: res.data.msg.area || '',
+                city: res.data.msg.city || '',
+                email: res.data.msg.email || '',
+                grade: res.data.msg.grade || '',
+                phone: res.data.msg.phone || '',
+                province: res.data.msg.province || '',
+                qq_number: res.data.msg.qq_number || '',
+                real_name: res.data.msg.real_name || '',
+                school: res.data.msg.school || '',
+                staticName: res.data.msg.real_name || '',
+                showOver: false
+              });
+            } else {
+              this.setState({
+                area: res.data.msg.area || '',
+                city: res.data.msg.city || '',
+                email: res.data.msg.email || '',
+                grade: res.data.msg.grade || '',
+                phone: res.data.msg.phone || '',
+                province: res.data.msg.province || '',
+                qq_number: res.data.msg.qq_number || '',
+                real_name: res.data.msg.real_name || '',
+                school: res.data.msg.school || '',
+                staticName: res.data.msg.real_name || '',
+                showOver: true
+              });
+            }
+        }
+    }).catch(err => {
+        message.error('个人信息获取失败!');
+    });
+  }
+  // 提交信息
+  saveMes() {
+    const {real_name, city, phone, province, email, area, qq_number, school, newWord, grade} = this.state;
+    HTTP.post("/api/profile", {
+      realName: real_name,
+      province: province,
+      city: city,
+      area: area,
+      school: school,
+      grade: grade,
+      phone: phone,
+      qqNumber: qq_number,
+      email: email,
+      latestAchievement: '100',
+      wordLevel: ''
+    }).then(res => {
+        message.success('设置成功!');
+        this.setState({ showOver: false });
+    }).catch(err => {
+        message.error('设置失败!');
+    });
+  }
+  // real_name
+  onInputRealName(event) {
+    this.setState({
+      real_name: event.target.value
+    });
+  }
+  // city
+  onInputCity(event) {
+    this.setState({
+      city: event.target.value
+    });
+  }
+  // phone
+  onInputPhone(event) {
+    this.setState({
+      phone: event.target.value
+    });
+  }
+  // province
+  onInputProvince(event) {
+    this.setState({
+      province: event.target.value
+    });
+  }
+  // email
+  onInputEmail(event) {
+    this.setState({
+      email: event.target.value
+    });
+  }
+  // area
+  onInputArea(event) {
+    this.setState({
+      area: event.target.value
+    });
+  }
+  // qq_number
+  onInputQQNumber(event) {
+    this.setState({
+      qq_number: event.target.value
+    });
+  }
+  // school
+  onInputSchool(event) {
+    this.setState({
+      school: event.target.value
+    });
+  }
+  // newWord
+  onInputNewWord(event) {
+    this.setState({
+      newWord: event.target.value
+    });
+  }
+  // grade
+  onInputGrade(event) {
+    this.setState({
+      grade: event.target.value
+    });
   }
 
   componentDidMount() {
-    
+    this.getMes();
+    this.getLib();
   }
 
   render() {
-    const {todayCount, alled, nowDay, allDay} = this.state;
+    const {staticName, showOver, todayCount, alled, nowDay, allDay, real_name, city, phone, province, email, area, qq_number, school, newWord, grade, DictionaryName, Count, DictionaryId} = this.state;
     return (
       <div className="main_container">
           {/* 动画Dom */}
@@ -67,9 +226,9 @@ export default class Login extends React.Component {
                     <div className="use-msg">使用说明</div>
               </div>
               <div className="header_right">
-                <div>
+                <div onClick={this.handleModeChange.bind(this, true)}>
                   <img className="login-icon" src={userIcon}></img>
-                  <div className="login">Hi，Jay</div>
+                  <div className="login">Hi，{staticName}</div>
                 </div>
               </div>
           </div>
@@ -128,11 +287,11 @@ export default class Login extends React.Component {
                     <img src={GET4}></img>
                     <div>
                       <div className="main-title">
-                        四级考纲词汇（2020版）
+                        {DictionaryName}
                       </div>
                       <div className="main-info">
                         <div className="main-t">
-                          总计：2060词
+                          总计：{Count}词
                         </div>
                         <div className="main-s">
                           适合：大一、大二、大三、大四大一、大二、大三、大四大一、大二、大三、大四大一、大二、大三、大四大一、大二、大三、大四大一、大二、大三、大四
@@ -189,6 +348,103 @@ export default class Login extends React.Component {
             </div>
             <img className="bottom-img" src={btBg}></img>
           </div>
+          
+          {
+            showOver
+            ?
+            (
+              <div className="user-bg" onClick={this.handleModeChange.bind(this, false)}>
+                <div className="user-area-top" onClick={this.handleModeChange.bind(this, true)}>
+                  <div className="title">
+                    个人信息
+                  </div>
+                  <div className="main-row">
+                    <div className="main-left">
+                      <Input 
+                        className="pass-mar"
+                        size="large" 
+                        placeholder="请输入您的姓名" 
+                        prefix={<div className="my-icon">姓名</div>} 
+                        onChange={this.onInputRealName.bind(this)} 
+                        value={real_name}/>
+                      <Input 
+                        className="pass-mar phone-icon"
+                        size="large" 
+                        placeholder="请输入您的手机号" 
+                        prefix={<div className="my-icon">手机号</div>} 
+                        onChange={this.onInputPhone.bind(this)} 
+                        value={phone}/>
+                      <Input 
+                        className="pass-mar"
+                        size="large" 
+                        placeholder="请输入您的邮箱" 
+                        prefix={<div className="my-icon">邮箱</div>} 
+                        onChange={this.onInputEmail.bind(this)} 
+                        value={email}/>
+                      <Input 
+                        className="pass-mar qq-icon"
+                        size="large" 
+                        placeholder="请输入您的QQ号" 
+                        prefix={<div className="my-icon">QQ号</div>} 
+                        onChange={this.onInputQQNumber.bind(this)} 
+                        value={qq_number}/>
+                      <Input 
+                        className="pass-mar word-icon"
+                        size="large" 
+                        placeholder="请输入每日背词数" 
+                        prefix={<div className="my-icon">每日背生词数</div>} 
+                        onChange={this.onInputNewWord.bind(this)} 
+                        value={newWord}/>
+                    </div>
+                    <div className="main-right">
+                      <Input 
+                        className="pass-mar"
+                        size="large" 
+                        placeholder="请输入您的省份" 
+                        prefix={<div className="my-icon">省份</div>} 
+                        onChange={this.onInputProvince.bind(this)} 
+                        value={province}/>
+                      <Input 
+                        className="pass-mar"
+                        size="large" 
+                        placeholder="请输入您的市份" 
+                        prefix={<div className="my-icon">市份</div>} 
+                        onChange={this.onInputCity.bind(this)} 
+                        value={city}/>
+                      <Input 
+                        className="pass-mar"
+                        size="large" 
+                        placeholder="请输入您的区县" 
+                        prefix={<div className="my-icon">区县</div>} 
+                        onChange={this.onInputArea.bind(this)} 
+                        value={area}/>
+                      <Input 
+                        className="pass-mar"
+                        size="large" 
+                        placeholder="请输入您的学校" 
+                        prefix={<div className="my-icon">学校</div>} 
+                        onChange={this.onInputSchool.bind(this)} 
+                        value={school}/>
+                      <Input 
+                        className="pass-mar"
+                        size="large" 
+                        placeholder="请输入您的年级" 
+                        prefix={<div className="my-icon">年级</div>} 
+                        onChange={this.onInputGrade.bind(this)} 
+                        value={grade}/>
+                    </div>
+                  </div>
+                  <div className="save-btn" onClick={this.saveMes.bind(this)}>
+                    保存信息
+                  </div>
+                </div>
+              </div>
+            )
+            :
+            (
+              <div></div>
+            )
+          }
       </div>
     );
   }
