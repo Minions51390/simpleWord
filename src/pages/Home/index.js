@@ -42,7 +42,7 @@ export default class Login extends React.Component {
     console.log('Success:', values);
     HTTP.post("/auth/register", values).then(res => {
       message.success('注册成功!');
-      window.location.href = `${baseUrl}/#/chooseStore`;
+      window.location.href = `${baseUrl}/#/Transfer`;
     }).catch(err => {
       message.error('注册失败!');
     });
@@ -55,7 +55,7 @@ export default class Login extends React.Component {
       password: loginPa
     }).then(res => {
       message.success('登录成功!');
-      window.location.href = `${baseUrl}/#/chooseStore`;
+      window.location.href = `${baseUrl}/#/Transfer`;
     }).catch(err => {
       message.error('登录失败!');
     });
@@ -222,7 +222,7 @@ export default class Login extends React.Component {
                           className="pass-mar" 
                           size="large" 
                           placeholder="请输入电子邮箱地址" 
-                          prefix={<div className="my-icon"><img className="input-icon" src={inviti} /></div>} 
+                          prefix={<div className="my-icon"><img className="input-icon" src={emaili} /></div>} 
                           onChange={this.onInputEmail.bind(this)} 
                           value={email}/>
                         <div className="code-area pass-mar">
@@ -238,7 +238,7 @@ export default class Login extends React.Component {
                           className="pass-mar" 
                           size="large" 
                           placeholder="请输入邀请码" 
-                          prefix={<div className="my-icon"><img className="input-icon" src={emaili} /></div>} 
+                          prefix={<div className="my-icon"><img className="input-icon" src={inviti} /></div>} 
                           onChange={this.onInputInvitCode.bind(this)} 
                           value={invitCode}/>
                         <div className="btn-box">
