@@ -222,7 +222,7 @@ export default class Login extends React.Component {
                           className="pass-mar" 
                           size="large" 
                           placeholder="请输入电子邮箱地址" 
-                          prefix={<div className="my-icon"><img className="input-icon" src={inviti} /></div>} 
+                          prefix={<div className="my-icon"><img className="input-icon" src={emaili} /></div>} 
                           onChange={this.onInputEmail.bind(this)} 
                           value={email}/>
                         <div className="code-area pass-mar">
@@ -238,7 +238,7 @@ export default class Login extends React.Component {
                           className="pass-mar" 
                           size="large" 
                           placeholder="请输入邀请码" 
-                          prefix={<div className="my-icon"><img className="input-icon" src={emaili} /></div>} 
+                          prefix={<div className="my-icon"><img className="input-icon" src={inviti} /></div>} 
                           onChange={this.onInputInvitCode.bind(this)} 
                           value={invitCode}/>
                         <div className="btn-box">
