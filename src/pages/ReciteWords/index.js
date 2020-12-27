@@ -79,6 +79,7 @@ export default class ReciteWords extends React.Component {
       currentWord: {
         wordIndex: 0,
       },
+      count: 0,
       currentWordIndex: 0,
       whichKeyDown: null,
       whichKeyUp: null,
@@ -105,26 +106,28 @@ export default class ReciteWords extends React.Component {
   }
 
   loadWordLib() {
-    HTTP.get("/api/recite").then(res => {
+    HTTP.get("/api/plan").then(res => {
       console.log("请求成功:", res.data);
       var wordList = res.data.data.wordList
+      var count = res.data.data.count
     //   wordList.length = 20
       this.setState({
         wordList: wordList || [],
+        count: count
 	  });
-	  this.dateIndex = res.data.data.dateIndex
+	  this.dateIndex = res.data.data.reciteIndex
     }).catch(err => {
       console.log("请求失败:", err);
     });
   }
 
   postStrangeWordList() {
-    const {isFinish} = this.state;
+    // const {isFinish} = this.state;
     let values = {};
-    values.dateIndex = this.dateIndex;
-    values.isFinish = isFinish;
+    values.reciteIndex = this.dateIndex;
+    // values.isFinish = isFinish;
     console.log('Success:', JSON.stringify(values) );
-    HTTP.patch("/api/recite",values).then(res => {
+    HTTP.patch("/api/plan",values).then(res => {
       console.log("请求成功:", res);
       
     }).catch(err => {
@@ -156,7 +159,7 @@ export default class ReciteWords extends React.Component {
     if(this.audioControler != null && this.audioControler.paused == false){
       return
     }
-    
+
     const {currentWordIndex, wordList, isCurrentWordStrange, isFinish} = this.state;
     if(event.keyCode == 32) { //空格键
       if (isFinish) {
@@ -274,7 +277,7 @@ export default class ReciteWords extends React.Component {
   }
 
   render() {
-    const {currentWordIndex, whichKeyDown, whichKeyUp, wordList, isFinish, singleWordMeaningIsVisible} = this.state;
+    const {currentWordIndex, whichKeyDown, whichKeyUp, wordList, isFinish, singleWordMeaningIsVisible, count} = this.state;
     return (
       <div className="choose_wrapper">
         <div className="choose_header">
@@ -286,18 +289,18 @@ export default class ReciteWords extends React.Component {
         {wordList.length != 0 && 
           <div className="choose_content">
             {/* <span className="word_phonetic_symbol">{isFinish ? '/səkˈses/' : wordList[currentWordIndex].phoneticSymbols}</span><br/> */}
-            <span className="word_phonetic_symbol">{'/səkˈses/'}</span><br/>
-            <span className="word_text">{isFinish ? 'success' : wordList[currentWordIndex].text}</span><br/>
+            <span className="word_phonetic_symbol">{isFinish ? '/səkˈses/' : `/${wordList[currentWordIndex].PhoneticSymbols}/`}</span><br/>
+            <span className="word_text">{isFinish ? 'success' : wordList[currentWordIndex].Text}</span><br/>
             <div className="word_meaning_wrapper">
               {singleWordMeaningIsVisible &&
-                <span className="word_meaning">{isFinish ? 'n. 成功; 胜利; 发财; 成名; 成功的人(或事物)' : wordList[currentWordIndex].meaning}</span>
+                <span className="word_meaning">{isFinish ? 'n. 成功; 胜利; 发财; 成名; 成功的人(或事物)' : wordList[currentWordIndex].Meaning}</span>
               }
             </div>
             <br/>
             {!isFinish &&
-              <audio ref={(audio) => { this.audioControler = audio; }} id="audioControler" controls="controls" hidden autoPlay src={`http://47.107.238.126/static/tts/${wordList[currentWordIndex].tts}`}></audio>
+              <audio ref={(audio) => { this.audioControler = audio; }} id="audioControler" controls="controls" hidden autoPlay src={`http://47.107.238.126/static/tts/${wordList[currentWordIndex].Text}.mp3`}></audio>
             }
-            {isFinish &&
+            {isFinish && 
               <div className="button_content_mid">
                 <Button className={whichKeyDown == 'space' ? "style_button" : null }  shape="round" onClick={this.onClick.bind(this, "space")}>space  完成
                 <div className={whichKeyUp == 'space' ? "click-animating-node" : null }></div></Button>  
@@ -306,7 +309,7 @@ export default class ReciteWords extends React.Component {
           </div>
         }
         <div className="progress_content">
-        <span className="progress_text">{`${currentWordIndex + 1} / ${wordList.length}`}</span>
+        <span className="progress_text">{`${currentWordIndex + 1} / ${count}`}</span>
         </div>
         
       </div>
