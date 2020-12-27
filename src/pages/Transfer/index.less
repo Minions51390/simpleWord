@@ -195,28 +195,24 @@
             justify-content: flex-end;
             flex: 1;
             padding-right: 164px;
-            .register {
-                height: 32px;
-                font-size: 14px;
-                font-family: PingFangSC-Regular, PingFang SC;
-                font-weight: 400;
-                color: #FFFFFF;
-                line-height: 32px;
-                margin-right: 35px;
-                cursor: pointer;
-            }
-            .login {
-                width: 60px;
-                height: 32px;
-                border-radius: 4px;
-                border: 1px solid #FFFFFF;
-                font-size: 14px;
-                font-family: PingFangSC-Regular, PingFang SC;
-                font-weight: 400;
-                color: #FFFFFF;
-                line-height: 32px;
-                text-align: center;
-                cursor: pointer;
+            div {
+                display: flex;
+                align-items: center;
+                .login-icon {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                }
+                .login {
+                    margin-left: 16px;
+                    height: 22px;
+                    font-size: 16px;
+                    font-family: PingFangSC-Medium, PingFang SC;
+                    font-weight: 500;
+                    color: #102F5C;
+                    line-height: 22px;
+                    cursor: pointer;
+                }
             }
         }
     }
@@ -477,6 +473,71 @@
                         margin-left: 30px;
                         margin-top: 24px;
                         display: flex;
+                        flex-direction: column;
+                        .de-row {
+                            display: flex;
+                            margin-top: 16px;
+                            .detail-item {
+                                display: flex;
+                                flex: 1;
+                                margin-right: 71px;
+                                height: 40px;
+                                line-height: 40px;
+                                font-size: 16px;
+                                font-family: PingFangSC-Regular, PingFang SC;
+                                font-weight: 400;
+                                color: #102F5C;
+                                .de-it-name {
+                                    margin-right: 8px;
+                                }
+                                .de-it-num {
+                                    width: 96px;
+                                    height: 40px;
+                                    background: #FFEDCD;
+                                    border-radius: 4px;
+                                    line-height: 40px;
+                                    font-size: 24px;
+                                    font-family: Akrobat-Bold, Akrobat;
+                                    font-weight: bold;
+                                    color: #EF9B03;
+                                    text-align: center;
+                                }
+                                .de-it-color1 {
+                                    color: #9FACBE;
+                                    background: #FFFFFF;
+                                }
+                                .de-it-color2 {
+                                    color: #17C244;
+                                    background: #E2FFEB;
+                                }
+                                .de-it-color3 {
+                                    background: #FFFFFF;
+                                    color: #102F5C;
+                                }
+                                
+                            }
+                        }
+                    }
+                    .choose-tip {
+                        width: 174px;
+                        height: 32px;
+                        line-height: 32px;
+                        font-size: 16px;
+                        font-family: PingFangSC-Medium, PingFang SC;
+                        font-weight: 500;
+                        color: #102F5C;
+                        line-height: 32px;
+                        margin: auto;
+                        margin-top: 41px;
+                        .big-text {
+                            position: relative;
+                            top: 2px;
+                            display: inline-block;
+                            height: 32px;
+                            font-size: 32px;
+                            margin-left: 4px;
+                            margin-right: 4px;
+                        }
                     }
                 }
             }

@@ -12,6 +12,7 @@ import chatpng from './assets/weChat.png';
 import btBg from './assets/btBg.png';
 import cirBg from './assets/cirBg.png';
 import GET4 from './assets/CET-4.png';
+import userIcon from './assets/userIcon.jpeg';
 
 export default class Login extends React.Component {
   constructor(props) {
@@ -65,7 +66,12 @@ export default class Login extends React.Component {
                     <div className="about-us">关于我们</div>
                     <div className="use-msg">使用说明</div>
               </div>
-              <div className="header_right"></div>
+              <div className="header_right">
+                <div>
+                  <img className="login-icon" src={userIcon}></img>
+                  <div className="login">Hi，Jay</div>
+                </div>
+              </div>
           </div>
           <div className="main_dom">
             <div className="content-dom">
@@ -140,20 +146,43 @@ export default class Login extends React.Component {
                   <div className="choose-detail">
                     <div className="de-row">
                       <div className="detail-item">
-
+                        <div className="de-it-name">
+                          当前已选：
+                        </div>
+                        <div className="de-it-num de-it-color1">
+                          400
+                        </div>
                       </div>
                       <div className="detail-item">
-
+                        <div className="de-it-name">
+                          当前在背：
+                        </div>
+                        <div className="de-it-num de-it-color2">
+                          300
+                        </div>
                       </div>
                     </div>
                     <div className="de-row">
                       <div className="detail-item">
-
+                        <div className="de-it-name">
+                          剩余待选：
+                        </div>
+                        <div className="de-it-num">
+                          2600
+                        </div>
                       </div>
                       <div className="detail-item">
-
+                        <div className="de-it-name">
+                          总计词数：
+                        </div>
+                        <div className="de-it-num de-it-color3">
+                          4000
+                        </div>
                       </div>
                     </div>
+                  </div>
+                  <div className="choose-tip">
+                    距离下次选词还剩<span className="big-text">5</span>天
                   </div>
                 </div>
               </div>
