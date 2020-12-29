@@ -128,6 +128,7 @@ export default class Choose extends React.Component {
           whichKeyDown: 'space',
           whichKeyUp: 'space',
         });
+        window.location.href = `${baseUrl}/#/home`;
       } else {
         if (isCurrentWordStrange == null) {
           return
@@ -160,6 +161,7 @@ export default class Choose extends React.Component {
           whichKeyDown: 'space',
           whichKeyUp: 'space'
         });
+        window.location.href = `${baseUrl}/#/home`;
       } else {
         if (isCurrentWordStrange == null) {
           return

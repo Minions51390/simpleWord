@@ -117,6 +117,7 @@ export default class ReciteWords extends React.Component {
           whichKeyDown: null,
           whichKeyUp: 'space',
         });
+        window.location.href = `${baseUrl}/#/home`;
       } else {
         this.onSpaceKeyUp()
       }
@@ -132,6 +133,7 @@ export default class ReciteWords extends React.Component {
           whichKeyDown: null,
           whichKeyUp: 'space',
         });
+        window.location.href = `${baseUrl}/#/home`;
       } else {
         this.onSpaceKeyUp()
       }
