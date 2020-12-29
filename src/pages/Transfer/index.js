@@ -48,7 +48,7 @@ export default class Login extends React.Component {
         currentStageAllDays: '',
         currentStage: '',
         overStage: '',
-        reciteWordsNumber: '',
+        recitedWordsNumber: '',
         todayWordsPlan: ''
     };
   }
@@ -100,7 +100,7 @@ export default class Login extends React.Component {
           currentStageAllDays: reciteWordInfo.currentStageAllDays,
           currentStage: reciteWordInfo.currentStage,
           overStage: reciteWordInfo.overStage,
-          reciteWordsNumber: reciteWordInfo.reciteWordsNumber,
+          recitedWordsNumber: reciteWordInfo.recitedWordsNumber,
           todayWordsPlan: reciteWordInfo.todayWordsPlan
         });
       }
@@ -268,7 +268,7 @@ export default class Login extends React.Component {
       currentStageAllDays,
       currentStage,
       overStage,
-      reciteWordsNumber,
+      recitedWordsNumber,
       todayWordsPlan
     } = this.state;
     return (
@@ -323,14 +323,19 @@ export default class Login extends React.Component {
                   <div className="top-line">
                     <div className="left-s">学习计划</div>
                     <div className="right-s">
-                      当前阶段进度：{currentDay ? currentDay : '--'}/{currentStageAllDays ? currentStageAllDays : '--'}天
+                      {
+                        currentStageAllDays && currentDay && currentStageAllDays - currentDay < 0 ? 
+                        '开始新阶段'
+                        :
+                        `当前阶段进度：${currentDay ? currentDay : '--'}/${currentStageAllDays ? currentStageAllDays : '--'}天`
+                      }
                       &nbsp;&nbsp;
                       总进度：{currentStage ? currentStage : '--'}/{overStage ? overStage : '--'}阶段
                     </div>
                   </div>
                   <div className="sec-line">
                     <div className="sec-item">
-                      <div className="day-count">{currentStageAllDays && currentDay ? currentStageAllDays - currentDay : '--'}</div>
+                      <div className="day-count">{currentStageAllDays && currentDay ? currentStageAllDays - currentDay + 1 : '--'}</div>
                       <div className="day-text">当前阶段剩余天数</div>
                     </div>
                     <div className="sec-item">
@@ -338,7 +343,7 @@ export default class Login extends React.Component {
                       <div className="day-text">今日计划背词数</div>
                     </div>
                     <div className="sec-item">
-                      <div className="day-count">{reciteWordsNumber ? reciteWordsNumber : '--'}</div>
+                      <div className="day-count">{recitedWordsNumber ? recitedWordsNumber : '--'}</div>
                       <div className="day-text">全部已背词数</div>
                     </div>
                   </div>
@@ -426,7 +431,7 @@ export default class Login extends React.Component {
                     </div>
                   </div>
                   {
-                    currentAlreadyChoice
+                    nextChoiceDay
                     ?
                     (
                       <div className="choose-tip">
