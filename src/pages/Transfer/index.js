@@ -36,7 +36,9 @@ export default class Login extends React.Component {
         grade: '',
         DictionaryName: '',
         DictionaryId: '',
-        Count: ''
+        Count: '',
+        describe: '',
+        picture: ''
     };
   }
   // 蒙层
@@ -44,6 +46,24 @@ export default class Login extends React.Component {
     e.stopPropagation();
     this.setState({ showOver });
   };
+  // 获取首页信息
+  getHomeMes() {
+    HTTP.get("/api/home").then(res => {
+      if (res && res.data && res.data.data && res.data.data.currentDic) {
+        const currentDic = res.data.data.currentDic;
+        this.setState({
+          Count: currentDic.Count,
+          DictionaryId: currentDic.DictionaryId,
+          DictionaryName: currentDic.DictionaryName,
+          describe: currentDic.describe,
+          picture: currentDic.picture
+        });
+      }
+      console.log(res);
+    }).catch(err => {
+      console.log(err);
+    });
+  }
   // 获取词库信息
   getLib() {
     HTTP.get("/api/dictionary/info").then(res => {
@@ -184,12 +204,13 @@ export default class Login extends React.Component {
   }
 
   componentDidMount() {
+    this.getHomeMes();
     this.getMes();
     this.getLib();
   }
 
   render() {
-    const {staticName, showOver, todayCount, alled, nowDay, allDay, real_name, city, phone, province, email, area, qq_number, school, newWord, grade, DictionaryName, Count, DictionaryId} = this.state;
+    const {staticName, showOver, todayCount, alled, nowDay, allDay, real_name, city, phone, province, email, area, qq_number, school, newWord, grade, DictionaryName, Count, DictionaryId, describe, picture} = this.state;
     return (
       <div className="main_container">
           {/* 动画Dom */}
@@ -294,7 +315,7 @@ export default class Login extends React.Component {
                           总计：{Count}词
                         </div>
                         <div className="main-s">
-                          适合：大一、大二、大三、大四大一、大二、大三、大四大一、大二、大三、大四大一、大二、大三、大四大一、大二、大三、大四大一、大二、大三、大四
+                          适合：{describe}
                         </div>
                       </div>
                     </div>
