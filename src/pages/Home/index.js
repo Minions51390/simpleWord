@@ -32,6 +32,21 @@ export default class Login extends React.Component {
       invitCode: '',
     };
   }
+
+  // 获取用户信息
+  getMes() {
+    HTTP.get("/api/profile")
+    .then(res => {
+        console.log(res);
+        if (res && res.data && res.data.msg) {
+          if (res.data.msg.area) {
+            window.location.href = `${baseUrl}/#/Transfer`;
+          }
+        }
+    }).catch(err => {
+        message.error('个人信息获取失败!');
+    });
+  }
   // 切换登录注册
   handleModeChange(mode, e) {
     e.stopPropagation();
@@ -116,7 +131,9 @@ export default class Login extends React.Component {
   checkBoxChange(event) {
     console.log(event);
   }
-
+  componentWillMount() {
+    this.getMes();
+  }
   componentDidMount() {
     
   }
