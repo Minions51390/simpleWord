@@ -38,7 +38,18 @@ export default class Login extends React.Component {
         DictionaryId: '',
         Count: '',
         describe: '',
-        picture: ''
+        picture: '',
+        allChoice: '',
+        currentAlreadyChoice: '',
+        currentRecite: '',
+        nextChoiceDay: '',
+        surplusChoice: '',
+        currentDay: '',
+        currentStageAllDays: '',
+        currentStage: '',
+        overStage: '',
+        reciteWordsNumber: '',
+        todayWordsPlan: ''
     };
   }
   // 蒙层
@@ -46,6 +57,19 @@ export default class Login extends React.Component {
     e.stopPropagation();
     this.setState({ showOver });
   };
+  // 开始背词
+  handleStart() {
+    const {currentStageAllDays, DictionaryName} = this.state;
+    if (currentStageAllDays) {
+      window.location.href = `${baseUrl}/#/reciteWords?lib_name=${DictionaryName}`;
+    }
+    return;
+  }
+  // 开始选词
+  handleChoose() {
+    const {DictionaryName, DictionaryId} = this.state;
+    window.location.href = `${baseUrl}/#/chooseWord?lib_name=${DictionaryName}&lib_id=${DictionaryId}`;
+  }
   // 获取首页信息
   getHomeMes() {
     HTTP.get("/api/home").then(res => {
@@ -57,6 +81,27 @@ export default class Login extends React.Component {
           DictionaryName: currentDic.DictionaryName,
           describe: currentDic.describe,
           picture: currentDic.picture
+        });
+      }
+      if (res && res.data && res.data.data && res.data.data.wordsStatistics) {
+        const wordsStatistics = res.data.data.wordsStatistics;
+        this.setState({
+          allChoice: wordsStatistics.allChoice,
+          currentAlreadyChoice: wordsStatistics.currentAlreadyChoice,
+          currentRecite: wordsStatistics.currentRecite,
+          nextChoiceDay: wordsStatistics.nextChoiceDay,
+          surplusChoice: wordsStatistics.surplusChoice
+        });
+      }
+      if (res && res.data && res.data.data && res.data.data.reciteWordInfo) {
+        const reciteWordInfo = res.data.data.reciteWordInfo;
+        this.setState({
+          currentDay: reciteWordInfo.currentDay,
+          currentStageAllDays: reciteWordInfo.currentStageAllDays,
+          currentStage: reciteWordInfo.currentStage,
+          overStage: reciteWordInfo.overStage,
+          reciteWordsNumber: reciteWordInfo.reciteWordsNumber,
+          todayWordsPlan: reciteWordInfo.todayWordsPlan
         });
       }
       console.log(res);
@@ -85,33 +130,35 @@ export default class Login extends React.Component {
     HTTP.get("/api/profile")
     .then(res => {
         console.log(res);
-        if (res && res.data && res.data.msg) {
-            if (res.data.msg.area) {
+        if (res && res.data && res.data.data) {
+            if (res.data.data.area) {
               this.setState({
-                area: res.data.msg.area || '',
-                city: res.data.msg.city || '',
-                email: res.data.msg.email || '',
-                grade: res.data.msg.grade || '',
-                phone: res.data.msg.phone || '',
-                province: res.data.msg.province || '',
-                qq_number: res.data.msg.qq_number || '',
-                real_name: res.data.msg.real_name || '',
-                school: res.data.msg.school || '',
-                staticName: res.data.msg.real_name || '',
+                area: res.data.data.area || '',
+                city: res.data.data.city || '',
+                email: res.data.data.email || '',
+                grade: res.data.data.grade || '',
+                phone: res.data.data.phone || '',
+                province: res.data.data.province || '',
+                qq_number: res.data.data.qqNumber || '',
+                real_name: res.data.data.realName || '',
+                school: res.data.data.school || '',
+                staticName: res.data.data.realName || '',
+                newWord: res.data.data.reciteVersion || '',
                 showOver: false
               });
             } else {
               this.setState({
-                area: res.data.msg.area || '',
-                city: res.data.msg.city || '',
-                email: res.data.msg.email || '',
-                grade: res.data.msg.grade || '',
-                phone: res.data.msg.phone || '',
-                province: res.data.msg.province || '',
-                qq_number: res.data.msg.qq_number || '',
-                real_name: res.data.msg.real_name || '',
-                school: res.data.msg.school || '',
-                staticName: res.data.msg.real_name || '',
+                area: res.data.data.area || '',
+                city: res.data.data.city || '',
+                email: res.data.data.email || '',
+                grade: res.data.data.grade || '',
+                phone: res.data.data.phone || '',
+                province: res.data.data.province || '',
+                qq_number: res.data.data.qqNumber || '',
+                real_name: res.data.data.realName || '',
+                school: res.data.data.school || '',
+                staticName: res.data.data.realName || '',
+                newWord: res.data.data.reciteVersion || '',
                 showOver: true
               });
             }
@@ -134,6 +181,7 @@ export default class Login extends React.Component {
       qqNumber: qq_number,
       email: email,
       latestAchievement: '100',
+      reciteVersion: newWord,
       wordLevel: ''
     }).then(res => {
         message.success('设置成功!');
@@ -210,7 +258,19 @@ export default class Login extends React.Component {
   }
 
   render() {
-    const {staticName, showOver, todayCount, alled, nowDay, allDay, real_name, city, phone, province, email, area, qq_number, school, newWord, grade, DictionaryName, Count, DictionaryId, describe, picture} = this.state;
+    const {staticName, showOver, todayCount, alled, nowDay, allDay, real_name, city, phone, province, email, area, qq_number, school, newWord, grade, DictionaryName, Count, DictionaryId, describe, picture,
+      allChoice,
+      currentAlreadyChoice,
+      currentRecite,
+      nextChoiceDay,
+      surplusChoice,
+      currentDay,
+      currentStageAllDays,
+      currentStage,
+      overStage,
+      reciteWordsNumber,
+      todayWordsPlan
+    } = this.state;
     return (
       <div className="main_container">
           {/* 动画Dom */}
@@ -262,24 +322,28 @@ export default class Login extends React.Component {
                 <div className="left-top">
                   <div className="top-line">
                     <div className="left-s">学习计划</div>
-                    <div className="right-s">进度：{nowDay}/{allDay}</div>
+                    <div className="right-s">
+                      当前阶段进度：{currentDay ? currentDay : '--'}/{currentStageAllDays ? currentStageAllDays : '--'}天
+                      &nbsp;&nbsp;
+                      总进度：{currentStage ? currentStage : '--'}/{overStage ? overStage : '--'}阶段
+                    </div>
                   </div>
                   <div className="sec-line">
                     <div className="sec-item">
-                      <div className="day-count">{allDay - nowDay}</div>
-                      <div className="day-text">当前剩余天数</div>
+                      <div className="day-count">{currentStageAllDays && currentDay ? currentStageAllDays - currentDay : '--'}</div>
+                      <div className="day-text">当前阶段剩余天数</div>
                     </div>
                     <div className="sec-item">
-                      <div className="day-count">{todayCount}</div>
+                      <div className="day-count">{todayWordsPlan ? todayWordsPlan : '--'}</div>
                       <div className="day-text">今日计划背词数</div>
                     </div>
                     <div className="sec-item">
-                      <div className="day-count">{alled}</div>
+                      <div className="day-count">{reciteWordsNumber ? reciteWordsNumber : '--'}</div>
                       <div className="day-text">全部已背词数</div>
                     </div>
                   </div>
                   <div className="thr-line">
-                    <div className="text-btn">
+                    <div className={currentStageAllDays ? 'text-btn' : 'text-btn-none'} onClick={this.handleStart.bind(this)}>
                       开始背词
                     </div>
                   </div>
@@ -330,7 +394,7 @@ export default class Login extends React.Component {
                           当前已选：
                         </div>
                         <div className="de-it-num de-it-color1">
-                          400
+                          {currentAlreadyChoice ? currentAlreadyChoice : '--'}
                         </div>
                       </div>
                       <div className="detail-item">
@@ -338,7 +402,7 @@ export default class Login extends React.Component {
                           当前在背：
                         </div>
                         <div className="de-it-num de-it-color2">
-                          300
+                          {currentRecite ? currentRecite : '--'}
                         </div>
                       </div>
                     </div>
@@ -348,7 +412,7 @@ export default class Login extends React.Component {
                           剩余待选：
                         </div>
                         <div className="de-it-num">
-                          2600
+                          {surplusChoice ? surplusChoice : '--'}
                         </div>
                       </div>
                       <div className="detail-item">
@@ -356,20 +420,33 @@ export default class Login extends React.Component {
                           总计词数：
                         </div>
                         <div className="de-it-num de-it-color3">
-                          4000
+                          {allChoice ? allChoice : '--'}
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div className="choose-tip">
-                    距离下次选词还剩<span className="big-text">5</span>天
-                  </div>
+                  {
+                    currentAlreadyChoice
+                    ?
+                    (
+                      <div className="choose-tip">
+                        距离下次选词还剩<span className="big-text">{nextChoiceDay}</span>天
+                      </div>
+                    )
+                    :
+                    (
+                      <div className="thr-line">
+                        <div className="text-btn" onClick={this.handleChoose.bind(this)}>
+                          开始选词
+                        </div>
+                      </div>
+                    )
+                  }
                 </div>
               </div>
             </div>
             <img className="bottom-img" src={btBg}></img>
           </div>
-          
           {
             showOver
             ?
