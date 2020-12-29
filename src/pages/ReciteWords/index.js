@@ -7,6 +7,10 @@ import { ArrowLeftOutlined, ArrowRightOutlined} from '@ant-design/icons';
 // import getQueryString from ''
 import {getQueryString} from '../../utils/stringUtils';
 import HTTP from '../../utils/api.js';
+
+import whiteBookBg from '../../assets/whiteBookBg.png';
+import backIcon from '../../assets/backIcon.png';
+import spaceIcon from '../../assets/spaceIcon.png';
 // const layout = {
 //   labelCol: { span: 4 },
 //   wrapperCol: { span: 20 },
@@ -14,63 +18,6 @@ import HTTP from '../../utils/api.js';
 const tailLayout = {
   wrapperCol: { offset: 4, span: 20 },
 };
-const wordList = [
-  {            
-     "id": 1,
-     "text": "good",
-     "phoneticSymbols": "音标",
-     "partOfSpeech": "adj",
-     "meaning": "好的牛逼",
-   },
-  {            
-     "id": 2,
-     "text": "fine",
-     "phoneticSymbols": "音频",
-     "partOfSpeech": "adv",
-     "meaning": "针不戳",
-  },
-  {            
-    "id": 3,
-    "text": "check",
-    "phoneticSymbols": "音标",
-    "partOfSpeech": "v",
-    "meaning": "检查",
-  },
-  {            
-      "id": 4,
-      "text": "drive",
-      "phoneticSymbols": "/draɪv/",
-      "partOfSpeech": "v",
-      "meaning": "驾驶;开车;驾车送(人);拥有(或驾驶)…汽车",
-  },
-  {            
-    "id": 1,
-    "text": "good",
-    "phoneticSymbols": "音标",
-    "partOfSpeech": "adj",
-    "meaning": "好的牛逼",
-  },
- {            
-    "id": 2,
-    "text": "fine",
-    "phoneticSymbols": "音频",
-    "partOfSpeech": "adv",
-    "meaning": "针不戳",
- },
- {            
-   "id": 3,
-   "text": "check",
-   "phoneticSymbols": "音标",
-   "partOfSpeech": "v",
-   "meaning": "检查",
- },
-//  {            
-//   id: 1
-//   meaning: "vt.放弃,遗弃;n.放任,狂热"
-//   phoneticSymbols: ""
-//   text: "abandon"
-//  }
-]
 export default class ReciteWords extends React.Component {
   constructor(props) {
     super(props);
@@ -280,13 +227,23 @@ export default class ReciteWords extends React.Component {
     const {currentWordIndex, whichKeyDown, whichKeyUp, wordList, isFinish, singleWordMeaningIsVisible, count} = this.state;
     return (
       <div className="choose_wrapper">
-        <div className="choose_header">
-          <div className="choose_left">ReciteWords</div>
-          <div className="choose_right">
-            <Link to="/index">返回首页</Link>
-          </div>
+      <img className="background-img" src={whiteBookBg}></img>
+      <div className="fix_header">
+        <div className="header_left">
+            <img className="main-img" src={promise}></img>
+            <div className="home-page">
+              <Link to="/home">首页</Link>
+            </div>
+            <div className="about-us">关于我们</div>
+            <div className="use-msg">使用说明</div>
         </div>
-        {wordList.length != 0 && 
+      </div>
+      <div className="choose_header">
+        <div className="decoration"></div>
+        <div className="choose_left">选择单词</div>
+        <div className="choose_right">考研5500词</div>
+      </div>
+        {wordList.length != 0  && wordList[currentWordIndex] != null && 
           <div className="choose_content">
             {/* <span className="word_phonetic_symbol">{isFinish ? '/səkˈses/' : wordList[currentWordIndex].phoneticSymbols}</span><br/> */}
             <span className="word_phonetic_symbol">{isFinish ? '/səkˈses/' : `/${wordList[currentWordIndex].PhoneticSymbols}/`}</span><br/>

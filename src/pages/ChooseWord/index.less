@@ -191,7 +191,7 @@
 	.button_content_space_between {
 		margin: auto;
 		margin-top: 5%;
-		width: 30%;
+		width: 40%;
 		display: flex;
 		justify-content: space-between;
     }
@@ -200,23 +200,119 @@
         background: #fff;
         border-color: #40a9ff;
     }
-    .click-animating-node {
+    // .click-animating-node {
+    //     position: absolute;
+    //     top: 0;
+    //     right: 0;
+    //     bottom: 0;
+    //     left: 0;
+    //     display: block;
+    //     border-radius: inherit;
+    //     -webkit-box-shadow: 0 0 0 0 #1890ff;
+    //             box-shadow: 0 0 0 0 #1890ff;
+    //     -webkit-box-shadow: 0 0 0 0 var(--antd-wave-shadow-color);
+    //             box-shadow: 0 0 0 0 var(--antd-wave-shadow-color);
+    //     -webkit-animation: fadeEffect 2s cubic-bezier(0.08, 0.82, 0.17, 1), waveEffect 0.4s cubic-bezier(0.08, 0.82, 0.17, 1);
+    //             animation: fadeEffect 2s cubic-bezier(0.08, 0.82, 0.17, 1), waveEffect 0.4s cubic-bezier(0.08, 0.82, 0.17, 1);
+    //     -webkit-animation-fill-mode: forwards;
+    //             animation-fill-mode: forwards;
+    //     content: '';
+    //     pointer-events: none;
+    //   }
+      .left_icon {
         position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        display: block;
-        border-radius: inherit;
-        -webkit-box-shadow: 0 0 0 0 #1890ff;
-                box-shadow: 0 0 0 0 #1890ff;
-        -webkit-box-shadow: 0 0 0 0 var(--antd-wave-shadow-color);
-                box-shadow: 0 0 0 0 var(--antd-wave-shadow-color);
-        -webkit-animation: fadeEffect 2s cubic-bezier(0.08, 0.82, 0.17, 1), waveEffect 0.4s cubic-bezier(0.08, 0.82, 0.17, 1);
-                animation: fadeEffect 2s cubic-bezier(0.08, 0.82, 0.17, 1), waveEffect 0.4s cubic-bezier(0.08, 0.82, 0.17, 1);
-        -webkit-animation-fill-mode: forwards;
-                animation-fill-mode: forwards;
-        content: '';
-        pointer-events: none;
+        top: 40px;
+        left: -25px;
+        width: 94px;
+        height: 54px;
       }
+      .space_content {
+          position: relative;
+          display: flex;
+          color: #1A263F;
+      }
+      .space_icon {
+        position: absolute;
+        top: 40px;
+        left: -55px;
+        width: 187px;
+        height: 54px;
+      }
+      .right_icon {
+        position: absolute;
+        top: 40px;
+        left: -15px;
+        width: 94px;
+        height: 54px;
+      }
+      .right_radio::selection {
+        color: #fff;
+        background: #1A263F;
+        background-image: initial;
+        background-position-x: initial;
+        background-position-y: initial;
+        background-size: initial;
+        background-repeat-x: initial;
+        background-repeat-y: initial;
+        background-attachment: initial;
+        background-origin: initial;
+        background-clip: initial;
+        background-color: #1A263F;
+    }
+    .radio_text {
+        color: #1A263F;
+        font-size: 16px;
+        text-align: center;
+    }
+    .radio_cover {
+        width: 70px;
+        height: 35px;
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        z-index: 1000;
+    }
+}
+.ant-radio-inner::after {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    display: table;
+    width: 8px;
+    height: 8px;
+    background-color: #1A263F;
+    border-top: 0;
+    border-left: 0;
+    border-radius: 8px;
+    -webkit-transform: scale(0);
+    transform: scale(0);
+    opacity: 0;
+    -webkit-transition: all 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86);
+    transition: all 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86);
+    content: ' ';
+    
+}
+html {
+    --antd-wave-shadow-color: #1A263F;
+}
+.ant-radio-checked::after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #1A263F;
+    border-radius: 50%;
+    visibility: hidden;
+    -webkit-animation: antRadioEffect 0.36s ease-in-out;
+    animation: antRadioEffect 0.36s ease-in-out;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    content: '';
+}
+.ant-radio-checked .ant-radio-inner {
+    border-color: #1A263F;
+}
+.ant-radio-wrapper:hover .ant-radio, .ant-radio:hover .ant-radio-inner, .ant-radio-input:focus + .ant-radio-inner {
+    border-color: #1A263F;
 }
