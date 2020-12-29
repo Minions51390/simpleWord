@@ -8,9 +8,11 @@ import { ArrowLeftOutlined, ArrowRightOutlined} from '@ant-design/icons';
 import {getQueryString} from '../../utils/stringUtils';
 import HTTP from '../../utils/api.js';
 
+import promise from '../home/assets/promise.png';
 import whiteBookBg from '../../assets/whiteBookBg.png';
 import backIcon from '../../assets/backIcon.png';
 import spaceIcon from '../../assets/spaceIcon.png';
+import audioIcon from './assets/audioIcon.png'
 // const layout = {
 //   labelCol: { span: 4 },
 //   wrapperCol: { span: 20 },
@@ -37,14 +39,14 @@ export default class ReciteWords extends React.Component {
     };
     this.recordWordList = [];
     this.wordLibName = null
-    this.wordLibId = null
+    // this.wordLibId = null
     this.dateIndex = null
     this.audioControler = null
   }
 
   componentWillMount() {
     this.wordLibName = getQueryString('lib_name')
-    this.wordLibId = parseInt(getQueryString('lib_id'))
+    // this.wordLibId = parseInt(getQueryString('lib_id'))
     this.loadWordLib()
   }
 
@@ -123,40 +125,18 @@ export default class ReciteWords extends React.Component {
   }
   onClick(item) {
     const {currentWordIndex, wordList, isCurrentWordStrange, isFinish} = this.state;
-    if(item == "left") {
-      console.log("会")
-      this.setState({
-        whichKeyUp: 'left',
-        isCurrentWordStrange: false
-      });
-    } else if(item == "right") {
-      console.log("不会")
-      this.setState({
-        whichKeyUp: 'right',
-        isCurrentWordStrange: true
-      });
-    } else if(item == "space") { //空格键
+    if(item == "space") { //空格键
       if (isFinish) {
         this.postStrangeWordList()
         this.setState({
           whichKeyDown: null,
-          whichKeyUp: 'space'
+          whichKeyUp: 'space',
         });
       } else {
-        if (isCurrentWordStrange == null) {
-          return
-        }
-        if (isCurrentWordStrange) {
-          this.recordResult(wordList[currentWordIndex].id)
-        }
-        this.goNext()
-        this.setState({
-          whichKeyDown: null,
-          whichKeyUp: 'space',
-          isCurrentWordStrange: null
-        });
+        this.onSpaceKeyUp()
       }
-      
+    } else if (item == "audio") {
+      this.playTts();
     }
   }
 
@@ -240,8 +220,8 @@ export default class ReciteWords extends React.Component {
       </div>
       <div className="choose_header">
         <div className="decoration"></div>
-        <div className="choose_left">选择单词</div>
-        <div className="choose_right">考研5500词</div>
+        <div className="choose_left">背单词</div>
+        <div className="choose_right">{this.wordLibName}</div>
       </div>
         {wordList.length != 0  && wordList[currentWordIndex] != null && 
           <div className="choose_content">
@@ -263,12 +243,32 @@ export default class ReciteWords extends React.Component {
                 <div className={whichKeyUp == 'space' ? "click-animating-node" : null }></div></Button>  
               </div>
             }
+            {!isFinish &&
+                <div className="space_content" onClick={this.onClick.bind(this, "space")}>
+                  <span className="radio_text">按下&nbsp;&nbsp;&nbsp;“&nbsp;&nbsp;&nbsp;</span>
+                  <img className="space_icon" src={spaceIcon}></img>
+                  <span className="radio_text">&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;继续</span>
+                </div>
+            }
           </div>
         }
-        <div className="progress_content">
-        <span className="progress_text">{`${currentWordIndex + 1} / ${count}`}</span>
+
+        <div className="progress_audio_content">
+          <div className="progress_content">
+            <div className="progress_before"/>
+            <span className="progress_text">{`${currentWordIndex + 1} / ${count}`}</span>
+          </div>
+          {!isFinish &&
+            <div className="audio_content"  onClick={this.onClick.bind(this, "audio")}>
+              <img className="audio_icon" src={audioIcon}></img>
+              <span className="audio_text">点此发音</span>
+            </div>
+          }
         </div>
-        
+        <div className="back_content">
+          <img className="back_icon" src={backIcon}></img>
+          <span className="back_text">退出</span>
+        </div>
       </div>
     );
   }

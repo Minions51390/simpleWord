@@ -222,7 +222,7 @@ export default class Choose extends React.Component {
         <div className="choose_header">
           <div className="decoration"></div>
           <div className="choose_left">选择单词</div>
-          <div className="choose_right">考研5500词</div>
+          <div className="choose_right">{this.wordLibName}</div>
         </div>
         {wordList.length != 0 && wordList[currentWordIndex] != null &&
           <div className="choose_content">
@@ -278,6 +278,7 @@ export default class Choose extends React.Component {
           </div>
         }
         <div className="progress_content">
+          <div className="progress_before"/>
           <span className="progress_text">{`${currentWordIndex + 1} / ${count}`}</span>
         </div>
         <div className="back_content">
