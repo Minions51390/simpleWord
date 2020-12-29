@@ -38,8 +38,8 @@ export default class Login extends React.Component {
     HTTP.get("/api/profile")
     .then(res => {
         console.log(res);
-        if (res && res.data && res.data.msg) {
-          if (res.data.msg.area) {
+        if (res && res.data && res.data.data) {
+          if (res.data.data.area) {
             window.location.href = `${baseUrl}/#/Transfer`;
           }
         }

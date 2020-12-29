@@ -32,7 +32,7 @@ export default class Login extends React.Component {
         area: '',
         qq_number: '',
         school: '',
-        newWord: '',
+        newWord: '6',
         grade: '',
         DictionaryName: '',
         DictionaryId: '',
