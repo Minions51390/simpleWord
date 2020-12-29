@@ -31,6 +31,8 @@ export default class Index extends React.Component {
           <Link to="/userMes">个人中心</Link>
           <br />
           <Link to="/chooseStore">选词库</Link>
+          <br />
+          <Link to="/reciteWords">背单词</Link>
         </div>
     );
   }

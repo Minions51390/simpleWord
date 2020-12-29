@@ -10,6 +10,7 @@ const Login = loadable(() => import('../pages/Login'))
 const ChooseWord = loadable(() => import('../pages/ChooseWord'))
 const userMes = loadable(() => import('../pages/userMes'))
 const chooseStore = loadable(() => import('../pages/chooseStore'))
+const reciteWords = loadable(() => import('../pages/ReciteWords'))
 const Home = loadable(() => import('../pages/Home'))
 const Transfer = loadable(() => import('../pages/Transfer'))
 
@@ -26,6 +27,7 @@ export default class Root extends Component {
             <Route path="/chooseWord" component={ChooseWord}/>
             <Route path="/userMes" component={userMes}/>
             <Route path="/chooseStore" component={chooseStore}/>
+            <Route path="/reciteWords" component={reciteWords}/>
           </Switch>
         </HashRouter>
     )
