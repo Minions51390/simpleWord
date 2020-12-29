@@ -73,7 +73,7 @@ export default class ReciteWords extends React.Component {
   postStrangeWordList() {
     // const {isFinish} = this.state;
     let values = {};
-    values.reciteIndex = this.dateIndex;
+    values.reciteIndex = this.dateIndex + 1;
     // values.isFinish = isFinish;
     console.log('Success:', JSON.stringify(values) );
     HTTP.patch("/api/plan",values).then(res => {
