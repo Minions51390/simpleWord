@@ -40,7 +40,7 @@ export default class Login extends React.Component {
         console.log(res);
         if (res && res.data && res.data.data) {
           if (res.data.data.area) {
-            window.location.href = `${baseUrl}/#/Transfer`;
+            // window.location.href = `${baseUrl}/#/Transfer`;
           }
         }
     }).catch(err => {
@@ -53,9 +53,15 @@ export default class Login extends React.Component {
     this.setState({ mode });
   };
   // 注册接口
-  registerFinish(values) {
-    console.log('Success:', values);
-    HTTP.post("/auth/register", values).then(res => {
+  registerFinish() {
+    const {registerAd, registerPa, email, captcha, invitCode} = this.state;
+    HTTP.post("/auth/register", {
+      name: registerAd,
+      password: registerPa,
+      email: email,
+      captcha: captcha,
+      inviteCode: invitCode
+    }).then(res => {
       message.success('注册成功!');
       window.location.href = `${baseUrl}/#/Transfer`;
     }).catch(err => {

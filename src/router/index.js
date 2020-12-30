@@ -19,7 +19,7 @@ export default class Root extends Component {
     return (
         <HashRouter basename="/">
           <Switch>
-            <Route path="/" exact component={chooseStore}/>
+            <Route path="/" exact component={Home}/>
             <Route path="/transfer" component={Transfer}></Route>
             <Route path="/home" component={Home}></Route>
             <Route path="/index"  component={Index}/>

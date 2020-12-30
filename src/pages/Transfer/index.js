@@ -327,23 +327,23 @@ export default class Login extends React.Component {
                         currentStageAllDays && currentDay && currentStageAllDays - currentDay < 0 ? 
                         '开始新阶段'
                         :
-                        `当前阶段进度：${currentDay ? currentDay : '--'}/${currentStageAllDays ? currentStageAllDays : '--'}天`
+                        `当前阶段进度：${currentDay ? currentDay : '0'}/${currentStageAllDays ? currentStageAllDays : '0'}天`
                       }
                       &nbsp;&nbsp;
-                      总进度：{currentStage ? currentStage : '--'}/{overStage ? overStage : '--'}阶段
+                      总进度：{currentStage ? currentStage : '0'}/{overStage ? overStage : '0'}阶段
                     </div>
                   </div>
                   <div className="sec-line">
                     <div className="sec-item">
-                      <div className="day-count">{currentStageAllDays && currentDay ? currentStageAllDays - currentDay + 1 : '--'}</div>
+                      <div className="day-count">{currentStageAllDays && currentDay ? currentStageAllDays - currentDay + 1 : '0'}</div>
                       <div className="day-text">当前阶段剩余天数</div>
                     </div>
                     <div className="sec-item">
-                      <div className="day-count">{todayWordsPlan ? todayWordsPlan : '--'}</div>
+                      <div className="day-count">{todayWordsPlan ? todayWordsPlan : '0'}</div>
                       <div className="day-text">今日计划背词数</div>
                     </div>
                     <div className="sec-item">
-                      <div className="day-count">{recitedWordsNumber ? recitedWordsNumber : '--'}</div>
+                      <div className="day-count">{recitedWordsNumber ? recitedWordsNumber : '0'}</div>
                       <div className="day-text">全部已背词数</div>
                     </div>
                   </div>
@@ -399,7 +399,7 @@ export default class Login extends React.Component {
                           当前已选：
                         </div>
                         <div className="de-it-num de-it-color1">
-                          {currentAlreadyChoice ? currentAlreadyChoice : '--'}
+                          {currentAlreadyChoice ? currentAlreadyChoice : '0'}
                         </div>
                       </div>
                       <div className="detail-item">
@@ -407,7 +407,7 @@ export default class Login extends React.Component {
                           当前在背：
                         </div>
                         <div className="de-it-num de-it-color2">
-                          {currentRecite ? currentRecite : '--'}
+                          {currentRecite ? currentRecite : '0'}
                         </div>
                       </div>
                     </div>
@@ -417,7 +417,7 @@ export default class Login extends React.Component {
                           剩余待选：
                         </div>
                         <div className="de-it-num">
-                          {surplusChoice ? surplusChoice : '--'}
+                          {surplusChoice ? surplusChoice : '0'}
                         </div>
                       </div>
                       <div className="detail-item">
@@ -425,7 +425,7 @@ export default class Login extends React.Component {
                           总计词数：
                         </div>
                         <div className="de-it-num de-it-color3">
-                          {allChoice ? allChoice : '--'}
+                          {allChoice ? allChoice : '0'}
                         </div>
                       </div>
                     </div>
