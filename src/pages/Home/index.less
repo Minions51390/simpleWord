@@ -3,19 +3,22 @@
     top: 0;
     bottom: 0;
     width: 100%;
-    min-width: 1225px;
+    min-width: 900px;
     user-select: none;
+    // justify-content: center;
     .fix_header {
         position: fixed;
+        left: 11%;
         height: 68px;
-        width: 100%;
+        width: 78%;
         display: flex;
         z-index: 10;
+        min-width: 900px;
         .header_left {
             display: flex;
             align-items: flex-end;
             flex: 1;
-            padding-left: 164px;
+            // padding-left: 11%;
             .main-img {
                 width: 48px;
                 height: 24px;
@@ -66,7 +69,7 @@
             align-items: flex-end;
             justify-content: flex-end;
             flex: 1;
-            padding-right: 164px;
+            // padding-right: 11%;
             .register {
                 height: 32px;
                 font-size: 14px;
@@ -100,10 +103,11 @@
         z-index: 2;
         .right-img {
             height: 100%;
+            min-width: 30vw;
         }
         .icon-list {
             position: absolute;
-            bottom: 88px;
+            bottom: 8vh;
             right: 125px;
             .little-img {
                 width: 24px;
@@ -122,8 +126,10 @@
         .sim-info {
             position: relative;
             width: 55%;
-            left: 164px;
-            z-index: 1;
+            min-width: 660px;
+            left: 11%;
+            z-index: 10;
+            padding-bottom: 87px;
             .top-img {
                 position: absolute;
                 width: 192px;
@@ -132,6 +138,16 @@
                 left: -120px;
                 top: -52px;
             }
+            .info-list {
+                position: relative;
+                width: 80%;
+                height: 42vh;
+                overflow:scroll;
+                margin-top: 180px;
+                // box-shadow: 20px 20px 10px -10px  #f00;
+                // box-shadow: 0 4px 6px -4px white;  
+            }
+            
             .info-title {
                 height: 65px;
                 font-size: 56px;
@@ -139,7 +155,6 @@
                 font-weight: normal;
                 color: #032352;
                 line-height: 65px;
-                margin-top: 180px;
             }
             .info-sub {
                 height: 33px;
@@ -170,30 +185,35 @@
                 line-height: 22px;
                 margin-top: 16px;
             }
-            .register-btn {
-                width: 160px;
-                height: 48px;
-                background: #032352;
-                border-radius: 4px;
-                font-size: 16px;
-                font-family: PingFangSC-Medium, PingFang SC;
-                font-weight: 500;
-                color: #FFFFFF;
-                line-height: 48px;
-                text-align: center;
-                margin-top: 87px;
-                cursor: pointer;
-            }
+            
         }
         .bottom-img {
             position: absolute;
             bottom: 0;
             width: 100%;
         }
+        .register-btn {
+            position: absolute;
+            left: 11%;
+            bottom: 15vh;
+            width: 160px;
+            height: 48px;
+            background: #032352;
+            border-radius: 4px;
+            font-size: 16px;
+            font-family: PingFangSC-Medium, PingFang SC;
+            font-weight: 500;
+            color: #FFFFFF;
+            line-height: 48px;
+            text-align: center;
+            // margin-top: 87px;
+            cursor: pointer;
+            z-index: 20;
+        }
         .login-area {
             position: absolute;
-            left: 164px;
-            bottom: 88px;
+            left: 11%;
+            bottom: 8vh;
             height: 26px;
             display: flex;
             align-items: center;
@@ -219,9 +239,10 @@
         bottom: 0;
         left: 0;
         right: 0;
-        background: rgba(3, 13, 60, 0.2);
+        background: rgba(3, 13, 60, 0.5);
+        // background: rgba(219, 223, 13, 1);
         overflow: hidden;
-        z-index: 20;
+        z-index: 30;
         .login-area-top {
             position: absolute;
             left: 50%;
@@ -230,7 +251,7 @@
             width: 540px;
             height: 503px;
             backdrop-filter: blur(10px);
-            box-shadow: 0px 40px 100px 0px rgba(11, 31, 65, 0.4);
+            box-shadow: 0px 0px 100px 0px rgba(255, 255, 255, 1) inset,0px 40px 100px 0px rgba(11, 31, 65, 0.8);
             border: 2px solid rgba(255, 255, 255, 0.58);
             border-radius: 4px;
             background: rgba(255, 255, 255, 0.5);
@@ -334,7 +355,7 @@
         bottom: 0;
         left: 0;
         right: 0;
-        background: rgba(3, 13, 60, 0.2);
+        background: rgba(3, 13, 60, 0.5);
         overflow: hidden;
         z-index: 20;
         .register-area-top {
@@ -345,7 +366,7 @@
             width: 540px;
             height: 749px;
             backdrop-filter: blur(10px);
-            box-shadow: 0px 40px 100px 0px rgba(11, 31, 65, 0.4);
+            box-shadow: 0px 0px 100px 0px rgba(255, 255, 255, 1) inset,0px 40px 100px 0px rgba(11, 31, 65, 0.8);
             border: 2px solid rgba(255, 255, 255, 0.58);
             border-radius: 4px;
             background: rgba(255, 255, 255, 0.5);
@@ -453,7 +474,6 @@
         }
     }
 }
-
 .my-icon {
     position: relative;
     padding-left: 4px;

@@ -167,6 +167,17 @@ export default class Login extends React.Component {
         message.error('个人信息获取失败!');
     });
   }
+
+  //退出登录
+  logOut() {
+    HTTP.get("/auth/logout").then(res => {
+      window.location.href = `${baseUrl}/#/home`;
+      console.log(res);
+    }).catch(err => {
+      console.log(err);
+    });
+  }
+
   // 提交信息
   saveMes() {
     const {real_name, city, phone, province, email, area, qq_number, school, newWord, grade} = this.state;
@@ -320,17 +331,18 @@ export default class Login extends React.Component {
                   背单词
                 </div>
                 <div className="left-top">
+                  <div className="left-top-shadow"></div>
                   <div className="top-line">
                     <div className="left-s">学习计划</div>
                     <div className="right-s">
                       {
-                        currentStageAllDays && currentDay && currentStageAllDays - currentDay < 0 ? 
-                        '开始新阶段'
+                        currentStageAllDays !== '' && currentDay !== '' && currentStageAllDays - currentDay < 0 ? 
+                        '当前阶段以结束'
                         :
-                        `当前阶段进度：${currentDay ? currentDay : '--'}/${currentStageAllDays ? currentStageAllDays : '--'}天`
+                        `当前阶段进度：${currentDay !== '' ? currentDay : '--'}/${currentStageAllDays ? currentStageAllDays : '--'}天`
                       }
                       &nbsp;&nbsp;
-                      总进度：{currentStage ? currentStage : '--'}/{overStage ? overStage : '--'}阶段
+                      总进度：{currentStage !== '' ? currentStage : '--'}/{overStage !== '' ? overStage : '--'}阶段
                     </div>
                   </div>
                   <div className="sec-line">
@@ -339,16 +351,16 @@ export default class Login extends React.Component {
                       <div className="day-text">当前阶段剩余天数</div>
                     </div>
                     <div className="sec-item">
-                      <div className="day-count">{todayWordsPlan ? todayWordsPlan : '--'}</div>
+                      <div className="day-count">{todayWordsPlan !== '' ? todayWordsPlan : '--'}</div>
                       <div className="day-text">今日计划背词数</div>
                     </div>
                     <div className="sec-item">
-                      <div className="day-count">{recitedWordsNumber ? recitedWordsNumber : '--'}</div>
+                      <div className="day-count">{recitedWordsNumber !== '' ? recitedWordsNumber : '--'}</div>
                       <div className="day-text">全部已背词数</div>
                     </div>
                   </div>
                   <div className="thr-line">
-                    <div className={currentStageAllDays ? 'text-btn' : 'text-btn-none'} onClick={this.handleStart.bind(this)}>
+                    <div className={currentStageAllDays && currentStageAllDays - currentDay + 1 > 0  ? 'text-btn' : 'text-btn-none'} onClick={this.handleStart.bind(this)}>
                       开始背词
                     </div>
                   </div>
@@ -357,6 +369,7 @@ export default class Login extends React.Component {
                   小测验
                 </div>
                 <div className="left-sec-area">
+                  <div className="left-sec-shadow"></div>
                   <div className="test-text">
                     敬请期待
                   </div>
@@ -370,6 +383,7 @@ export default class Login extends React.Component {
                   选词
                 </div>
                 <div className="right-top">
+                  <div className="right-top-shadow"></div>
                   <div className="now-store">
                     当前词库
                   </div>
@@ -539,6 +553,9 @@ export default class Login extends React.Component {
                   </div>
                   <div className="save-btn" onClick={this.saveMes.bind(this)}>
                     保存信息
+                  </div>
+                  <div className="log-out" onClick={this.logOut.bind(this)}>
+                    退出登录
                   </div>
                 </div>
               </div>
