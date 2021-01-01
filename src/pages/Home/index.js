@@ -32,7 +32,22 @@ export default class Login extends React.Component {
       invitCode: '',
     };
   }
-
+  getCookie(name)
+  {
+      var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
+   
+      if(arr=document.cookie.match(reg))
+   
+          return (arr[2]);
+      else
+          return null;
+  }
+  setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + "; " + expires;
+}
   // 获取用户信息
   getMes() {
     HTTP.get("/api/profile")
@@ -43,8 +58,9 @@ export default class Login extends React.Component {
             // window.location.href = `${baseUrl}/#/Transfer`;
           }
         }
+        message.success('登录成功');
     }).catch(err => {
-        message.error('个人信息获取失败!');
+        message.info('请先登录');
     });
   }
   // 切换登录注册
@@ -141,7 +157,9 @@ export default class Login extends React.Component {
     this.getMes();
   }
   componentDidMount() {
-    
+    // console.log('cookie', document.cookie);
+    // this.setCookie('sessionID', "", -1); 
+    // console.log('cookie', document.cookie);
   }
 
   render() {
@@ -171,12 +189,14 @@ export default class Login extends React.Component {
           <div className="bottom-floor">
             <div className="sim-info">
                 <img className="top-img" src={cirBg}></img>
-                <div className="info-title">We have your word.</div>
-                <div className="info-sub">我们向您承诺</div>
-                <div className="info-msg">Through our word recitation program, you can master at least 2000 words in 30 days. It is reasonable and scientific to ensure that you will not forget after reciting, and complete the learning plan efficiently and step by step.</div>
-                <div className="info-chi">通过我们的背词计划，您可以在30天内掌握至少2000个单词，合理而且科学，保证您不会背完即忘，高效完成学习计划，循序渐进，水滴石穿。</div>
-                <div className="register-btn" onClick={this.handleModeChange.bind(this, 'register')}>立即注册体验</div>
+                <div className="info-list">
+                  <div className="info-title">We have your word.</div>
+                  <div className="info-sub">我们向您承诺</div>
+                  <div className="info-msg">Through our word recitation program, you can master at least 2000 words in 30 days. It is reasonable and scientific to ensure that you will not forget after reciting, and complete the learning plan efficiently and step by step.</div>
+                  <div className="info-chi">通过我们的背词计划，您可以在30天内掌握至少2000个单词，合理而且科学，保证您不会背完即忘，高效完成学习计划，循序渐进，水滴石穿。</div>
+                </div>
             </div>
+            <div className="register-btn" onClick={this.handleModeChange.bind(this, 'register')}>立即注册体验</div>
             <div className="login-area" onClick={this.handleModeChange.bind(this, 'login')}>
                 <img className="login-img" src={loginpng}></img>
                 <div className="login-text">已有账号立即登录</div>

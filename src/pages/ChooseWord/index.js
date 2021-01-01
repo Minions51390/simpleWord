@@ -2,7 +2,8 @@ import React from 'react';
 import './index.less'
 import { Link } from "react-router-dom";
 import Axios from 'axios';
-import { Form, Radio, Button, Checkbox, Col, Row, Progress } from 'antd';
+import { Form, Radio, Button, Checkbox, Col, Row, message} from 'antd';
+import baseUrl from '../../utils/config.js';
 
 import { ArrowLeftOutlined, ArrowRightOutlined} from '@ant-design/icons';
 // import getQueryString from ''
@@ -22,7 +23,6 @@ import rightIcon from './assets/rightIcon.png';
 const tailLayout = {
   wrapperCol: { offset: 4, span: 20 },
 };
-
 export default class Choose extends React.Component {
   constructor(props) {
     super(props);
@@ -45,13 +45,19 @@ export default class Choose extends React.Component {
   }
 
   componentWillMount() {
+  // setTimeout(() => {
+  //   message.success({ content: 'Loaded!', key, duration: 2 });
+  // }, 1000);
     this.wordLibName = getQueryString('lib_name')
     this.wordLibId = parseInt(getQueryString('lib_id'))
     this.loadWordLib(this.wordLibName, this.wordLibId)
   }
 
   loadWordLib(wordLibName, wordLibId) {
+    const key = 'updatable'
+    message.loading({ content: 'Loading...', key});
     HTTP.get(`/api/dictionary/words/${wordLibId}`).then(res => {
+      
       console.log("请求成功:", res.data);
       var wordList = res.data.data.words
       var count = res.data.data.count
@@ -60,9 +66,12 @@ export default class Choose extends React.Component {
       this.setState({
         wordList: wordList || [],
         count: count
-      });
+      }, 
+      message.success({ content: 'Loaded!', key, duration: 2 })
+      );
     }).catch(err => {
       console.log("请求失败:", err);
+      message.console.error({ content: err, key, duration: 2 });
     });
   }
 
@@ -128,7 +137,9 @@ export default class Choose extends React.Component {
           whichKeyDown: 'space',
           whichKeyUp: 'space',
         });
-        window.location.href = `${baseUrl}/#/home`;
+        // window.location.href = `${baseUrl}/#/home`;
+        this.backToTransfer()
+        message.success('新数据以同步');
       } else {
         if (isCurrentWordStrange == null) {
           return
@@ -140,6 +151,11 @@ export default class Choose extends React.Component {
       }
     }
   }
+
+  backToTransfer() {
+    window.location.href = `${baseUrl}/#/Transfer`;
+  }
+
   onClick(item) {
     const {currentWordIndex, wordList, isCurrentWordStrange, isFinish} = this.state;
     if(item == "left") {
@@ -161,7 +177,9 @@ export default class Choose extends React.Component {
           whichKeyDown: 'space',
           whichKeyUp: 'space'
         });
-        window.location.href = `${baseUrl}/#/home`;
+        // window.location.href = `${baseUrl}/#/home`;
+        this.backToTransfer()
+        message.success('新数据以同步');
       } else {
         if (isCurrentWordStrange == null) {
           return
@@ -194,6 +212,7 @@ export default class Choose extends React.Component {
         isCurrentWordStrange: null,
         isFinish: true
       });
+      message.success('本阶段选词结束啦，要坚持背鸭~');
     }
     // console.log("this.myLeftRadioRef", this.myLeftRadioRef)
     // console.log("this.myRightRadioRef", this.myRightRadioRef)
@@ -283,7 +302,7 @@ export default class Choose extends React.Component {
           <div className="progress_before"/>
           <span className="progress_text">{`${currentWordIndex + 1} / ${count}`}</span>
         </div>
-        <div className="back_content">
+        <div className="back_content" onClick={this.backToTransfer.bind(this)}>
           <img className="back_icon" src={backIcon}></img>
           <span className="back_text">退出</span>
         </div>

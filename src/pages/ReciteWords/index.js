@@ -2,7 +2,7 @@ import React from 'react';
 import './index.less'
 import { Link } from "react-router-dom";
 import Axios from 'axios';
-import { Form, Input, Button, Checkbox, Col, Row, Progress } from 'antd';
+import { Form, Input, Button, Checkbox, Col, Row, Progress, message} from 'antd';
 import { ArrowLeftOutlined, ArrowRightOutlined} from '@ant-design/icons';
 // import getQueryString from ''
 import {getQueryString} from '../../utils/stringUtils';
@@ -12,7 +12,8 @@ import promise from '../home/assets/promise.png';
 import whiteBookBg from '../../assets/whiteBookBg.png';
 import backIcon from '../../assets/backIcon.png';
 import spaceIcon from '../../assets/spaceIcon.png';
-import audioIcon from './assets/audioIcon.png'
+import audioIcon from './assets/audioIcon.png';
+import baseUrl from '../../utils/config.js';
 // const layout = {
 //   labelCol: { span: 4 },
 //   wrapperCol: { span: 20 },
@@ -117,7 +118,8 @@ export default class ReciteWords extends React.Component {
           whichKeyDown: null,
           whichKeyUp: 'space',
         });
-        window.location.href = `${baseUrl}/#/home`;
+        this.backToTransfer()
+        message.success('新数据以同步');
       } else {
         this.onSpaceKeyUp()
       }
@@ -125,6 +127,9 @@ export default class ReciteWords extends React.Component {
     }
   }
   onClick(item) {
+    if(this.audioControler != null && this.audioControler.paused == false){
+      return
+    }
     const {currentWordIndex, wordList, isCurrentWordStrange, isFinish} = this.state;
     if(item == "space") { //空格键
       if (isFinish) {
@@ -133,7 +138,8 @@ export default class ReciteWords extends React.Component {
           whichKeyDown: null,
           whichKeyUp: 'space',
         });
-        window.location.href = `${baseUrl}/#/home`;
+        this.backToTransfer()
+        message.success('新数据以同步');
       } else {
         this.onSpaceKeyUp()
       }
@@ -149,13 +155,17 @@ export default class ReciteWords extends React.Component {
     console.log("recordResult" , this.recordWordList)
   }
 
+  backToTransfer() {
+    window.location.href = `${baseUrl}/#/Transfer`;
+  }
+
   onSpaceKeyUp() {
-    if(this.state.singleWordTimes == 3) {
+    if(this.state.singleWordTimes == 1) {
       this.goNext()
     } else {
       this.goSingleNextTime();
     }
-    if(this.state.singleWordTimes %2 ==0) {
+    if(this.state.singleWordTimes == 0) {
       this.setState({
         singleWordMeaningIsVisible: false,
       })
@@ -197,6 +207,7 @@ export default class ReciteWords extends React.Component {
       this.setState({
         isFinish: true
       });
+      message.success('恭喜你！已完成今日计划~');
     }
   }
 
@@ -208,7 +219,7 @@ export default class ReciteWords extends React.Component {
   render() {
     const {currentWordIndex, whichKeyDown, whichKeyUp, wordList, isFinish, singleWordMeaningIsVisible, count} = this.state;
     return (
-      <div className="choose_wrapper">
+      <div className="recite_wrapper">
       <img className="background-img" src={whiteBookBg}></img>
       <div className="fix_header">
         <div className="header_left">
@@ -267,7 +278,7 @@ export default class ReciteWords extends React.Component {
             </div>
           }
         </div>
-        <div className="back_content">
+        <div className="back_content" onClick={this.backToTransfer.bind(this)}>
           <img className="back_icon" src={backIcon}></img>
           <span className="back_text">退出</span>
         </div>
