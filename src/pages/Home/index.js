@@ -47,18 +47,35 @@ export default class Login extends React.Component {
     d.setTime(d.getTime() + (exdays*24*60*60*1000));
     var expires = "expires="+d.toUTCString();
     document.cookie = cname + "=" + cvalue + "; " + expires;
-}
+  }
+
+  notLogin() {
+    window.location.href = `${baseUrl}/#/home`;
+    message.info('请登录后使用');
+  }
   // 获取用户信息
   getMes() {
     HTTP.get("/api/profile")
     .then(res => {
-        console.log(res);
-        if (res && res.data && res.data.data) {
-          if (res.data.data.area) {
-            // window.location.href = `${baseUrl}/#/Transfer`;
-          }
+      if (!res && !res.data && res.data.state == null) {
+        return
+      }
+      if (res.data.state == 401) {
+        this.notLogin()
+        return
+      } else if (res.data.state !== 0) {
+        message.error('服务器开小差了')
+        return
+      }
+      console.log(res);
+      if (res && res.data && res.data.data) {
+        if (res.data.data.area) {
+          // window.location.href = `${baseUrl}/#/Transfer`;
+          message.success('登录成功');
+          window.location.href = `${baseUrl}/#/Transfer`;
+          window.location.reload()
         }
-        message.success('登录成功');
+      }
     }).catch(err => {
         message.info('请先登录');
     });
@@ -78,8 +95,20 @@ export default class Login extends React.Component {
       captcha: captcha,
       inviteCode: invitCode
     }).then(res => {
+      if (!res && !res.data && res.data.state == null) {
+        message.error('服务器开小差了')
+        return
+      }
+      if (res.data.state == 102) {
+        message.error(res.data.msg)
+        return
+      } else if (res.data.state !== 0) {
+        message.error('服务器开小差了')
+        return
+      }
       message.success('注册成功!');
       window.location.href = `${baseUrl}/#/Transfer`;
+      window.location.reload()
     }).catch(err => {
       message.error('注册失败!');
     });
@@ -93,6 +122,7 @@ export default class Login extends React.Component {
     }).then(res => {
       message.success('登录成功!');
       window.location.href = `${baseUrl}/#/Transfer`;
+      window.location.reload()
     }).catch(err => {
       message.error('登录失败!');
     });
@@ -189,11 +219,13 @@ export default class Login extends React.Component {
           <div className="bottom-floor">
             <div className="sim-info">
                 <img className="top-img" src={cirBg}></img>
-                <div className="info-list">
-                  <div className="info-title">We have your word.</div>
-                  <div className="info-sub">我们向您承诺</div>
-                  <div className="info-msg">Through our word recitation program, you can master at least 2000 words in 30 days. It is reasonable and scientific to ensure that you will not forget after reciting, and complete the learning plan efficiently and step by step.</div>
-                  <div className="info-chi">通过我们的背词计划，您可以在30天内掌握至少2000个单词，合理而且科学，保证您不会背完即忘，高效完成学习计划，循序渐进，水滴石穿。</div>
+                <div className="info-list-wrapper">
+                  <div className="info-list">
+                    <div className="info-title">You have my word.</div>
+                    <div className="info-sub">我们向您承诺</div>
+                    <div className="info-msg">Through our word recitation program, you can master at least 2000 words in 30 days. It is reasonable and scientific to ensure that you will not forget after reciting, and complete the learning plan efficiently and step by step.</div>
+                    <div className="info-chi">通过我们的背词计划，您可以在30天内掌握至少2000个单词，合理而且科学，保证您不会背完即忘，高效完成学习计划，循序渐进，水滴石穿。</div>
+                  </div>
                 </div>
             </div>
             <div className="register-btn" onClick={this.handleModeChange.bind(this, 'register')}>立即注册体验</div>

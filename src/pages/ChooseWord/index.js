@@ -50,7 +50,13 @@ export default class Choose extends React.Component {
   // }, 1000);
     this.wordLibName = getQueryString('lib_name')
     this.wordLibId = parseInt(getQueryString('lib_id'))
-    this.loadWordLib(this.wordLibName, this.wordLibId)
+    if(!this.wordLibName || !this.wordLibId) {
+      window.location.href = `${baseUrl}/#/Transfer`;
+      window.location.reload()
+      message.info("获取单词列表失败")
+    } else {
+      this.loadWordLib(this.wordLibName, this.wordLibId)
+    }
   }
 
   loadWordLib(wordLibName, wordLibId) {
@@ -137,7 +143,6 @@ export default class Choose extends React.Component {
           whichKeyDown: 'space',
           whichKeyUp: 'space',
         });
-        // window.location.href = `${baseUrl}/#/home`;
         this.backToTransfer()
         message.success('新数据以同步');
       } else {
@@ -145,7 +150,7 @@ export default class Choose extends React.Component {
           return
         }
         if (isCurrentWordStrange) {
-          this.recordResult(wordList[currentWordIndex].Id)
+          this.recordResult(wordList[currentWordIndex].id)
         }
         this.goNext()
       }
@@ -154,6 +159,7 @@ export default class Choose extends React.Component {
 
   backToTransfer() {
     window.location.href = `${baseUrl}/#/Transfer`;
+    window.location.reload()
   }
 
   onClick(item) {
@@ -185,7 +191,7 @@ export default class Choose extends React.Component {
           return
         }
         if (isCurrentWordStrange) {
-          this.recordResult(parseInt(wordList[currentWordIndex].Id))
+          this.recordResult(parseInt(wordList[currentWordIndex].id))
         }
         this.goNext()
       }
@@ -214,10 +220,6 @@ export default class Choose extends React.Component {
       });
       message.success('本阶段选词结束啦，要坚持背鸭~');
     }
-    // console.log("this.myLeftRadioRef", this.myLeftRadioRef)
-    // console.log("this.myRightRadioRef", this.myRightRadioRef)
-    // this.myLeftRadioRef != null && this.myLeftRadioRef.current.blur();
-    // this.myRightRadioRef != null && this.myRightRadioRef.current.blur();
   }
 
   componentDidMount() {
@@ -234,7 +236,7 @@ export default class Choose extends React.Component {
           <div className="header_left">
               <img className="main-img" src={promise}></img>
               <div className="home-page">
-                <Link to="/home">首页</Link>
+                {/* <Link to="/home">首页</Link> */}
               </div>
               <div className="about-us">关于我们</div>
               <div className="use-msg">使用说明</div>
@@ -247,10 +249,10 @@ export default class Choose extends React.Component {
         </div>
         {wordList.length != 0 && wordList[currentWordIndex] != null &&
           <div className="choose_content">
-            <span className="word_phonetic_symbol">{isFinish ? '/səkˈses/' : `/${wordList[currentWordIndex].PhoneticSymbols}/`}</span><br/>
-            <span className="word_text">{isFinish ? 'success' : wordList[currentWordIndex].Text}</span><br/>
+            <span className="word_phonetic_symbol">{isFinish ? '/səkˈses/' : `/${wordList[currentWordIndex].phoneticSymbols}/`}</span><br/>
+            <span className="word_text">{isFinish ? 'success' : wordList[currentWordIndex].text}</span><br/>
             <div className="word_meaning_wrapper">
-              <span className="word_meaning">{isFinish ? 'n. 成功; 胜利; 发财; 成名; 成功的人(或事物)' : wordList[currentWordIndex].Meaning}</span>
+              <span className="word_meaning">{isFinish ? 'n. 成功; 胜利; 发财; 成名; 成功的人(或事物)' : wordList[currentWordIndex].meaning}</span>
             </div>
             <br/>
             {isFinish ? 

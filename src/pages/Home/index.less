@@ -5,7 +5,6 @@
     width: 100%;
     min-width: 900px;
     user-select: none;
-    // justify-content: center;
     .fix_header {
         position: fixed;
         left: 11%;
@@ -18,7 +17,6 @@
             display: flex;
             align-items: flex-end;
             flex: 1;
-            // padding-left: 11%;
             .main-img {
                 width: 48px;
                 height: 24px;
@@ -69,7 +67,6 @@
             align-items: flex-end;
             justify-content: flex-end;
             flex: 1;
-            // padding-right: 11%;
             .register {
                 height: 32px;
                 font-size: 14px;
@@ -138,14 +135,19 @@
                 left: -120px;
                 top: -52px;
             }
-            .info-list {
+            .info-list-wrapper {
+                margin-top: 180px;
                 position: relative;
                 width: 80%;
                 height: 42vh;
-                overflow:scroll;
-                margin-top: 180px;
-                // box-shadow: 20px 20px 10px -10px  #f00;
-                // box-shadow: 0 4px 6px -4px white;  
+                overflow: hidden;
+            }
+            .info-list {
+                position: absolute;
+                width: calc(~'100% + 17px');
+                height: 42vh;
+                overflow-x: hidden;
+                overflow-y: scroll;
             }
             
             .info-title {
@@ -206,7 +208,6 @@
             color: #FFFFFF;
             line-height: 48px;
             text-align: center;
-            // margin-top: 87px;
             cursor: pointer;
             z-index: 20;
         }
@@ -240,7 +241,6 @@
         left: 0;
         right: 0;
         background: rgba(3, 13, 60, 0.5);
-        // background: rgba(219, 223, 13, 1);
         overflow: hidden;
         z-index: 30;
         .login-area-top {

@@ -157,6 +157,7 @@ export default class ReciteWords extends React.Component {
 
   backToTransfer() {
     window.location.href = `${baseUrl}/#/Transfer`;
+    window.location.reload()
   }
 
   onSpaceKeyUp() {
@@ -225,7 +226,7 @@ export default class ReciteWords extends React.Component {
         <div className="header_left">
             <img className="main-img" src={promise}></img>
             <div className="home-page">
-              <Link to="/home">首页</Link>
+              {/* <Link to="/home">首页</Link> */}
             </div>
             <div className="about-us">关于我们</div>
             <div className="use-msg">使用说明</div>
@@ -238,17 +239,16 @@ export default class ReciteWords extends React.Component {
       </div>
         {wordList.length != 0  && wordList[currentWordIndex] != null && 
           <div className="choose_content">
-            {/* <span className="word_phonetic_symbol">{isFinish ? '/səkˈses/' : wordList[currentWordIndex].phoneticSymbols}</span><br/> */}
-            <span className="word_phonetic_symbol">{isFinish ? '/səkˈses/' : `/${wordList[currentWordIndex].PhoneticSymbols}/`}</span><br/>
-            <span className="word_text">{isFinish ? 'success' : wordList[currentWordIndex].Text}</span><br/>
+            <span className="word_phonetic_symbol">{isFinish ? '/səkˈses/' : `/${wordList[currentWordIndex].phoneticSymbols}/`}</span><br/>
+            <span className="word_text">{isFinish ? 'success' : wordList[currentWordIndex].text}</span><br/>
             <div className="word_meaning_wrapper">
               {singleWordMeaningIsVisible &&
-                <span className="word_meaning">{isFinish ? 'n. 成功; 胜利; 发财; 成名; 成功的人(或事物)' : wordList[currentWordIndex].Meaning}</span>
+                <span className="word_meaning">{isFinish ? 'n. 成功; 胜利; 发财; 成名; 成功的人(或事物)' : wordList[currentWordIndex].meaning}</span>
               }
             </div>
             <br/>
             {!isFinish &&
-              <audio ref={(audio) => { this.audioControler = audio; }} id="audioControler" controls="controls" hidden autoPlay src={`http://47.107.238.126/static/tts/${wordList[currentWordIndex].Text}.mp3`}></audio>
+              <audio ref={(audio) => { this.audioControler = audio; }} id="audioControler" controls="controls" hidden autoPlay src={`${baseUrl}/static/tts/${wordList[currentWordIndex].text}.mp3`}></audio>
             }
             {isFinish && 
               <div className="button_content_mid">

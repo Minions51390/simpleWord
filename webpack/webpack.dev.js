@@ -47,7 +47,8 @@ module.exports = smart(webpackCommonConf, {
         // 设置代理
         proxy: {
             '/api': {
-                target: 'http://47.107.238.126',
+                // target: 'http://47.107.238.126',
+                target: 'http://81.70.229.127',
                 changeOrigin: true,
                 secure: false,
                 pathRewrite: {

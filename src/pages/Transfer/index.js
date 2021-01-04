@@ -2,7 +2,7 @@ import React from 'react';
 import './index.less'
 import { Link } from "react-router-dom";
 import HTTP from '../../utils/api.js';
-import { Form, Input, Button, Checkbox, Col, Row, Radio, message } from 'antd';
+import { Form, Input, Select, Checkbox, Col, Row, Radio, message } from 'antd';
 import baseUrl from '../../utils/config.js';
 import promise from './assets/promise.png';
 import rightBg from './assets/rightBg.png';
@@ -13,13 +13,13 @@ import btBg from './assets/btBg.png';
 import cirBg from './assets/cirBg.png';
 import GET4 from './assets/CET-4.png';
 import userIcon from './assets/userIcon.png';
-
+const wordCountArr = [6,9,12,15,18,21,24,27,30]
 export default class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
         showOver: false,
-        todayCount: '20',
+        todaycount: '20',
         alled: '2400',
         nowDay: '2',
         allDay: '40',
@@ -32,11 +32,11 @@ export default class Login extends React.Component {
         area: '',
         qq_number: '',
         school: '',
-        newWord: '6',
+        newWord: '',
         grade: '',
-        DictionaryName: '',
-        DictionaryId: '',
-        Count: '',
+        dictionaryName: '',
+        dictionaryId: '',
+        count: '',
         describe: '',
         picture: '',
         allChoice: '',
@@ -49,7 +49,8 @@ export default class Login extends React.Component {
         currentStage: '',
         overStage: '',
         recitedWordsNumber: '',
-        todayWordsPlan: ''
+        todayWordsPlan: '',
+        isSelectDisable: false
     };
   }
   // 蒙层
@@ -57,34 +58,58 @@ export default class Login extends React.Component {
     e.stopPropagation();
     this.setState({ showOver });
   };
+  notLogin() {
+    window.location.href = `${baseUrl}/#/home`;
+    // message.info('请登录后使用');
+  }
   // 开始背词
   handleStart() {
-    const {currentStageAllDays, DictionaryName} = this.state;
+    const {currentStageAllDays, dictionaryName} = this.state;
     if (currentStageAllDays) {
-      window.location.href = `${baseUrl}/#/reciteWords?lib_name=${DictionaryName}`;
+      window.location.href = `${baseUrl}/#/reciteWords?lib_name=${dictionaryName}`;
     }
     return;
   }
   // 开始选词
   handleChoose() {
-    const {DictionaryName, DictionaryId} = this.state;
-    window.location.href = `${baseUrl}/#/chooseWord?lib_name=${DictionaryName}&lib_id=${DictionaryId}`;
+    const {dictionaryName, dictionaryId, newWord} = this.state;
+    if(!newWord) {
+      this.setState({ 
+        showOver: true
+      });
+      message.info("开始之前需要每日背词数哦~")
+    } else {
+      window.location.href = `${baseUrl}/#/chooseWord?lib_name=${dictionaryName}&lib_id=${dictionaryId}`;
+    }
   }
   // 获取首页信息
   getHomeMes() {
     HTTP.get("/api/home").then(res => {
-      if (res && res.data && res.data.data && res.data.data.currentDic) {
-        const currentDic = res.data.data.currentDic;
+      if (!res && !res.data && res.data.state == null) {
+        return
+      }
+      if (res.data.state == 401) {
+        this.notLogin()
+        return
+      } else if (res.data.state !== 0) {
+        message.error('服务器开小差了')
+        return
+      }
+      this.getMes();
+      this.getLib();
+      let responseData = res.data.data
+      if (responseData && responseData.currentDic) {
+        const currentDic = responseData.currentDic;
         this.setState({
-          Count: currentDic.Count,
-          DictionaryId: currentDic.DictionaryId,
-          DictionaryName: currentDic.DictionaryName,
+          count: currentDic.count,
+          dictionaryId: currentDic.dictionaryId,
+          dictionaryName: currentDic.dictionaryName,
           describe: currentDic.describe,
           picture: currentDic.picture
         });
       }
-      if (res && res.data && res.data.data && res.data.data.wordsStatistics) {
-        const wordsStatistics = res.data.data.wordsStatistics;
+      if (responseData && responseData.wordsStatistics) {
+        const wordsStatistics = responseData.wordsStatistics;
         this.setState({
           allChoice: wordsStatistics.allChoice,
           currentAlreadyChoice: wordsStatistics.currentAlreadyChoice,
@@ -93,8 +118,8 @@ export default class Login extends React.Component {
           surplusChoice: wordsStatistics.surplusChoice
         });
       }
-      if (res && res.data && res.data.data && res.data.data.reciteWordInfo) {
-        const reciteWordInfo = res.data.data.reciteWordInfo;
+      if (responseData && responseData.reciteWordInfo) {
+        const reciteWordInfo = responseData.reciteWordInfo;
         this.setState({
           currentDay: reciteWordInfo.currentDay,
           currentStageAllDays: reciteWordInfo.currentStageAllDays,
@@ -106,22 +131,36 @@ export default class Login extends React.Component {
       }
       console.log(res);
     }).catch(err => {
+      message.error('服务器开小差了')
       console.log(err);
     });
   }
   // 获取词库信息
   getLib() {
+    
     HTTP.get("/api/dictionary/info").then(res => {
-      if (res.data.data) {
-        const datas = res.data.data[0];
+      if (!res && !res.data && res.data.state == null) {
+        return
+      }
+      if (res.data.state == 401) {
+        this.notLogin()
+        return
+      } else if (res.data.state !== 0) {
+        message.error('服务器开小差了')
+        return
+      }
+      let responseData = res.data.data
+      if (responseData) {
+        const datas = responseData[0];
         this.setState({
-          Count: datas.Count,
-          DictionaryId: datas.DictionaryId,
-          DictionaryName: datas.DictionaryName
+          count: datas.count,
+          dictionaryId: datas.dictionaryId,
+          dictionaryName: datas.dictionaryName
         })
       }
       console.log(res);
     }).catch(err => {
+      message.error('服务器开小差了')
       console.log(err);
     });
   }
@@ -129,36 +168,45 @@ export default class Login extends React.Component {
   getMes() {
     HTTP.get("/api/profile")
     .then(res => {
-        console.log(res);
-        if (res && res.data && res.data.data) {
-            if (res.data.data.area) {
+        if (!res && !res.data && res.data.state == null) {
+          message.error('服务器开小差了')
+          return
+        } else if (res.data.state !== 0) {
+          message.error('服务器开小差了')
+          return
+        }
+        let responseData = res.data.data
+        if (responseData) {
+            if (responseData.reciteVersion > 0) {
               this.setState({
-                area: res.data.data.area || '',
-                city: res.data.data.city || '',
-                email: res.data.data.email || '',
-                grade: res.data.data.grade || '',
-                phone: res.data.data.phone || '',
-                province: res.data.data.province || '',
-                qq_number: res.data.data.qqNumber || '',
-                real_name: res.data.data.realName || '',
-                school: res.data.data.school || '',
-                staticName: res.data.data.realName || '',
-                newWord: res.data.data.reciteVersion || '',
+                area: responseData.area || '',
+                city: responseData.city || '',
+                email: responseData.email || '',
+                grade: responseData.grade || '',
+                phone: responseData.phone || '',
+                province: responseData.province || '',
+                qq_number: responseData.qqNumber || '',
+                real_name: responseData.realName || '',
+                school: responseData.school || '',
+                staticName: responseData.realName || '',
+                newWord: responseData.reciteVersion || 0,
+                isSelectDisable: responseData.reciteVersion === 0 ? false : true,
                 showOver: false
               });
             } else {
               this.setState({
-                area: res.data.data.area || '',
-                city: res.data.data.city || '',
-                email: res.data.data.email || '',
-                grade: res.data.data.grade || '',
-                phone: res.data.data.phone || '',
-                province: res.data.data.province || '',
-                qq_number: res.data.data.qqNumber || '',
-                real_name: res.data.data.realName || '',
-                school: res.data.data.school || '',
-                staticName: res.data.data.realName || '',
-                newWord: res.data.data.reciteVersion || '',
+                area: responseData.area || '',
+                city: responseData.city || '',
+                email: responseData.email || '',
+                grade: responseData.grade || '',
+                phone: responseData.phone || '',
+                province: responseData.province || '',
+                qq_number: responseData.qqNumber || '',
+                real_name: responseData.realName || '',
+                school: responseData.school || '',
+                staticName: responseData.realName || '',
+                newWord: responseData.reciteVersion || 0,
+                isSelectDisable: responseData.reciteVersion === 0 ? false : true,
                 showOver: true
               });
             }
@@ -192,11 +240,22 @@ export default class Login extends React.Component {
       qqNumber: qq_number,
       email: email,
       latestAchievement: '100',
-      reciteVersion: newWord,
-      wordLevel: ''
+      reciteVersion: parseInt(newWord),
     }).then(res => {
+        if (!res && !res.data && res.data.state == null) {
+          return
+        }
+        if (res.data.state == 101) {
+          message.error(res.data.msg)
+          return
+        } else if (res.data.state !== 0) {
+          message.error('服务器开小差了')
+          return
+        }
         message.success('设置成功!');
-        this.setState({ showOver: false });
+        this.setState({ 
+          showOver: false,
+          staticName: real_name});
     }).catch(err => {
         message.error('设置失败!');
     });
@@ -250,9 +309,9 @@ export default class Login extends React.Component {
     });
   }
   // newWord
-  onInputNewWord(event) {
+  onInputNewWord(value) {
     this.setState({
-      newWord: event.target.value
+      newWord: value
     });
   }
   // grade
@@ -264,12 +323,10 @@ export default class Login extends React.Component {
 
   componentDidMount() {
     this.getHomeMes();
-    this.getMes();
-    this.getLib();
   }
 
   render() {
-    const {staticName, showOver, todayCount, alled, nowDay, allDay, real_name, city, phone, province, email, area, qq_number, school, newWord, grade, DictionaryName, Count, DictionaryId, describe, picture,
+    const {staticName, showOver, todayCount, alled, nowDay, allDay, real_name, city, phone, province, email, area, qq_number, school, newWord, grade, dictionaryName, count, dictionaryId, describe, picture,
       allChoice,
       currentAlreadyChoice,
       currentRecite,
@@ -280,7 +337,8 @@ export default class Login extends React.Component {
       currentStage,
       overStage,
       recitedWordsNumber,
-      todayWordsPlan
+      todayWordsPlan,
+      isSelectDisable
     } = this.state;
     return (
       <div className="main_container">
@@ -391,11 +449,11 @@ export default class Login extends React.Component {
                     <img src={GET4}></img>
                     <div>
                       <div className="main-title">
-                        {DictionaryName}
+                        {dictionaryName}
                       </div>
                       <div className="main-info">
                         <div className="main-t">
-                          总计：{Count}词
+                          总计：{count}词
                         </div>
                         <div className="main-s">
                           适合：{describe}
@@ -449,15 +507,30 @@ export default class Login extends React.Component {
                     ?
                     (
                       <div className="choose-tip">
-                        距离下次选词还剩<span className="big-text">{nextChoiceDay}</span>天
+                        {currentStage !== 0 && overStage !== 0 && currentStage === overStage
+                          ?
+                            距离下次选词还剩
+                          :
+                            距离全部结束还剩
+                        }
+                        <span className="big-text">{nextChoiceDay}</span>天
                       </div>
                     )
                     :
                     (
-                      <div className="thr-line">
-                        <div className="text-btn" onClick={this.handleChoose.bind(this)}>
-                          开始选词
-                        </div>
+                      <div>
+                        {currentStage !== 0 && overStage !== 0 && currentStage === overStage
+                          ?
+                          <div className="choose-tip">
+                            已背完本词库单词
+                          </div>
+                          :
+                          <div className="thr-line">
+                            <div className="text-btn" onClick={this.handleChoose.bind(this)}>
+                              开始选词
+                            </div>
+                          </div>
+                        }
                       </div>
                     )
                   }
@@ -505,13 +578,28 @@ export default class Login extends React.Component {
                         prefix={<div className="my-icon">QQ号</div>} 
                         onChange={this.onInputQQNumber.bind(this)} 
                         value={qq_number}/>
-                      <Input 
+                      {/* <Input 
                         className="pass-mar word-icon"
                         size="large" 
                         placeholder="请输入每日背词数" 
                         prefix={<div className="my-icon">每日背生词数</div>} 
                         onChange={this.onInputNewWord.bind(this)} 
-                        value={newWord}/>
+                        value={newWord}/> */}
+                        <span className="pass-mar ant-input-affix-wrapper word-ant-input-affix-wrapper">
+                          <div className= "word-icon">
+                            <span className="ant-input-prefix"><div className="my-icon">每日背词数</div></span>
+                          </div>
+                          <Select 
+                            defaultValue={`${newWord}个`} 
+                            // maxTagCount="3"
+                            disabled={isSelectDisable}
+                            listHeight={100}
+                            size="large"
+                            style={{ width: 220 }}
+                            onChange={this.onInputNewWord.bind(this)}>
+                            {wordCountArr.map((val, i) => <Select.Option value={val} key={i + 'select'}>{`${val}个`}</Select.Option>)}
+                          </Select>
+                        </span>
                     </div>
                     <div className="main-right">
                       <Input 

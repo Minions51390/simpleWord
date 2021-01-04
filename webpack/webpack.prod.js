@@ -17,7 +17,8 @@ module.exports = smart(webpackCommonConf, {
         filename: 'js/[name].[contentHash:8].js', // name 即多入口时 entry 的 key
         path: distPath,
         // publicPath: 'http://cdn.abc.com'  // 修改所有静态文件 url 的前缀（如 cdn 域名），这里暂时用不到
-        publicPath:'//47.107.238.126/'
+        publicPath:'//81.70.229.127/'
+        // publicPath:'/'
     },
     module: {
         rules: [

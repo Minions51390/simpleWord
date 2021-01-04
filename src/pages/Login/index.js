@@ -45,7 +45,8 @@ export default class Login extends React.Component {
     console.log('Success:', values);
     HTTP.post("/auth/login", values).then(res => {
       message.success('登录成功!');
-      window.location.href = `${baseUrl}/#/chooseStore`;
+      window.location.href = `${baseUrl}/#/Transfer`;
+      window.location.reload()
     }).catch(err => {
       message.error('登录失败!');
     });
