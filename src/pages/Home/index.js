@@ -30,6 +30,7 @@ export default class Login extends React.Component {
       email: '',
       captcha: '',
       invitCode: '',
+      emailReg: new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$")
     };
   }
   getCookie(name)
@@ -50,7 +51,6 @@ export default class Login extends React.Component {
   }
 
   notLogin() {
-    window.location.href = `${baseUrl}/#/home`;
     message.info('请登录后使用');
   }
   // 获取用户信息
@@ -62,18 +62,15 @@ export default class Login extends React.Component {
       }
       if (res.data.state == 401) {
         this.notLogin()
-        return
+        return;
       } else if (res.data.state !== 0) {
         message.error('服务器开小差了')
-        return
+        return;
       }
-      console.log(res);
       if (res && res.data && res.data.data) {
         if (res.data.data.area) {
-          // window.location.href = `${baseUrl}/#/Transfer`;
           message.success('登录成功');
           window.location.href = `${baseUrl}/#/Transfer`;
-          window.location.reload()
         }
       }
     }).catch(err => {
@@ -85,9 +82,37 @@ export default class Login extends React.Component {
     e.stopPropagation();
     this.setState({ mode });
   };
+  rowLength(val) {
+    val.length >= 254 ? true : false;
+  }
   // 注册接口
   registerFinish() {
-    const {registerAd, registerPa, email, captcha, invitCode} = this.state;
+    const {registerAd, registerPa, email, captcha, invitCode, emailReg} = this.state;
+    // 用户名检验
+    if (!registerAd || registerAd.indexOf('@') !== -1 || this.rowLength(registerAd)) {
+      message.error('用户名不可以带@且不能为空！');
+      return;
+    }
+    // 密码检验
+    if (!registerPa || this.rowLength(registerPa)) {
+      message.error('密码不能为空！');
+      return;
+    }
+    // 邮箱检验
+    if (!emailReg.test(email)) {
+      message.error('邮箱格式不正确！');
+      return;
+    }
+    // 验证码检验
+    if (!captcha || captcha.length !== 6 || this.rowLength(captcha)) {
+      message.error('验证码为6位且不能为空！');
+      return;
+    }
+    // 邀请码检验
+    if (!invitCode || this.rowLength(invitCode)) {
+      message.error('验证码不能为空！');
+      return;
+    }
     HTTP.post("/auth/register", {
       name: registerAd,
       password: registerPa,
@@ -96,42 +121,77 @@ export default class Login extends React.Component {
       inviteCode: invitCode
     }).then(res => {
       if (!res && !res.data && res.data.state == null) {
-        message.error('服务器开小差了')
-        return
+        message.error('服务器开小差了');
+        return;
       }
-      if (res.data.state == 102) {
-        message.error(res.data.msg)
-        return
+      if (res.data.state == 101) {
+        message.error(res.data.msg);
+        return;
       } else if (res.data.state !== 0) {
-        message.error('服务器开小差了')
-        return
+        message.error(res.data.msg);
+        return;
       }
       message.success('注册成功!');
       window.location.href = `${baseUrl}/#/Transfer`;
-      window.location.reload()
     }).catch(err => {
-      message.error('注册失败!');
+      message.error('服务器开小差了');
     });
   }
   // 登录接口
   loginFinish() {
     const {loginAd, loginPa} = this.state;
+    if (!loginAd || loginAd.indexOf('@') !== -1 || this.rowLength(loginAd)) {
+      message.error('用户名不可以带@且不能为空！');
+      return;
+    }
+    // 密码检验
+    if (!loginPa || this.rowLength(loginPa)) {
+      message.error('密码不能为空！');
+      return;
+    }
     HTTP.post("/auth/login", {
       userName: loginAd,
       password: loginPa
     }).then(res => {
+      if (!res && !res.data && res.data.state == null) {
+        message.error('服务器开小差了');
+        return;
+      }
+      if (res.data.state == 101) {
+        message.error(res.data.msg);
+        return;
+      } else if (res.data.state !== 0) {
+        message.error(res.data.msg);
+        return;
+      }
       message.success('登录成功!');
+      console.log(res);
       window.location.href = `${baseUrl}/#/Transfer`;
-      window.location.reload()
     }).catch(err => {
       message.error('登录失败!');
     });
   }
   // 验证码接口
   sendEmail() {
+    const { email, emailReg }  = this.state;
+    if (!emailReg.test(email)) {
+      message.error('邮箱格式不正确！');
+      return;
+    }
     HTTP.post("/auth/email", {
-      email: this.state.email
+      email: email
     }).then(res => {
+      if (!res && !res.data && res.data.state == null) {
+        message.error('服务器开小差了');
+        return;
+      }
+      if (res.data.state == 101) {
+        message.error(res.data.msg);
+        return;
+      } else if (res.data.state !== 0) {
+        message.error(res.data.msg);
+        return;
+      }
       message.success('验证码发送成功!');
     }).catch(err => {
       message.error('验证码发送失败!');

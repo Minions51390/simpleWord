@@ -50,7 +50,10 @@ export default class Login extends React.Component {
         overStage: '',
         recitedWordsNumber: '',
         todayWordsPlan: '',
-        isSelectDisable: false
+        isSelectDisable: false,
+        emailReg: new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$"),
+        qqReg: /^[1-9][0-9]{4,14}$/,
+        phoneReg: /^[1][1,2,3,4,5,7,8,9][0-9]{9}$/
     };
   }
   // 蒙层
@@ -226,9 +229,63 @@ export default class Login extends React.Component {
     });
   }
 
+  rowLength(val) {
+    val.length >= 254 ? true : false;
+  }
+
   // 提交信息
   saveMes() {
-    const {real_name, city, phone, province, email, area, qq_number, school, newWord, grade} = this.state;
+    const {real_name, city, phone, province, email, area, qq_number, school, newWord, grade, emailReg, phoneReg, qqReg} = this.state;
+    // 真名检验
+    if (!real_name || this.rowLength(real_name)) {
+      message.error('真实姓名不能为空！');
+      return;
+    }
+    // 省份检验
+    if (this.rowLength(province)) {
+      message.error('省份过长！');
+      return;
+    }
+    // 市份检验
+    if (this.rowLength(city)) {
+      message.error('市份过长！');
+      return;
+    }
+    // 区县检验
+    if (this.rowLength(area)) {
+      message.error('区县过长！');
+      return;
+    }
+    // 学校检验
+    if (this.rowLength(school)) {
+      message.error('学校名过长！');
+      return;
+    }
+    // 年级检验
+    if (this.rowLength(grade)) {
+      message.error('年级过长！');
+      return;
+    }
+    // 手机号检验
+    if (!phoneReg.test(phone) || this.rowLength(phone)) {
+      message.error('手机号格式错误！');
+      return;
+    }
+    // qq检验
+    if (!qqReg.test(qq_number) || this.rowLength(qq_number)) {
+      message.error('QQ号格式错误！');
+      return;
+    }
+    // 邮箱检验
+    if (!emailReg.test(email)) {
+      message.error('邮箱格式不正确！');
+      return;
+    }
+    // 每日背词数检验
+    if (parseInt(newWord) >= 1000) {
+      message.error('每日背词数不能大于1000！');
+      return;
+    }
     HTTP.post("/api/profile", {
       realName: real_name,
       province: province,
