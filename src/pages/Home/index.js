@@ -2,7 +2,7 @@ import React from 'react';
 import './index.less'
 import { Link } from "react-router-dom";
 import HTTP from '../../utils/api.js';
-import { Form, Input, Button, Checkbox, Col, Row, Radio, message } from 'antd';
+import { Form, Input, Button, Checkbox, Col, Row, Radio, message, Popconfirm } from 'antd';
 import baseUrl from '../../utils/config.js';
 import promise from './assets/promise.png';
 import rightBg from './assets/rightBg.png';
@@ -17,6 +17,8 @@ import passi from './assets/passi.png';
 import inviti from './assets/inviti.png';
 import codei from './assets/codei.png';
 import emaili from './assets/emaili.png';
+import wechat from './assets/wechat.jpeg';
+import userIcon from './assets/userIcon.png';
 
 export default class Login extends React.Component {
   constructor(props) {
@@ -271,9 +273,16 @@ export default class Login extends React.Component {
           <div className="mid-floor">
             <img className="right-img" src={rightBg}></img>
             <div className="icon-list">
-                <img className="little-img" src={emailpng}></img>
-                <img className="little-img" src={phonepng}></img>
-                <img className="little-img" src={chatpng}></img>
+              <div className="icon-email">
+                <Popconfirm placement="top" title="koihyman@qingchengword.onaliyun.com" icon={<img style={{position: 'absolute', top: '8px', width: '14px', height: '14px'}} src={userIcon}></img>}>
+                  <img className="little-img" src={emailpng}></img>
+                </Popconfirm>
+              </div>
+              <div className="icon-chat">
+                <Popconfirm placement="top" icon={<img style={{width: '128px', height: '128px'}} src={wechat}></img>}>
+                  <img className="little-img" src={chatpng}></img>
+                </Popconfirm>
+              </div>
             </div>
           </div>
           <div className="bottom-floor">

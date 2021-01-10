@@ -106,11 +106,15 @@
             position: absolute;
             bottom: 8vh;
             right: 125px;
-            .little-img {
-                width: 24px;
-                height: 24px;
+            height: 24px;
+            display: flex;
+            div {
                 margin-right: 39px;
-                cursor: pointer;
+                .little-img {
+                    width: 24px;
+                    height: 24px;
+                    cursor: pointer;
+                }
             }
         }
     }
@@ -494,4 +498,7 @@
         background: #102F5C;
         opacity: 0.2;
     }
+}
+.ant-popover-buttons {
+    display: none;
 }

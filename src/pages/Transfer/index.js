@@ -140,7 +140,6 @@ export default class Login extends React.Component {
   }
   // 获取词库信息
   getLib() {
-    
     HTTP.get("/api/dictionary/info").then(res => {
       if (!res && !res.data && res.data.state == null) {
         return
