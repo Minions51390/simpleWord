@@ -20,7 +20,7 @@ import emaili from './assets/emaili.png';
 import wechat from './assets/wechat.jpeg';
 import userIcon from './assets/userIcon.png';
 
-export default class Login extends React.Component {
+export default class About extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -32,7 +32,8 @@ export default class Login extends React.Component {
       email: '',
       captcha: '',
       invitCode: '',
-      emailReg: new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$")
+      emailReg: new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$"),
+      isLogin: false
     };
   }
   getCookie(name)
@@ -53,7 +54,7 @@ export default class Login extends React.Component {
   }
 
   notLogin() {
-    message.info('请登录后使用');
+    // message.info('请登录后使用');
   }
   // 获取用户信息
   getMes() {
@@ -71,8 +72,9 @@ export default class Login extends React.Component {
       }
       if (res && res.data && res.data.data) {
         if (res.data.data.area) {
-          message.success('登录成功');
-          window.location.href = `${baseUrl}/#/Transfer`;
+          this.setState({
+            isLogin: true
+          });
         }
       }
     }).catch(err => {
@@ -255,19 +257,27 @@ export default class Login extends React.Component {
   }
 
   render() {
-    const { mode, loginAd, loginPa, registerAd, registerPa, email, captcha, invitCode } = this.state;
+    const { mode, loginAd, loginPa, registerAd, registerPa, email, captcha, invitCode, isLogin } = this.state;
     return (
       <div className="main_container">
           <div className="fix_header">
               <div className="header_left">
                     <img className="main-img" src={promise}></img>
-                    <div className="home-page check">首页</div>
-                    <Link className="about-us" to="/about">关于我们</Link>
+                    <Link className="home-page" to="/home">首页</Link>
+                    <div className="about-us check">关于我们</div>
               </div>
-              <div className="header_right">
+              {
+                !isLogin
+                ?
+                (
+                  <div className="header_right">
                     <div className="register" onClick={this.handleModeChange.bind(this, 'register')}>注册</div>
                     <div className="login" onClick={this.handleModeChange.bind(this, 'login')}>登录</div>
-              </div>
+                  </div>
+                )
+                :
+                <div></div>
+              }
           </div>
           <div className="mid-floor">
             <img className="right-img" src={rightBg}></img>
@@ -292,14 +302,9 @@ export default class Login extends React.Component {
                     <div className="info-title">You have my word.</div>
                     <div className="info-sub">我们向您承诺</div>
                     <div className="info-msg">Through our word recitation program, you can master at least 2000 words in 30 days. It is reasonable and scientific to ensure that you will not forget after reciting, and complete the learning plan efficiently and step by step.</div>
-                    <div className="info-chi">通过我们的背词计划，您可以在30天内掌握至少2000个单词，合理而且科学，保证您不会背完即忘，高效完成学习计划，循序渐进，水滴石穿。</div>
+                    <div className="info-chi">我们致力于给莘莘学子更好的背单词体验！！！</div>
                   </div>
                 </div>
-            </div>
-            <div className="register-btn" onClick={this.handleModeChange.bind(this, 'register')}>立即注册体验</div>
-            <div className="login-area" onClick={this.handleModeChange.bind(this, 'login')}>
-                <img className="login-img" src={loginpng}></img>
-                <div className="login-text">已有账号立即登录</div>
             </div>
             <img className="bottom-img" src={btBg}></img>
           </div>

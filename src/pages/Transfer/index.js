@@ -13,7 +13,23 @@ import btBg from './assets/btBg.png';
 import cirBg from './assets/cirBg.png';
 import GET4 from './assets/CET-4.png';
 import userIcon from './assets/userIcon.png';
-const wordCountArr = [6,9,12,15,18,21,24,27,30]
+const wordCountArr = [6,9,12,15,18,21,24,27,30];
+const storeArr = [
+  {
+    count: 5488,
+    describe: "适合考研学生使用",
+    dictionaryId: 2,
+    dictionaryName: "考研英语5500词",
+    picture: "",
+  },
+  {
+    count: 5488,
+    describe: "适合考研学生使用",
+    dictionaryId: 2,
+    dictionaryName: "GET4",
+    picture: "",
+  }
+]
 export default class Login extends React.Component {
   constructor(props) {
     super(props);
@@ -316,6 +332,10 @@ export default class Login extends React.Component {
         message.error('设置失败!');
     });
   }
+  // 选词库
+  onChangeStore(value) {
+    console.log(value);
+  }
   // real_name
   onInputRealName(event) {
     this.setState({
@@ -428,8 +448,7 @@ export default class Login extends React.Component {
               <div className="header_left">
                     <img className="main-img" src={promise}></img>
                     <div className="home-page check">首页</div>
-                    <div className="about-us">关于我们</div>
-                    <div className="use-msg">使用说明</div>
+                    <Link className="about-us" to="/about">关于我们</Link>
               </div>
               <div className="header_right">
                 <div onClick={this.handleModeChange.bind(this, true)}>
@@ -500,6 +519,22 @@ export default class Login extends React.Component {
                   <div className="right-top-shadow"></div>
                   <div className="now-store">
                     当前词库
+                    <div className="choose-store">
+                      <span className="ant-input-affix-wrapper word-ant-input-affix-wrapper">
+                        <div className= "word-icon">
+                          <span className="ant-input-prefix"><div className="my-icon">选择词库</div></span>
+                        </div>
+                        <Select 
+                          defaultValue={storeArr[0].dictionaryName}
+                          disabled={false}
+                          listHeight={100}
+                          size="large"
+                          style={{ width: 220 }}
+                          onChange={this.onChangeStore.bind(this)}>
+                          {storeArr.map((val, i) => <Select.Option value={val.dictionaryName} key={i + 'select'}>{`${val.dictionaryName}`}</Select.Option>)}
+                        </Select>
+                      </span>
+                    </div>
                   </div>
                   <div className="main-place">
                     <img src={GET4}></img>

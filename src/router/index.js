@@ -13,6 +13,7 @@ const chooseStore = loadable(() => import('../pages/chooseStore'))
 const reciteWords = loadable(() => import('../pages/ReciteWords'))
 const Home = loadable(() => import('../pages/Home'))
 const Transfer = loadable(() => import('../pages/Transfer'))
+const AboutUS = loadable(() => import('../pages/AboutUs'))
 
 export default class Root extends Component {
   render() {
@@ -22,6 +23,7 @@ export default class Root extends Component {
             <Route path="/" exact component={Home}/>
             <Route path="/transfer" component={Transfer}></Route>
             <Route path="/home" component={Home}></Route>
+            <Route path="/about" component={AboutUS}></Route>
             <Route path="/index"  component={Index}/>
             <Route path="/login" component={Login}/>
             <Route path="/chooseWord" component={ChooseWord}/>
