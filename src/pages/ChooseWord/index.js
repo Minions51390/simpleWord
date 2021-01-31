@@ -28,10 +28,12 @@ export default class Choose extends React.Component {
     super(props);
     this.state = {
       wordList: [],
-      currentWord: {
-        wordIndex: 0,
-      },
-      count: 0,
+      isLatest: false, // 一旦为true意味着已经选完全部了。
+      totalCount: 0,
+      // startIndex: 0, // 本次返回的首个单词的索引
+      // endIndex: 299, // 本次返回的末尾单词的索引
+      // dictionaryId: 0,
+      // count: 0,
       currentWordIndex: 0,
       whichKeyDown: null,
       whichRadioChecked: null,
@@ -42,38 +44,62 @@ export default class Choose extends React.Component {
     this.recordWordList = [];
     this.wordLibName = null
     this.wordLibId = null
+    this.choiceIndex = null
+    this.initChoiceIndex = null
   }
 
   componentWillMount() {
-  // setTimeout(() => {
-  //   message.success({ content: 'Loaded!', key, duration: 2 });
-  // }, 1000);
+    var url = window.location.href.split('#')[0];
+    if (url != document.referrer) {
+      window.location.href = `${baseUrl}/#/Transfer`;
+      window.location.reload()
+    }
     this.wordLibName = getQueryString('lib_name')
     this.wordLibId = parseInt(getQueryString('lib_id'))
+    this.initChoiceIndex = parseInt(getQueryString('choiceIndex'))
+    this.choiceIndex = parseInt(getQueryString('choiceIndex'))
+    this.setState({
+      currentWordIndex: this.choiceIndex
+    })
     if(!this.wordLibName || !this.wordLibId) {
       window.location.href = `${baseUrl}/#/Transfer`;
       window.location.reload()
       message.info("获取单词列表失败")
     } else {
-      this.loadWordLib(this.wordLibName, this.wordLibId)
+      this.loadWordLib(this.wordLibName, this.wordLibId, this.choiceIndex)
     }
   }
 
-  loadWordLib(wordLibName, wordLibId) {
+  loadWordLib(wordLibName, wordLibId, choiceIndex) {
+    if(this.state.currentWordIndex != 0) {
+      this.postStrangeWordList(this.state.currentWordIndex - 1)
+    }
+    
     const key = 'updatable'
     message.loading({ content: 'Loading...', key});
-    HTTP.get(`/api/dictionary/words/${wordLibId}`).then(res => {
+    HTTP.get('/api/dictionary/words', {
+      params: {
+        startIndex: choiceIndex,
+        dicId: wordLibId,
+      }
+    }).then(res => {
       
       console.log("请求成功:", res.data);
       var wordList = res.data.data.words
       var count = res.data.data.count
+      var isLatest = res.data.data.isLatest
+      var totalCount = res.data.data.totalCount
+      var endIndex = res.data.data.endIndex
+      this.choiceIndex = endIndex + 1
       // console.log("wordList:", wordList, res.data.data.words.length);
-      wordList.length = 20
-      this.setState({
-        wordList: wordList || [],
-        count: count
-      }, 
-      message.success({ content: 'Loaded!', key, duration: 2 })
+      // wordList.length = 20
+      this.setState(
+        {
+          isLatest: isLatest, 
+          totalCount: totalCount,
+          wordList: this.state.wordList.concat(wordList),
+        }, 
+        message.success({ content: 'Loaded!', key, duration: 2 })
       );
     }).catch(err => {
       console.log("请求失败:", err);
@@ -81,17 +107,23 @@ export default class Choose extends React.Component {
     });
   }
 
-  postStrangeWordList() {
+  postStrangeWordList(latestViewWordIndex, needback) {
     let values = {};
     // values.wordLibName = this.wordLibName;
     values.dictionaryId = this.wordLibId;
     values.strangeWordList = this.recordWordList;
+    values.latestViewWordIndex = latestViewWordIndex;
     console.log('Success:', JSON.stringify(values));
     HTTP.post("/api/plan",values).then(res => {
       console.log("请求成功:", res);
+      if(needback == true) {
+        window.location.href = `${baseUrl}/#/Transfer`;
+        window.location.reload()
+      }
     }).catch(err => {
       console.log("请求失败:", err);
     });
+    this.recordWordList = []
   }
 
   onFinish(values) {
@@ -150,7 +182,7 @@ export default class Choose extends React.Component {
           return
         }
         if (isCurrentWordStrange) {
-          this.recordResult(wordList[currentWordIndex].id)
+          this.recordResult(wordList[currentWordIndex - this.initChoiceIndex].id)
         }
         this.goNext()
       }
@@ -158,8 +190,7 @@ export default class Choose extends React.Component {
   }
 
   backToTransfer() {
-    window.location.href = `${baseUrl}/#/Transfer`;
-    window.location.reload()
+    this.postStrangeWordList(this.state.currentWordIndex - 1, true)
   }
 
   onClick(item) {
@@ -191,7 +222,7 @@ export default class Choose extends React.Component {
           return
         }
         if (isCurrentWordStrange) {
-          this.recordResult(parseInt(wordList[currentWordIndex].id))
+          this.recordResult(parseInt(wordList[currentWordIndex - this.initChoiceIndex].id))
         }
         this.goNext()
       }
@@ -206,19 +237,24 @@ export default class Choose extends React.Component {
   }
 
   goNext() {
-    if(this.state.currentWordIndex + 1 < this.state.wordList.length) {
+    const totalCount = this.state.totalCount
+    const isLatest = this.state.isLatest
+    if(this.state.currentWordIndex + 1 < totalCount) {
       this.setState({
         currentWordIndex: this.state.currentWordIndex + 1,
         isCurrentWordStrange: null,
         whichRadioChecked: null,
       });
+      if(this.state.currentWordIndex + 1 > this.state.wordList.length - 10 && !isLatest) {
+        this.loadWordLib(this.wordLibName, this.wordLibId, this.choiceIndex)
+      }
       this.forceUpdate()
     } else {
       this.setState({
         isCurrentWordStrange: null,
         isFinish: true
       });
-      message.success('本阶段选词结束啦，要坚持背鸭~');
+      // message.success('本阶段选词结束啦，要坚持背鸭~');
     }
   }
 
@@ -228,7 +264,7 @@ export default class Choose extends React.Component {
   }
 
   render() {
-    const {currentWordIndex, whichKeyDown, whichKeyUp, wordList, isFinish, count} = this.state;
+    const {currentWordIndex, whichKeyDown, whichKeyUp, wordList, isFinish, totalCount} = this.state;
     return (
       <div className="choose_wrapper">
         <img className="background-img" src={whiteBookBg}></img>
@@ -247,10 +283,10 @@ export default class Choose extends React.Component {
           <div className="choose_left">选择单词</div>
           <div className="choose_right">{this.wordLibName}</div>
         </div>
-        {wordList.length != 0 && wordList[currentWordIndex] != null &&
+        {wordList.length != 0 && wordList[currentWordIndex - this.initChoiceIndex] != null &&
           <div className="choose_content">
-            <span className="word_phonetic_symbol">{isFinish ? '/səkˈses/' : `/${wordList[currentWordIndex].phoneticSymbols}/`}</span><br/>
-            <span className="word_text">{isFinish ? 'success' : wordList[currentWordIndex].text}</span><br/>
+            <span className="word_phonetic_symbol">{isFinish ? '/səkˈses/' : `/${wordList[currentWordIndex - this.initChoiceIndex].phoneticSymbols}/`}</span><br/>
+            <span className="word_text">{isFinish ? 'success' : wordList[currentWordIndex - this.initChoiceIndex].text}</span><br/>
             <div className="word_meaning_wrapper">
               <span className="word_meaning">{isFinish ? 'n. 成功; 胜利; 发财; 成名; 成功的人(或事物)' : wordList[currentWordIndex].meaning}</span>
             </div>
@@ -302,7 +338,7 @@ export default class Choose extends React.Component {
         }
         <div className="progress_content">
           <div className="progress_before"/>
-          <span className="progress_text">{`${currentWordIndex + 1} / ${count}`}</span>
+          <span className="progress_text">{`${currentWordIndex + 1} / ${totalCount}`}</span>
         </div>
         <div className="back_content" onClick={this.backToTransfer.bind(this)}>
           <img className="back_icon" src={backIcon}></img>

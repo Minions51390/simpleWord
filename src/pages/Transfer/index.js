@@ -14,65 +14,54 @@ import cirBg from './assets/cirBg.png';
 import GET4 from './assets/CET-4.png';
 import userIcon from './assets/userIcon.png';
 const wordCountArr = [6,9,12,15,18,21,24,27,30];
-const storeArr = [
-  {
-    count: 5488,
-    describe: "适合考研学生使用",
-    dictionaryId: 2,
-    dictionaryName: "考研英语5500词",
-    picture: "",
-  },
-  {
-    count: 5488,
-    describe: "适合考研学生使用",
-    dictionaryId: 2,
-    dictionaryName: "GET4",
-    picture: "",
-  }
-]
+const emailReg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$");
+const qqReg = /^[1-9][0-9]{4,14}$/;
+const phoneReg = /^[1][1,2,3,4,5,7,8,9][0-9]{9}$/;
+// const storeArr = []
 export default class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+        userInfo: {
+          realName: '',
+          city: '',
+          phone: '',
+          province: '',
+          email: '',
+          area: '',
+          qqNumber: '',
+          school: '',
+          newWord: '',
+          grade: '',
+        },
+        currentDic: {
+          count: '',
+          dictionaryId: '',
+          dictionaryName: '',
+          describe: '',
+          picture: '',
+          isRecite: false,
+          haveRecite: false,
+        },
+        reciteWordInfo: {
+          recitedWordsNumber: 0,
+          todayWordsPlan: 6
+        },
+        wordsStatistics: {
+          allChoice: '',
+          currentAlreadyChoice: '',
+          currentRecite: '',
+          nextChoiceDay: '',
+          surplusChoice: '',
+          choiceIndex: 0,
+        },
         showOver: false,
-        todaycount: '20',
-        alled: '2400',
-        nowDay: '2',
-        allDay: '40',
-        staticName: '',
-        real_name: '',
-        city: '',
-        phone: '',
-        province: '',
-        email: '',
-        area: '',
-        qq_number: '',
-        school: '',
-        newWord: '',
-        grade: '',
-        dictionaryName: '',
-        dictionaryId: '',
-        count: '',
-        describe: '',
-        picture: '',
-        allChoice: '',
-        currentAlreadyChoice: '',
-        currentRecite: '',
-        nextChoiceDay: '',
-        surplusChoice: '',
-        currentDay: '',
-        currentStageAllDays: '',
-        currentStage: '',
-        overStage: '',
-        recitedWordsNumber: '',
-        todayWordsPlan: '',
+        storeArr: [],
         isSelectDisable: false,
-        emailReg: new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$"),
-        qqReg: /^[1-9][0-9]{4,14}$/,
-        phoneReg: /^[1][1,2,3,4,5,7,8,9][0-9]{9}$/
+        
     };
   }
-  // 蒙层
+  // 蒙层s
   handleModeChange(showOver, e) {
     e.stopPropagation();
     this.setState({ showOver });
@@ -83,27 +72,34 @@ export default class Login extends React.Component {
   }
   // 开始背词
   handleStart() {
-    const {currentStageAllDays, dictionaryName} = this.state;
-    if (currentStageAllDays) {
+    const {nextChoiceDay} = this.state.wordsStatistics;
+    const {dictionaryName} = this.state.currentDic;
+    
+    if (nextChoiceDay > 0 ) {
       window.location.href = `${baseUrl}/#/reciteWords?lib_name=${dictionaryName}`;
     }
     return;
   }
   // 开始选词
-  handleChoose() {
-    const {dictionaryName, dictionaryId, newWord} = this.state;
+  handleChoose(choiceIndex) {
+    const {newWord} = this.state.userInfo;
+    const {dictionaryId, dictionaryName} = this.state.currentDic;
     if(!newWord) {
       this.setState({ 
         showOver: true
       });
       message.info("开始之前需要每日背词数哦~")
     } else {
-      window.location.href = `${baseUrl}/#/chooseWord?lib_name=${dictionaryName}&lib_id=${dictionaryId}`;
+      window.location.href = `${baseUrl}/#/chooseWord?lib_name=${dictionaryName}&lib_id=${dictionaryId}&choiceIndex=${choiceIndex}`;
     }
   }
   // 获取首页信息
-  getHomeMes() {
-    HTTP.get("/api/home").then(res => {
+  getHomeMes(dicId) {
+    HTTP.get("/api/home", {
+      params: {
+        dicId: dicId
+      }
+    }).then(res => {
       if (!res && !res.data && res.data.state == null) {
         return
       }
@@ -120,32 +116,20 @@ export default class Login extends React.Component {
       if (responseData && responseData.currentDic) {
         const currentDic = responseData.currentDic;
         this.setState({
-          count: currentDic.count,
-          dictionaryId: currentDic.dictionaryId,
-          dictionaryName: currentDic.dictionaryName,
-          describe: currentDic.describe,
-          picture: currentDic.picture
+          currentDic: currentDic
         });
       }
       if (responseData && responseData.wordsStatistics) {
         const wordsStatistics = responseData.wordsStatistics;
         this.setState({
-          allChoice: wordsStatistics.allChoice,
-          currentAlreadyChoice: wordsStatistics.currentAlreadyChoice,
-          currentRecite: wordsStatistics.currentRecite,
-          nextChoiceDay: wordsStatistics.nextChoiceDay,
-          surplusChoice: wordsStatistics.surplusChoice
+          wordsStatistics: wordsStatistics,
         });
       }
       if (responseData && responseData.reciteWordInfo) {
         const reciteWordInfo = responseData.reciteWordInfo;
+
         this.setState({
-          currentDay: reciteWordInfo.currentDay,
-          currentStageAllDays: reciteWordInfo.currentStageAllDays,
-          currentStage: reciteWordInfo.currentStage,
-          overStage: reciteWordInfo.overStage,
-          recitedWordsNumber: reciteWordInfo.recitedWordsNumber,
-          todayWordsPlan: reciteWordInfo.todayWordsPlan
+          reciteWordInfo: reciteWordInfo,
         });
       }
       console.log(res);
@@ -169,14 +153,12 @@ export default class Login extends React.Component {
       }
       let responseData = res.data.data
       if (responseData) {
-        const datas = responseData[0];
+        const datas = responseData;
         this.setState({
-          count: datas.count,
-          dictionaryId: datas.dictionaryId,
-          dictionaryName: datas.dictionaryName
+          storeArr: datas,
         })
       }
-      console.log(res);
+      console.log("/api/dictionary/info", res);
     }).catch(err => {
       message.error('服务器开小差了')
       console.log(err);
@@ -197,33 +179,35 @@ export default class Login extends React.Component {
         if (responseData) {
             if (responseData.reciteVersion > 0) {
               this.setState({
-                area: responseData.area || '',
-                city: responseData.city || '',
-                email: responseData.email || '',
-                grade: responseData.grade || '',
-                phone: responseData.phone || '',
-                province: responseData.province || '',
-                qq_number: responseData.qqNumber || '',
-                real_name: responseData.realName || '',
-                school: responseData.school || '',
-                staticName: responseData.realName || '',
-                newWord: responseData.reciteVersion || 0,
+                userInfo: {
+                  area: responseData.area || '',
+                  city: responseData.city || '',
+                  email: responseData.email || '',
+                  realName: responseData.realName || '',
+                  school: responseData.school || '',
+                  phone: responseData.phone || '',
+                  province: responseData.province || '',
+                  qqNumber: responseData.qqNumber || '',
+                  newWord: responseData.reciteVersion || 0,
+                  grade: responseData.grade || '',
+                },
                 isSelectDisable: responseData.reciteVersion === 0 ? false : true,
                 showOver: false
               });
             } else {
               this.setState({
-                area: responseData.area || '',
-                city: responseData.city || '',
-                email: responseData.email || '',
-                grade: responseData.grade || '',
-                phone: responseData.phone || '',
-                province: responseData.province || '',
-                qq_number: responseData.qqNumber || '',
-                real_name: responseData.realName || '',
-                school: responseData.school || '',
-                staticName: responseData.realName || '',
-                newWord: responseData.reciteVersion || 0,
+                userInfo: {
+                  area: responseData.area || '',
+                  city: responseData.city || '',
+                  email: responseData.email || '',
+                  realName: responseData.realName || '',
+                  school: responseData.school || '',
+                  phone: responseData.phone || '',
+                  province: responseData.province || '',
+                  qqNumber: responseData.qqNumber || '',
+                  newWord: responseData.reciteVersion || 0,
+                  grade: responseData.grade || '',
+                },
                 isSelectDisable: responseData.reciteVersion === 0 ? false : true,
                 showOver: true
               });
@@ -250,9 +234,9 @@ export default class Login extends React.Component {
 
   // 提交信息
   saveMes() {
-    const {real_name, city, phone, province, email, area, qq_number, school, newWord, grade, emailReg, phoneReg, qqReg} = this.state;
+    const {realName, city, phone, province, email, area, qqNumber, school, newWord, grade} = this.state.userInfo;
     // 真名检验
-    if (!real_name || this.rowLength(real_name)) {
+    if (!realName || this.rowLength(realName)) {
       message.error('真实姓名不能为空！');
       return;
     }
@@ -287,7 +271,7 @@ export default class Login extends React.Component {
       return;
     }
     // qq检验
-    if (!qqReg.test(qq_number) || this.rowLength(qq_number)) {
+    if (!qqReg.test(qqNumber) || this.rowLength(qqNumber)) {
       message.error('QQ号格式错误！');
       return;
     }
@@ -302,14 +286,14 @@ export default class Login extends React.Component {
       return;
     }
     HTTP.post("/api/profile", {
-      realName: real_name,
+      realName: realName,
       province: province,
       city: city,
       area: area,
       school: school,
       grade: grade,
       phone: phone,
-      qqNumber: qq_number,
+      qqNumber: qqNumber,
       email: email,
       latestAchievement: '100',
       reciteVersion: parseInt(newWord),
@@ -327,7 +311,7 @@ export default class Login extends React.Component {
         message.success('设置成功!');
         this.setState({ 
           showOver: false,
-          staticName: real_name});
+          realName: realName});
     }).catch(err => {
         message.error('设置失败!');
     });
@@ -335,65 +319,96 @@ export default class Login extends React.Component {
   // 选词库
   onChangeStore(value) {
     console.log(value);
+    this.getHomeMes(value);
   }
-  // real_name
+  // realName
   onInputRealName(event) {
     this.setState({
-      real_name: event.target.value
+      userInfo: {
+        ...this.state.userInfo,
+        realName: event.target.value
+      }
     });
   }
   // city
   onInputCity(event) {
     this.setState({
-      city: event.target.value
+      userInfo: {
+        ...this.state.userInfo,
+        city: event.target.value
+      }
     });
   }
   // phone
   onInputPhone(event) {
     this.setState({
-      phone: event.target.value
+      userInfo: {
+        ...this.state.userInfo,
+        phone: event.target.value
+      }
     });
   }
   // province
   onInputProvince(event) {
     this.setState({
-      province: event.target.value
+      userInfo: {
+        ...this.state.userInfo,
+        province: event.target.value
+      }
     });
   }
   // email
   onInputEmail(event) {
     this.setState({
-      email: event.target.value
+      userInfo: {
+        ...this.state.userInfo,
+        email: event.target.value
+      }
     });
   }
   // area
   onInputArea(event) {
     this.setState({
-      area: event.target.value
+      userInfo: {
+        ...this.state.userInfo,
+        area: event.target.value
+      }
     });
   }
-  // qq_number
+  // qqNumber
   onInputQQNumber(event) {
     this.setState({
-      qq_number: event.target.value
+      userInfo: {
+        ...this.state.userInfo,
+        qqNumber: event.target.value
+      }
     });
   }
   // school
   onInputSchool(event) {
     this.setState({
-      school: event.target.value
+      userInfo: {
+        ...this.state.userInfo,
+        school: event.target.value
+      }
     });
   }
   // newWord
   onInputNewWord(value) {
     this.setState({
-      newWord: value
+      userInfo: {
+        ...this.state.userInfo,
+        newWord: value
+      }
     });
   }
   // grade
   onInputGrade(event) {
     this.setState({
-      grade: event.target.value
+      userInfo: {
+        ...this.state.userInfo,
+        grade: event.target.value
+      }
     });
   }
 
@@ -402,20 +417,49 @@ export default class Login extends React.Component {
   }
 
   render() {
-    const {staticName, showOver, todayCount, alled, nowDay, allDay, real_name, city, phone, province, email, area, qq_number, school, newWord, grade, dictionaryName, count, dictionaryId, describe, picture,
+    const {
+      showOver,
+      storeArr,
+      isSelectDisable
+    } = this.state;
+
+    const {
+      count,
+      dictionaryId,
+      dictionaryName,
+      describe,
+      picture,
+      isRecite,
+      haveRecite,
+    } = this.state.currentDic;
+
+    const {
+      recitedWordsNumber,
+      todayWordsPlan
+    } = this.state.reciteWordInfo;
+
+    const {
       allChoice,
       currentAlreadyChoice,
       currentRecite,
       nextChoiceDay,
       surplusChoice,
-      currentDay,
-      currentStageAllDays,
-      currentStage,
-      overStage,
-      recitedWordsNumber,
-      todayWordsPlan,
-      isSelectDisable
-    } = this.state;
+      choiceIndex,
+    } = this.state.wordsStatistics;
+
+    const {
+      realName,
+      city,
+      phone,
+      province,
+      email,
+      area,
+      qqNumber,
+      school,
+      newWord,
+      grade
+    } = this.state.userInfo;
+
     return (
       <div className="main_container">
           {/* 动画Dom */}
@@ -453,7 +497,7 @@ export default class Login extends React.Component {
               <div className="header_right">
                 <div onClick={this.handleModeChange.bind(this, true)}>
                   <img className="login-icon" src={userIcon}></img>
-                  <div className="login">Hi，{staticName}</div>
+                  <div className="login">Hi，{realName}</div>
                 </div>
               </div>
           </div>
@@ -467,22 +511,9 @@ export default class Login extends React.Component {
                   <div className="left-top-shadow"></div>
                   <div className="top-line">
                     <div className="left-s">学习计划</div>
-                    <div className="right-s">
-                      {
-                        currentStageAllDays !== '' && currentDay !== '' && currentStageAllDays - currentDay < 0 ? 
-                        '当前阶段以结束'
-                        :
-                        `当前阶段进度：${currentDay ? currentDay : '0'}/${currentStageAllDays ? currentStageAllDays : '0'}天`
-                      }
-                      &nbsp;&nbsp;
-                      总进度：{currentStage ? currentStage : '0'}/{overStage ? overStage : '0'}阶段
-                    </div>
+                    
                   </div>
                   <div className="sec-line">
-                    <div className="sec-item">
-                      <div className="day-count">{currentStageAllDays && currentDay ? currentStageAllDays - currentDay + 1 : '0'}</div>
-                      <div className="day-text">当前阶段剩余天数</div>
-                    </div>
                     <div className="sec-item">
                       <div className="day-count">{todayWordsPlan ? todayWordsPlan : '0'}</div>
                       <div className="day-text">今日计划背词数</div>
@@ -493,7 +524,7 @@ export default class Login extends React.Component {
                     </div>
                   </div>
                   <div className="thr-line">
-                    <div className={currentStageAllDays && currentStageAllDays - currentDay + 1 > 0  ? 'text-btn' : 'text-btn-none'} onClick={this.handleStart.bind(this)}>
+                    <div className={nextChoiceDay > 0  ? 'text-btn' : 'text-btn-none'} onClick={this.handleStart.bind(this)}>
                       开始背词
                     </div>
                   </div>
@@ -524,15 +555,17 @@ export default class Login extends React.Component {
                         <div className= "word-icon">
                           <span className="ant-input-prefix"><div className="my-icon">选择词库</div></span>
                         </div>
+                        {storeArr.length != 0 && storeArr[0] != null &&
                         <Select 
-                          defaultValue={storeArr[0].dictionaryName}
+                          defaultValue={dictionaryId}
                           disabled={false}
                           listHeight={100}
                           size="large"
                           style={{ width: 220 }}
                           onChange={this.onChangeStore.bind(this)}>
-                          {storeArr.map((val, i) => <Select.Option value={val.dictionaryName} key={i + 'select'}>{`${val.dictionaryName}`}</Select.Option>)}
+                          {storeArr.map((val, i) => <Select.Option value={val.dictionaryId} key={i + 'select'}>{`${val.dictionaryName}`}</Select.Option>)}
                         </Select>
+                        }
                       </span>
                     </div>
                   </div>
@@ -567,7 +600,7 @@ export default class Login extends React.Component {
                       </div>
                       <div className="detail-item">
                         <div className="de-it-name">
-                          当前在背：
+                          剩余待背：
                         </div>
                         <div className="de-it-num de-it-color2">
                           {currentRecite ? currentRecite : '0'}
@@ -594,34 +627,27 @@ export default class Login extends React.Component {
                     </div>
                   </div>
                   {
-                    nextChoiceDay
+                    surplusChoice == 0
                     ?
                     (
                       <div className="choose-tip">
-                        {currentStage !== 0 && overStage !== 0 && currentStage === overStage
-                          ?
-                            距离下次选词还剩
-                          :
-                            距离全部结束还剩
+                        {currentRecite !== 0
+                            ?
+                             "选词已结束"
+                            :
+                             "该词库以背完"
                         }
-                        <span className="big-text">{nextChoiceDay}</span>天
+                        {/* <span className="big-text">{nextChoiceDay}</span>天 */}
                       </div>
                     )
                     :
                     (
                       <div>
-                        {currentStage !== 0 && overStage !== 0 && currentStage === overStage
-                          ?
-                          <div className="choose-tip">
-                            已背完本词库单词
-                          </div>
-                          :
                           <div className="thr-line">
-                            <div className="text-btn" onClick={this.handleChoose.bind(this)}>
+                            <div className={isRecite == haveRecite ? 'text-btn' : 'text-btn-none'} onClick={this.handleChoose.bind(this, choiceIndex)}>
                               开始选词
                             </div>
                           </div>
-                        }
                       </div>
                     )
                   }
@@ -647,7 +673,7 @@ export default class Login extends React.Component {
                         placeholder="请输入您的姓名" 
                         prefix={<div className="my-icon">姓名</div>} 
                         onChange={this.onInputRealName.bind(this)} 
-                        value={real_name}/>
+                        value={realName}/>
                       <Input 
                         className="pass-mar phone-icon"
                         size="large" 
@@ -668,7 +694,7 @@ export default class Login extends React.Component {
                         placeholder="请输入您的QQ号" 
                         prefix={<div className="my-icon">QQ号</div>} 
                         onChange={this.onInputQQNumber.bind(this)} 
-                        value={qq_number}/>
+                        value={qqNumber}/>
                       {/* <Input 
                         className="pass-mar word-icon"
                         size="large" 
