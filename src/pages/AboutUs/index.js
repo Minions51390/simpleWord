@@ -170,7 +170,7 @@ export default class About extends React.Component {
       }
       message.success('登录成功!');
       console.log(res);
-      window.location.href = `${baseUrl}/#/Transfer`;
+      window.location.href = res.data.data;
     }).catch(err => {
       message.error('登录失败!');
     });
