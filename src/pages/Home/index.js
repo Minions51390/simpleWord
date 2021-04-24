@@ -32,6 +32,8 @@ export default class Login extends React.Component {
       email: '',
       captcha: '',
       invitCode: '',
+      viceInviteCode: '',
+      isShowViceInviteCode: false,
       emailReg: new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$")
     };
   }
@@ -89,7 +91,7 @@ export default class Login extends React.Component {
   }
   // 注册接口
   registerFinish() {
-    const {registerAd, registerPa, email, captcha, invitCode, emailReg} = this.state;
+    const {registerAd, registerPa, email, captcha, invitCode, emailReg, isShowViceInviteCode, viceInviteCode} = this.state;
     // 用户名检验
     if (!registerAd || registerAd.indexOf('@') !== -1 || this.rowLength(registerAd)) {
       message.error('用户名不可以带@且不能为空！');
@@ -115,6 +117,12 @@ export default class Login extends React.Component {
       message.error('验证码不能为空！');
       return;
     }
+    //邀请码为机构特殊码时，必填班级码
+    if (isShowViceInviteCode && !viceInviteCode) {
+      message.error('班级码不能为空！');
+      return;
+    }
+
     HTTP.post("/auth/register", {
       name: registerAd,
       password: registerPa,
@@ -237,8 +245,22 @@ export default class Login extends React.Component {
   }
   // invitCode
   onInputInvitCode(event) {
+    if(event.target.value.indexOf("org") == 0) {
+      this.setState({
+        invitCode: event.target.value,
+        isShowViceInviteCode: true
+      });
+    } else {
+      this.setState({
+        invitCode: event.target.value,
+        isShowViceInviteCode: false
+      });
+    }
+  }
+
+  onInputViceInviteCode(event) {
     this.setState({
-      invitCode: event.target.value
+      viceInviteCode: event.target.value
     });
   }
   // 记住密码check
@@ -255,7 +277,7 @@ export default class Login extends React.Component {
   }
 
   render() {
-    const { mode, loginAd, loginPa, registerAd, registerPa, email, captcha, invitCode } = this.state;
+    const { mode, loginAd, loginPa, registerAd, registerPa, email, captcha, invitCode, isShowViceInviteCode, viceInviteCode} = this.state;
     return (
       <div className="main_container">
           <div className="fix_header">
@@ -384,6 +406,15 @@ export default class Login extends React.Component {
                           prefix={<div className="my-icon"><img className="input-icon" src={inviti} /></div>} 
                           onChange={this.onInputInvitCode.bind(this)} 
                           value={invitCode}/>
+                        {isShowViceInviteCode && 
+                          <Input 
+                          className="pass-mar" 
+                          size="large" 
+                          placeholder="请输入班级码" 
+                          prefix={<div className="my-icon"><img className="input-icon" src={inviti} /></div>} 
+                          onChange={this.onInputViceInviteCode.bind(this)} 
+                          value={viceInviteCode}/>
+                        }  
                         <div className="btn-box">
                           <div 
                             className="register-com" 

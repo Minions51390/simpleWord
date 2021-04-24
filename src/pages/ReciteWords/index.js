@@ -43,6 +43,10 @@ export default class ReciteWords extends React.Component {
     // this.wordLibId = null
     this.dateIndex = null
     this.audioControler = null
+    this.startTime = null
+    this.finishTime = null
+    this.newWordsCount = null
+    this.uniqwordList = []
   }
 
   componentWillMount() {
@@ -51,8 +55,10 @@ export default class ReciteWords extends React.Component {
     this.loadWordLib()
   }
 
+  
   componentDidMount() {
-    // this.audioControler = document.getElementById('audioControler');
+    document.onkeyup = this.onKeyUp.bind(this);
+    document.onkeydown = this.onKeyDown.bind(this);
   }
 
   loadWordLib() {
@@ -66,15 +72,25 @@ export default class ReciteWords extends React.Component {
         count: count
 	  });
 	  this.dateIndex = res.data.data.reciteIndex
+	  this.newWordsCount = res.data.data.newWordsCount
     }).catch(err => {
       console.log("请求失败:", err);
     });
+    let dateObj = new Date();
+    this.startTime = dateObj.getTime()
   }
 
   postStrangeWordList() {
+    let dateObj = new Date();
+    this.finishTime = dateObj.getTime()
+    let studyTime = Math.round((this.finishTime - this.startTime) / 1000)
+    console.log('时间', this.finishTime, this.startTime, studyTime)
     // const {isFinish} = this.state;
     let values = {};
     values.reciteIndex = this.dateIndex + 1;
+    values.studyTime = studyTime;
+    values.wordsList = this.uniqwordList;
+    values.newWordsCount = this.newWordsCount;
     // values.isFinish = isFinish;
     console.log('Success:', JSON.stringify(values) );
     HTTP.patch("/api/plan",values).then(res => {
@@ -118,7 +134,7 @@ export default class ReciteWords extends React.Component {
           whichKeyDown: null,
           whichKeyUp: 'space',
         });
-        this.backToTransfer()
+        // this.backToTransfer()
         message.success('新数据以同步');
       } else {
         this.onSpaceKeyUp()
@@ -138,7 +154,7 @@ export default class ReciteWords extends React.Component {
           whichKeyDown: null,
           whichKeyUp: 'space',
         });
-        this.backToTransfer()
+        // this.backToTransfer()
         message.success('新数据以同步');
       } else {
         this.onSpaceKeyUp()
@@ -189,14 +205,13 @@ export default class ReciteWords extends React.Component {
   
 
   goSingleNextTime() {
-    
-    
     this.setState({
       singleWordTimes: this.state.singleWordTimes + 1,
     })
   }
 
   goNext() {
+    this.recordTodayWordsIdList()
     this.setState({
       singleWordTimes: 0,
     })
@@ -212,9 +227,11 @@ export default class ReciteWords extends React.Component {
     }
   }
 
-  componentDidMount() {
-    document.onkeyup = this.onKeyUp.bind(this);
-    document.onkeydown = this.onKeyDown.bind(this);
+  recordTodayWordsIdList() {
+    const {currentWordIndex, wordList} = this.state;
+    if(this.uniqwordList.indexOf(wordList[currentWordIndex].id) == -1) {
+      this.uniqwordList.push(wordList[currentWordIndex].id);
+    }
   }
 
   render() {

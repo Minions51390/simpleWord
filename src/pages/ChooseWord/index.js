@@ -302,14 +302,8 @@ export default class Choose extends React.Component {
                 name="radiogroup"
                 defaultValue={this.state.whichRadioChecked}
                 value={this.state.whichRadioChecked}> 
-              {/* <div className="button_content_space_between"> */}
-              {/* //  <Button className={whichKeyDown == 'left' ? "style_button" : null } icon={<ArrowLeftOutlined />} shape="round" onClick={this.onClick.bind(this, "left")}>会
-              //     <div className={whichKeyUp == 'left' ? "click-animating-node" : null }></div>
-                  
-              //   </Button> */}
                   <Radio 
                     value = {'left'}
-                    // checked={whichRadioChecked === 'left' ? true : false}
                     >
                     <span className="radio_text" >会</span>
                     <img className="left_icon" src={leftIcon}></img>
@@ -323,7 +317,6 @@ export default class Choose extends React.Component {
                 <div className={whichKeyUp == 'space' ? "click-animating-node" : null }></div></Button>   */}
                 <Radio
                   value = {'right'}
-                  // checked={whichRadioChecked === 'right' ? true : false}
                   >
                   <span className="radio_text" >不会</span>
                   <img className="right_icon" src={rightIcon}></img>

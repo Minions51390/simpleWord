@@ -2,7 +2,8 @@ import React from 'react';
 import './index.less'
 import { Link } from "react-router-dom";
 import HTTP from '../../utils/api.js';
-import { Form, Input, Select, Checkbox, Col, Row, Radio, message } from 'antd';
+import {Button, IconFont, Carousel, Form, Input, Select, Checkbox, Col, Row, Radio, message } from 'antd';
+import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import baseUrl from '../../utils/config.js';
 import promise from './assets/promise.png';
 import rightBg from './assets/rightBg.png';
@@ -18,6 +19,13 @@ const emailReg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[
 const qqReg = /^[1-9][0-9]{4,14}$/;
 const phoneReg = /^[1][1,2,3,4,5,7,8,9][0-9]{9}$/;
 // const storeArr = []
+const contentStyle = {
+  height: '160px',
+  color: '#fff',
+  lineHeight: '160px',
+  textAlign: 'center',
+  background: '#364d79',
+};
 export default class Login extends React.Component {
   constructor(props) {
     super(props);
@@ -55,9 +63,11 @@ export default class Login extends React.Component {
           surplusChoice: '',
           choiceIndex: 0,
         },
+        testInfo: [],
         showOver: false,
         storeArr: [],
         isSelectDisable: false,
+        checkedTab: 'home',
         
     };
   }
@@ -70,12 +80,21 @@ export default class Login extends React.Component {
     window.location.href = `${baseUrl}/#/home`;
     // message.info('请登录后使用');
   }
+  onTabClick(tabName) {
+    this.setState({
+      checkedTab: tabName
+    })
+  }
   // 开始背词
   handleStart() {
     const {nextChoiceDay} = this.state.wordsStatistics;
     const {dictionaryName} = this.state.currentDic;
-    
-    if (nextChoiceDay > 0 ) {
+    const {testInfo} = this.state;
+    if (testInfo.length !== 0) {
+      message.info('请先完成测验~');
+      return;
+    }
+    if (nextChoiceDay > 0) {
       window.location.href = `${baseUrl}/#/reciteWords?lib_name=${dictionaryName}`;
     }
     return;
@@ -92,6 +111,21 @@ export default class Login extends React.Component {
     } else {
       window.location.href = `${baseUrl}/#/chooseWord?lib_name=${dictionaryName}&lib_id=${dictionaryId}&choiceIndex=${choiceIndex}`;
     }
+  }
+
+  // 开始测试
+  handleTest(testType) {
+    // const {newWord} = this.state.userInfo;
+    // const {dictionaryId, dictionaryName} = this.state.currentDic;
+    window.location.href = `${baseUrl}/#/testWord?testType=${testType}`;
+    // if(!newWord) {
+    //   this.setState({ 
+    //     showOver: true
+    //   });
+    //   message.info("开始之前需要每日背词数哦~")
+    // } else {
+      
+    // }
   }
   // 获取首页信息
   getHomeMes(dicId) {
@@ -130,6 +164,12 @@ export default class Login extends React.Component {
 
         this.setState({
           reciteWordInfo: reciteWordInfo,
+        });
+      }
+      if (responseData && responseData.wordsStatistics) {
+        const testInfo = responseData.testInfo;
+        this.setState({
+          testInfo: testInfo,
         });
       }
       console.log(res);
@@ -232,6 +272,9 @@ export default class Login extends React.Component {
     val.length >= 254 ? true : false;
   }
 
+  onChange(a, b, c) {
+    console.log(a, b, c);
+  }
   // 提交信息
   saveMes() {
     const {realName, city, phone, province, email, area, qqNumber, school, newWord, grade} = this.state.userInfo;
@@ -416,13 +459,45 @@ export default class Login extends React.Component {
     this.getHomeMes();
   }
 
+  _renderItem(testInfo) {
+    var testListBox = []
+    testInfo.forEach((value, index) => {
+      let testTypeText = '' 
+      if(value.testType == 'dailyTest') {
+        testTypeText = '当日小测'
+      } else if(value.testType == 'specialTest') {
+        testTypeText = '阶段考试'
+      }
+
+      testListBox.push(<div key={'item' + index}>
+      <div className="test-title">
+        {testTypeText}
+      </div>
+      <div className="test-text">
+        考核完成后方可继续背词
+      </div>
+      <div className="thr-line">
+        <div className="test-btn" onClick={this.handleTest.bind(this, value.testType)}>
+          开始测验
+        </div>
+      </div>
+    </div>)
+    })
+    return testListBox
+  }
+
   render() {
     const {
       showOver,
       storeArr,
-      isSelectDisable
+      isSelectDisable,
+      testInfo,
+      checkedTab,
     } = this.state;
-
+    // var testInfo = [
+    //   {testType: "dailyTest"},
+    //   {testType: "specialTest"}
+    // ]
     const {
       count,
       dictionaryId,
@@ -491,7 +566,10 @@ export default class Login extends React.Component {
           <div className="fix_header_main">
               <div className="header_left">
                     <img className="main-img" src={promise}></img>
-                    <div className="home-page check">首页</div>
+                    <div className={`home-page  ${checkedTab == 'home' ?'check' : null}`}
+                    onClick={this.onTabClick.bind(this, 'home')}>首页</div>
+                    <div className={`dashboard-page  ${checkedTab == 'dashboard' ?'check' : null}`}
+                    onClick={this.onTabClick.bind(this, 'dashboard')}>数据中心</div>
                     <Link className="about-us" to="/about">关于我们</Link>
               </div>
               <div className="header_right">
@@ -501,7 +579,8 @@ export default class Login extends React.Component {
                 </div>
               </div>
           </div>
-          <div className="main_dom">
+          {checkedTab == 'home' ?
+            <div className="main_dom">
             <div className="content-dom">
               <div className="content-left">
                 <div className="left-title">
@@ -524,22 +603,81 @@ export default class Login extends React.Component {
                     </div>
                   </div>
                   <div className="thr-line">
-                    <div className={nextChoiceDay > 0  ? 'text-btn' : 'text-btn-none'} onClick={this.handleStart.bind(this)}>
+                    <div className={nextChoiceDay > 0 && testInfo.length == 0 ? 'text-btn' : 'text-btn-none'} onClick={this.handleStart.bind(this)}>
                       开始背词
                     </div>
                   </div>
                 </div>
                 <div className="left-title left-sec">
-                  小测验
+                  考核测试
                 </div>
                 <div className="left-sec-area">
                   <div className="left-sec-shadow"></div>
-                  <div className="test-text">
-                    敬请期待
-                  </div>
-                  <div className="test-btn">
-                    开始检测
-                  </div>
+                  {/* 暂无检测 */}
+                  {testInfo.length == 0 ? 
+                    <div className="thr-line">
+                      <div className="test-btn-none">
+                        暂无检测
+                      </div>
+                    </div>
+                  :
+                  <div>
+                  {testInfo.length >= 1 ? 
+                    <div>
+                      {/* 多个检测 */}
+
+                      <Button
+                        className="leftButton"
+                        style={{ left: 26 }}
+                        onClick={() => {
+                        // 通过获取走马灯dom，调用Carousel的prev()方法
+                          this.card.prev();
+                        }}
+                      >
+                        <LeftOutlined/>
+                      </Button>
+                      <Button
+                        className="rightButton"
+                        style={{ right: 26 }}
+                        onClick={() => {
+                        // 通过获取走马灯dom，调用Carousel的next()方法
+                          this.card.next();
+                        }}
+                      >
+                        <RightOutlined/>
+                      </Button>
+                    
+                    <Carousel 
+                      ref={e => {
+                        // 走马灯dom名card
+                          this.card = e;
+                        }}
+                      infinite={false} className="test-slider-box" dots={'slider-dot'}>
+                        {this._renderItem(testInfo)}
+                      </Carousel>
+                    </div>
+                    :
+                    <div>
+                      {/* 一个检测 */}
+                      <div className="test-title">
+                        当节小测
+                      </div>
+                      <div className="test-text">
+                        考核完成后方可继续背词
+                      </div>
+                      <div className="thr-line">
+                        <div className="test-btn" onClick={this.handleChoose.bind(this, choiceIndex)}>
+                          开始测验
+                        </div>
+                      </div>
+                    </div>
+                    }
+                    </div>
+                  }
+                  
+                  
+                  
+                  
                 </div>
               </div>
               <div className="content-right">
@@ -656,6 +794,20 @@ export default class Login extends React.Component {
             </div>
             <img className="bottom-img" src={btBg}></img>
           </div>
+          :
+          <div className="dashboard-dom">
+            <iframe 
+              className="dashboard-iframe" 
+              src="http://47.107.238.126/admin/#/stu"
+              // src="http://localhost:3006/admin/#/stu/"
+              frameborder="no"
+              border="0" 
+              marginwidth="0"
+              marginheight="0"
+              allowtransparency="yes">
+            </iframe>
+          </div>
+          }
           {
             showOver
             ?
@@ -773,4 +925,5 @@ export default class Login extends React.Component {
       </div>
     );
   }
+  
 }

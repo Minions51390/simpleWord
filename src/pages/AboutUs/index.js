@@ -263,7 +263,7 @@ export default class About extends React.Component {
           <div className="fix_header">
               <div className="header_left">
                     <img className="main-img" src={promise}></img>
-                    <Link className="home-page" to="/home">首页</Link>
+                    <Link className="home-page" to="/transfer">首页</Link>
                     <div className="about-us check">关于我们</div>
               </div>
               {
