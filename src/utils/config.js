@@ -1,3 +1,4 @@
+// prod  http://81.70.229.127
 const STATICURL = {
     dev: 'http://0.0.0.0:8080',
     prod: 'http://47.107.238.126',
