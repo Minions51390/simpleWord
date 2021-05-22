@@ -10,6 +10,9 @@ import HTTP from '../../utils/api.js';
 
 import promise from '../home/assets/promise.png';
 import whiteBookBg from '../../assets/whiteBookBg.png';
+import faultImg from './assets/fault.png';
+import rightImg from './assets/right.png';
+
 import backIcon from '../../assets/backIcon.png';
 import spaceIcon from '../../assets/spaceIcon.png';
 // import audioIcon from './assets/audioIcon.png';
@@ -19,19 +22,24 @@ export default class TestWords extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-	  questionList: [],
+	    questionList: [],
       currentQuestion: {},
       count: 0,
       currentWordIndex: 0,
       whichKeyDown: null,
       whichKeyUp: null,
-	  isFinish: false,
+      isFinish: false,
     };
     this.testType = null
     this.recordWordList = [];
   }
 
   componentWillMount() {
+    var url = window.location.href.split('#')[0];
+    if (url != document.referrer) {
+      window.location.href = `${baseUrl}/#/Transfer`;
+      window.location.reload()
+    }
     this.testType = getQueryString('testType')
     this.loadQuestionsList()
   }
@@ -102,7 +110,6 @@ export default class TestWords extends React.Component {
           whichKeyDown: 'space',
           whichKeyUp: 'space',
         });
-        // this.backToTransfer()
         message.success('新数据以同步');
 	  } else if(isShowAnswer){
 		  this.goNext()
@@ -139,7 +146,6 @@ export default class TestWords extends React.Component {
           whichKeyDown: 'space',
           whichKeyUp: 'space',
         });
-        this.backToTransfer()
         message.success('新数据以同步');
 	  } else if(isShowAnswer){
 		  this.goNext()
@@ -155,11 +161,11 @@ export default class TestWords extends React.Component {
     }
   }
 
-  recordResult(wordid, isBingo){
-	this.recordWordList.push(
-		{wordid, result: isBingo}
-	)
-	console.log("recordResult" , this.recordWordList)
+  recordResult(wordId, isBingo){
+    this.recordWordList.push(
+      {wordId, result: isBingo}
+    )
+    console.log("recordResult" , this.recordWordList)
   }
 
   backToTransfer() {
@@ -188,7 +194,7 @@ export default class TestWords extends React.Component {
 
 
   render() {
-    const {currentWordIndex, questionList, currentAnswer, isShowAnswer} = this.state;
+    const {currentWordIndex, questionList, currentAnswer, isShowAnswer, count, isFinish, whichKeyUp, whichKeyDown} = this.state;
 	let testTypeText = '' 
       if(this.testType == 'dailyTest') {
         testTypeText = '当日小测'
@@ -216,57 +222,76 @@ export default class TestWords extends React.Component {
 		</div>
 		<div className="choose_header">
 			<div className="decoration"></div>
-			<div className="choose_left">{testTypeText}</div>
-			<div className="choose_right">{'ddddd'}</div>
+			<div className="choose_left">{'倾橙小考'}</div>
+			<div className="choose_right">{testTypeText}</div>
 		</div>
-			{questionList.length != 0  && questionList[currentWordIndex] != null && 
-			<div className="choose_content">
-				<span className="question_type">{questionType}</span><br/>
-				<span className="word_text">{questionList[currentWordIndex].stem}</span><br/>
-				<Radio.Group 
-					className="button_content_space_between"
-					name="radiogroup"
-					value={this.state.currentAnswer}
-					defaultValue={this.state.currentAnswer}> 
-				{/* <div className="button_content_space_between"> */}
-				{/* //  <Button className={whichKeyDown == 'left' ? "style_button" : null } icon={<ArrowLeftOutlined />} shape="round" onClick={this.onClick.bind(this, "left")}>会
-				//     <div className={whichKeyUp == 'left' ? "click-animating-node" : null }></div>
-					
-				//   </Button> */}
-					{questionList[currentWordIndex].options && 
-					questionList[currentWordIndex].options.map((item, index) => {
-						return (
-							<div className={isShowAnswer && item.optionKey == questionList[currentWordIndex].solution ? "radio_cover_solution" : "radio_cover"} 
-								onClick={this.onClickOption.bind(this, item.optionKey)}
-								key = {`RadioKey${index}`}>
-								<Radio 
-									className={isShowAnswer && 
-										item.optionKey == questionList[currentWordIndex].solution && 
-										questionList[currentWordIndex].solution == currentAnswer ?  "radio_bingo" : null}
-									disabled = {isShowAnswer}
-									value = {item.optionKey}
-									checked={currentAnswer ==item.optionKey ? true : false}
-									>
-									<span className={
-										isShowAnswer && item.optionKey != questionList[currentWordIndex].solution 
-										?"radio_text_false" 
-										: "radio_text"}>{item.optionValue}</span>
-								</Radio>
-							</div>)
-					})
-						
-					}
-					
-					{/* // <Button className={whichKeyDown == 'right' ? "style_button" : null } icon={<ArrowRightOutlined />} shape="round" onClick={this.onClick.bind(this, "right")}>不会
-					// <div className={whichKeyUp == 'right' ? "click-animating-node" : null }></div></Button> */}
-				{/* </div> */}
-				</Radio.Group>
-			</div>
-			}
-      <div className="progress_content">
-        <div className="progress_before"/>
-        <span className="progress_text">{`${currentWordIndex + 1} / ${totalCount}`}</span>
+			{!isFinish && questionList.length != 0  && questionList[currentWordIndex] != null && 
+        <div className="choose_content">
+          <span className="question_type">{questionType}</span><br/>
+          <span className="word_text">{questionList[currentWordIndex].stem}</span><br/>
+          <Radio.Group 
+            className="button_content_space_between"
+            name="radiogroup"
+            value={this.state.currentAnswer}
+            defaultValue={this.state.currentAnswer}> 
+          {/* <div className="button_content_space_between"> */}
+          {/* //  <Button className={whichKeyDown == 'left' ? "style_button" : null } icon={<ArrowLeftOutlined />} shape="round" onClick={this.onClick.bind(this, "left")}>会
+          //     <div className={whichKeyUp == 'left' ? "click-animating-node" : null }></div>
+            
+          //   </Button> */}
+            {questionList[currentWordIndex].options && 
+              questionList[currentWordIndex].options.map((item, index) => {
+                return (
+                  <div className={isShowAnswer && item.optionKey == questionList[currentWordIndex].solution ? "radio_cover_solution" : "radio_cover"} 
+                    onClick={this.onClickOption.bind(this, item.optionKey)}
+                    key = {`RadioKey${index}`}>
+                    <Radio 
+                      className={isShowAnswer && 
+                        item.optionKey == questionList[currentWordIndex].solution && 
+                        questionList[currentWordIndex].solution == currentAnswer ?  "radio_bingo" : null}
+                      disabled = {isShowAnswer}
+                      value = {item.optionKey}
+                      checked={currentAnswer == item.optionKey ? true : false}
+                      >
+                      <span className={
+                        isShowAnswer && item.optionKey != questionList[currentWordIndex].solution 
+                        ?"radio_text_false" 
+                        : "radio_text"}>{item.optionValue}</span>
+                      {isShowAnswer && item.optionKey == currentAnswer &&
+                        <img className="rightOrNot-img" src={item.optionKey != questionList[currentWordIndex].solution ? faultImg : rightImg}></img>
+                      }
+                    </Radio>
+                  </div>)
+              })
+            }
+          </Radio.Group>
+        </div>
+      }
+      {isFinish && 
+        <div className="button_content_mid">
+          <Button className={whichKeyDown == 'space' ? "style_button" : null }  shape="round" onClick={this.onClickButton.bind(this)}>space  完成
+          <div className={whichKeyUp == 'space' ? "click-animating-node" : null }></div></Button>  
+        </div>
+      }
+      <div className="progress_audio_content">
+        <div className="progress_content">
+          <div className="progress_before"/>
+          <span className="progress_text">{`${currentWordIndex + 1} / ${count}`}</span>
+        </div>
       </div>
+      {!isFinish &&
+          <div className="space_content" onClick={this.onClickButton.bind(this)}>
+            <img className="space_icon" src={spaceIcon}></img>
+          </div>
+      }
+      <div className="back_content" onClick={this.backToTransfer.bind(this)}>
+        <img className="back_icon" src={backIcon}></img>
+        <span className="back_text">退出</span>
+      </div>
+      {/* <div className="progress_content">
+        <div className="progress_before"/>
+        <span className="progress_text">{`${currentWordIndex + 1} / ${count}`}</span>
+      </div> */}
 	</div>	
     );
   }

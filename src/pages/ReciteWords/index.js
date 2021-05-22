@@ -50,6 +50,11 @@ export default class ReciteWords extends React.Component {
   }
 
   componentWillMount() {
+    var url = window.location.href.split('#')[0];
+    if (url != document.referrer) {
+      window.location.href = `${baseUrl}/#/Transfer`;
+      window.location.reload()
+    }
     this.wordLibName = getQueryString('lib_name')
     // this.wordLibId = parseInt(getQueryString('lib_id'))
     this.loadWordLib()

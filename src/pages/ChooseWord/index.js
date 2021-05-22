@@ -58,6 +58,8 @@ export default class Choose extends React.Component {
     this.wordLibId = parseInt(getQueryString('lib_id'))
     this.initChoiceIndex = parseInt(getQueryString('choiceIndex'))
     this.choiceIndex = parseInt(getQueryString('choiceIndex'))
+    this.wordcount = parseInt(getQueryString('wordcount'))
+    
     this.setState({
       currentWordIndex: this.choiceIndex
     })
@@ -233,6 +235,12 @@ export default class Choose extends React.Component {
     this.recordWordList.push(
       wordid
     )
+    if(this.recordWordList.length == this.wordcount) {
+      message.success('选词数已够今日背词需要哦');
+    }
+    if(this.recordWordList.length == this.wordcount * 2) {
+      message.success('很棒了，可以先去背一背再选啦, 接着选也行~');
+    }
     console.log("recordResult" , this.recordWordList)
   }
 
@@ -288,7 +296,7 @@ export default class Choose extends React.Component {
             <span className="word_phonetic_symbol">{isFinish ? '/səkˈses/' : `/${wordList[currentWordIndex - this.initChoiceIndex].phoneticSymbols}/`}</span><br/>
             <span className="word_text">{isFinish ? 'success' : wordList[currentWordIndex - this.initChoiceIndex].text}</span><br/>
             <div className="word_meaning_wrapper">
-              <span className="word_meaning">{isFinish ? 'n. 成功; 胜利; 发财; 成名; 成功的人(或事物)' : wordList[currentWordIndex].meaning}</span>
+              <span className="word_meaning">{isFinish ? 'n. 成功; 胜利; 发财; 成名; 成功的人(或事物)' : wordList[currentWordIndex - this.initChoiceIndex].meaning}</span>
             </div>
             <br/>
             {isFinish ? 

@@ -62,13 +62,13 @@ export default class Login extends React.Component {
           nextChoiceDay: '',
           surplusChoice: '',
           choiceIndex: 0,
+          choiceWordsMethod: 'arbitrarily'
         },
         testInfo: [],
         showOver: false,
         storeArr: [],
         isSelectDisable: false,
         checkedTab: 'home',
-        
     };
   }
   // 蒙层s
@@ -109,7 +109,7 @@ export default class Login extends React.Component {
       });
       message.info("开始之前需要每日背词数哦~")
     } else {
-      window.location.href = `${baseUrl}/#/chooseWord?lib_name=${dictionaryName}&lib_id=${dictionaryId}&choiceIndex=${choiceIndex}`;
+      window.location.href = `${baseUrl}/#/chooseWord?lib_name=${dictionaryName}&lib_id=${dictionaryId}&choiceIndex=${choiceIndex}&wordcount=${newWord}`;
     }
   }
 
@@ -138,7 +138,12 @@ export default class Login extends React.Component {
         return
       }
       if (res.data.state == 401) {
+        message.error('请登录后使用')
         this.notLogin()
+        return
+      } else if (res.data.state == 403) {
+        message.error('当前身份无法访问该页面，请登录学生账号')
+        window.location.href = `${baseUrl}/#/home`;
         return
       } else if (res.data.state !== 0) {
         message.error('服务器开小差了')
@@ -211,10 +216,7 @@ export default class Login extends React.Component {
         if (!res && !res.data && res.data.state == null) {
           message.error('服务器开小差了')
           return
-        } else if (res.data.state !== 0) {
-          message.error('服务器开小差了')
-          return
-        }
+        } 
         let responseData = res.data.data
         if (responseData) {
             if (responseData.reciteVersion > 0) {
@@ -341,7 +343,7 @@ export default class Login extends React.Component {
       latestAchievement: '100',
       reciteVersion: parseInt(newWord),
     }).then(res => {
-        if (!res && !res.data && res.data.state == null) {
+        if (!res || !res.data || res.data.state == null) {
           return
         }
         if (res.data.state == 101) {
@@ -492,7 +494,7 @@ export default class Login extends React.Component {
       storeArr,
       isSelectDisable,
       testInfo,
-      checkedTab,
+      checkedTab
     } = this.state;
     // var testInfo = [
     //   {testType: "dailyTest"},
@@ -510,7 +512,8 @@ export default class Login extends React.Component {
 
     const {
       recitedWordsNumber,
-      todayWordsPlan
+      todayWordsPlan,
+      choiceWordsMethod
     } = this.state.reciteWordInfo;
 
     const {
@@ -534,7 +537,7 @@ export default class Login extends React.Component {
       newWord,
       grade
     } = this.state.userInfo;
-
+    const choiceText = choiceWordsMethod == 'arbitrarily' ? "选词已结束" : "老师已开启全词库背词，无需选词";
     return (
       <div className="main_container">
           {/* 动画Dom */}
@@ -696,7 +699,7 @@ export default class Login extends React.Component {
                         {storeArr.length != 0 && storeArr[0] != null &&
                         <Select 
                           defaultValue={dictionaryId}
-                          disabled={false}
+                          disabled={true}
                           listHeight={100}
                           size="large"
                           style={{ width: 220 }}
@@ -771,7 +774,7 @@ export default class Login extends React.Component {
                       <div className="choose-tip">
                         {currentRecite !== 0
                             ?
-                             "选词已结束"
+                             choiceText
                             :
                              "该词库以背完"
                         }
