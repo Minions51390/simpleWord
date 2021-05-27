@@ -11,10 +11,10 @@ const ChooseWord = loadable(() => import('../pages/ChooseWord'))
 const userMes = loadable(() => import('../pages/userMes'))
 const chooseStore = loadable(() => import('../pages/chooseStore'))
 const reciteWords = loadable(() => import('../pages/ReciteWords'))
+const TestWord = loadable(() => import('../pages/TestWord'))
 const Home = loadable(() => import('../pages/Home'))
 const Transfer = loadable(() => import('../pages/Transfer'))
 const AboutUS = loadable(() => import('../pages/AboutUs'))
-
 export default class Root extends Component {
   render() {
     return (
@@ -30,6 +30,7 @@ export default class Root extends Component {
             <Route path="/userMes" component={userMes}/>
             <Route path="/chooseStore" component={chooseStore}/>
             <Route path="/reciteWords" component={reciteWords}/>
+            <Route path="/testWord" component={TestWord}/>
           </Switch>
         </HashRouter>
     )

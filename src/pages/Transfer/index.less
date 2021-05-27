@@ -5,6 +5,8 @@
     width: 100%;
     min-width: 1225px;
     user-select: none;
+    display: flex;
+    justify-content: center;
     .fix_header_main {
         position: fixed;
         height: 68px;
@@ -30,6 +32,15 @@
                 font-weight: 400;
                 line-height: 24px;
                 color: #647895;
+                cursor: pointer;
+            }
+            .dashboard-page {
+                margin-left: 67px;
+                font-size: 14px;
+                font-family: PingFangSC-Regular, PingFang SC;
+                font-weight: 400;
+                color: #647895;
+                line-height: 24px;
                 cursor: pointer;
             }
             .about-us {
@@ -91,6 +102,22 @@
                 }
             }
         }
+    }
+    .dashboard-dom {
+        position: absolute;
+        height: 100%;
+        width: 1100px;
+        padding-top: 30px;
+        overflow-x: hidden;
+    }
+    .dashboard-iframe {
+        width: 1130px;
+        padding-left: 10px; 
+        height: 100%;
+        position: absolute;
+        right: -15px; 
+        overflow-x: hidden;
+        overflow-y: scroll;
     }
     .main_dom {
         position: absolute;
@@ -246,8 +273,36 @@
                     border-radius: 4px;
                     align-items: center;
                     box-shadow: 0px 20px 40px 0px rgba(1, 31, 88, 0.06);
+                    .test-slider-box {
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        bottom: 0;
+                        right: 0;
+                    }    
+                    .slick-dots {
+                        padding-top: 10px;
+                        li {
+                            button {
+                                background-color: #102F5C;
+                            }
+                        }
+                    }
+                    .slick-dots-bottom {
+                        bottom: 0px;
+                    }
+                    .test-title {
+                        margin-top: 32px;
+                        text-align: center;
+                        height: 24px;
+                        font-size: 16px;
+                        font-family: PingFangSC-Regular, PingFang SC;
+                        font-weight: 400;
+                        color: #102F5C;
+                        line-height: 24px;
+                    }
                     .test-text {
-                        margin-top: 52px;
+                        margin-top: 16px;
                         text-align: center;
                         height: 24px;
                         font-size: 16px;
@@ -256,18 +311,37 @@
                         color: #9FACBE;
                         line-height: 24px;
                     }
-                    .test-btn {
-                        margin-top: 53px;
-                        width: 160px;
-                        height: 48px;
-                        border-radius: 4px;
-                        border: 1px solid #9FACBE;
-                        font-size: 16px;
-                        font-family: PingFangSC-Regular, PingFang SC;
-                        font-weight: 400;
-                        color: #9FACBE;
-                        line-height: 48px;
-                        text-align: center;
+                    .thr-line {
+                        display: flex;
+                        margin-top: 33px;
+                        justify-content: center;
+                        .test-btn {
+                            width: 160px;
+                            height: 48px;
+                            background: #032352;
+                            border-radius: 4px;
+                            font-size: 16px;
+                            font-family: PingFangSC-Medium, PingFang SC;
+                            font-weight: 500;
+                            color: #FFFFFF;
+                            line-height: 48px;
+                            text-align: center;
+                            cursor: pointer;
+                        }
+                        .test-btn-none {
+                            margin-top: 53px;
+                            width: 160px;
+                            height: 48px;
+                            border-radius: 4px;
+                            border: 1px solid #9FACBE;
+                            font-size: 16px;
+                            font-family: PingFangSC-Regular, PingFang SC;
+                            font-weight: 400;
+                            color: #9FACBE;
+                            line-height: 48px;
+                            text-align: center;
+                        }
+
                     }
                     .left-sec-shadow {
                         position: absolute;
@@ -278,6 +352,54 @@
                         box-shadow: 0px 20px 40px 0px rgba(3, 35, 82, 0.2);
                         z-index: -10;
                     }
+                    .leftButton {
+                        border: none;
+                        outline: 0;
+                        padding: 0;
+                        height: 36px;
+                        width: 36px;
+                        transition: 0.5s;
+                        border-radius: 50%;
+                        background-color: #ffffff;
+                        position: absolute;
+                        top: 50%;
+                        z-index: 10;
+                        transform: translateY(-50%);
+                        text-align: center;
+                        font-size: 30px;
+                        color: #102F5C;
+                        line-height: 39px;
+                        vertical-align: center;
+                        cursor: pointer; 
+                        opacity: 0.3; 
+                      }
+                      .rightButton {
+                        border: none;
+                        outline: 0;
+                        padding: 0;
+                        height: 36px;
+                        width: 36px;
+                        transition: 0.5s;
+                        border-radius: 50%;
+                        background-color: #ffffff;
+                        position: absolute;
+                        top: 50%;
+                        z-index: 10;
+                        transform: translateY(-50%);
+                        text-align: center;
+                        font-size: 30px;
+                        color: #102F5C;
+                        line-height: 39px;
+                        vertical-align: center;
+                        cursor: pointer; 
+                        opacity: 0.3;
+                      }
+                      .leftButton:hover {
+                        opacity: 1;
+                      }
+                      .rightButton:hover {
+                        opacity: 1;
+                      }
                 }
             }
             .content-right {

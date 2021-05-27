@@ -32,6 +32,10 @@ export default class Login extends React.Component {
       email: '',
       captcha: '',
       invitCode: '',
+      viceInviteCode: '',
+      isShowViceInviteCode: false,
+      realName: '',
+      phoneNum: '',
       emailReg: new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$")
     };
   }
@@ -55,9 +59,9 @@ export default class Login extends React.Component {
   notLogin() {
     message.info('请登录后使用');
   }
-  // 获取用户信息
+  // 获取用户身份及是否登录
   getMes() {
-    HTTP.get("/api/profile")
+    HTTP.get("/api/role")
     .then(res => {
       if (!res && !res.data && res.data.state == null) {
         return
@@ -70,9 +74,9 @@ export default class Login extends React.Component {
         return;
       }
       if (res && res.data && res.data.data) {
-        if (res.data.data.area) {
+        if (res.data.data.redirectUrl) {
           message.success('登录成功');
-          window.location.href = `${baseUrl}/#/Transfer`;
+          window.location.href = res.data.data.redirectUrl;
         }
       }
     }).catch(err => {
@@ -89,7 +93,7 @@ export default class Login extends React.Component {
   }
   // 注册接口
   registerFinish() {
-    const {registerAd, registerPa, email, captcha, invitCode, emailReg} = this.state;
+    const {registerAd, registerPa, email, captcha, invitCode, emailReg, isShowViceInviteCode, viceInviteCode, realName, phoneNum} = this.state;
     // 用户名检验
     if (!registerAd || registerAd.indexOf('@') !== -1 || this.rowLength(registerAd)) {
       message.error('用户名不可以带@且不能为空！');
@@ -115,13 +119,34 @@ export default class Login extends React.Component {
       message.error('验证码不能为空！');
       return;
     }
-    HTTP.post("/auth/register", {
+    //邀请码为机构特殊码时，必填班级码
+    if (isShowViceInviteCode && !viceInviteCode) {
+      message.error('班级码不能为空！');
+      return;
+    }
+    // 姓名检验
+    if (!realName || this.rowLength(realName)) {
+      message.error('称呼不能为空，仅用于教师管理');
+      return;
+    }
+    //电话号码校验
+    if (!phoneNum || phoneNum.length !== 11 || this.rowLength(phoneNum)) {
+      message.error('请填写正确电话号码');
+      return;
+    }
+    let postData = {
       name: registerAd,
       password: registerPa,
       email: email,
       captcha: captcha,
-      inviteCode: invitCode
-    }).then(res => {
+      inviteCode: invitCode,
+      realName: realName,
+      phone: phoneNum,
+    }
+    if(!viceInviteCode) {
+      data.viceInviteCode = viceInviteCode
+    }
+    HTTP.post("/auth/register", postData).then(res => {
       if (!res && !res.data && res.data.state == null) {
         message.error('服务器开小差了');
         return;
@@ -134,7 +159,12 @@ export default class Login extends React.Component {
         return;
       }
       message.success('注册成功!');
-      window.location.href = `${baseUrl}/#/Transfer`;
+      if(viceInviteCode != null) {
+        window.location.href = `${baseUrl}/#/Transfer`;
+      } else {
+        window.location.href = `${baseUrl}/admin/#/app/class/main`;
+      }
+      
     }).catch(err => {
       message.error('服务器开小差了');
     });
@@ -236,8 +266,38 @@ export default class Login extends React.Component {
   }
   // invitCode
   onInputInvitCode(event) {
+    if(event.target.value.indexOf("org") == 0) {
+      this.setState({
+        invitCode: event.target.value,
+        isShowViceInviteCode: true
+      });
+    } else {
+      this.setState({
+        invitCode: event.target.value,
+        // isShowViceInviteCode: true
+        isShowViceInviteCode: false  //暂时修改班级码为常驻
+      });
+    }
+  }
+
+  //班级码
+  onInputViceInviteCode(event) {
     this.setState({
-      invitCode: event.target.value
+      viceInviteCode: event.target.value
+    });
+  }
+
+  //真实姓名
+  onInputRealName(event) {
+    this.setState({
+      realName: event.target.value
+    });
+  }
+
+  //电话号码
+  onInputTele(event) {
+    this.setState({
+      phoneNum: event.target.value
     });
   }
   // 记住密码check
@@ -254,7 +314,7 @@ export default class Login extends React.Component {
   }
 
   render() {
-    const { mode, loginAd, loginPa, registerAd, registerPa, email, captcha, invitCode } = this.state;
+    const { mode, loginAd, loginPa, registerAd, registerPa, email, captcha, invitCode, isShowViceInviteCode, viceInviteCode, realName, phoneNum} = this.state;
     return (
       <div className="main_container">
           <div className="fix_header">
@@ -347,53 +407,83 @@ export default class Login extends React.Component {
                         注册账号
                       </div>
                       <div className="form-area">
-                        <Input 
-                          size="large" 
-                          placeholder="请输入您的账号" 
-                          prefix={<div className="my-icon"><img className="input-icon" src={useri} /></div>} 
-                          onChange={this.onInputRegisterAd.bind(this)} 
-                          value={registerAd}/>
-                        <Input.Password 
-                          className="pass-mar" 
-                          size="large" 
-                          placeholder="请输入您的密码" 
-                          prefix={<div className="my-icon"><img className="input-icon" src={passi} /></div>} 
-                          onChange={this.onInputRegisterPa.bind(this)} 
-                          value={registerPa}/>
-                        <Input 
-                          className="pass-mar" 
-                          size="large" 
-                          placeholder="请输入电子邮箱地址" 
-                          prefix={<div className="my-icon"><img className="input-icon" src={emaili} /></div>} 
-                          onChange={this.onInputEmail.bind(this)} 
-                          value={email}/>
-                        <div className="code-area pass-mar">
-                          <Input 
-                            size="large" 
-                            placeholder="请输入验证码" 
-                            prefix={<div className="my-icon"><img className="input-icon" src={codei} /></div>} 
-                            onChange={this.onInputCaptcha.bind(this)} 
-                            value={captcha}/>
-                          <div className="send-code" onClick={this.sendEmail.bind(this)}>发送验证码到邮箱</div>
-                        </div>
-                        <Input 
-                          className="pass-mar" 
-                          size="large" 
-                          placeholder="请输入邀请码" 
-                          prefix={<div className="my-icon"><img className="input-icon" src={inviti} /></div>} 
-                          onChange={this.onInputInvitCode.bind(this)} 
-                          value={invitCode}/>
-                        <div className="btn-box">
-                          <div 
-                            className="register-com" 
-                            onClick={this.registerFinish.bind(this)}>
-                            确认信息并注册
+                        <div className="main-row">
+                          <div className="main-left">
+                            <Input 
+                              size="large" 
+                              placeholder="请输入您的账号" 
+                              prefix={<div className="my-icon"><img className="input-icon" src={useri} /></div>} 
+                              onChange={this.onInputRegisterAd.bind(this)} 
+                              value={registerAd}/>
+                            <Input.Password 
+                              className="pass-mar" 
+                              size="large" 
+                              placeholder="请输入您的密码" 
+                              prefix={<div className="my-icon"><img className="input-icon" src={passi} /></div>} 
+                              onChange={this.onInputRegisterPa.bind(this)} 
+                              value={registerPa}/>
+                            <Input 
+                              className="pass-mar" 
+                              size="large" 
+                              placeholder="请输入电子邮箱地址" 
+                              prefix={<div className="my-icon"><img className="input-icon" src={emaili} /></div>} 
+                              onChange={this.onInputEmail.bind(this)} 
+                              value={email}/>
+                            <div className="code-area pass-mar">
+                              <Input 
+                                size="large" 
+                                placeholder="请输入验证码" 
+                                prefix={<div className="my-icon"><img className="input-icon" src={codei} /></div>} 
+                                onChange={this.onInputCaptcha.bind(this)} 
+                                value={captcha}/>
+                              <div className="send-code" onClick={this.sendEmail.bind(this)}>发送验证码到邮箱</div>
+                            </div>
+                          
                           </div>
+                          <div className="main-right">
+                            <Input 
+                              size="large" 
+                              placeholder="请输入邀请码" 
+                              prefix={<div className="my-icon"><img className="input-icon" src={inviti} /></div>} 
+                              onChange={this.onInputInvitCode.bind(this)} 
+                              value={invitCode}/>
+                            {isShowViceInviteCode && 
+                              <Input 
+                              className="pass-mar" 
+                              size="large" 
+                              placeholder="请输入班级码" 
+                              prefix={<div className="my-icon"><img className="input-icon" src={inviti} /></div>} 
+                              onChange={this.onInputViceInviteCode.bind(this)} 
+                              value={viceInviteCode}/>
+                            }  
+                              <Input 
+                              className="pass-mar" 
+                              size="large" 
+                              placeholder="请输入称呼/姓名,仅供班级管理使用" 
+                              prefix={<div className="my-icon"><img className="input-icon" src={inviti} /></div>} 
+                              onChange={this.onInputRealName.bind(this)} 
+                              value={realName}/>
+                              <Input 
+                              className="pass-mar" 
+                              size="large" 
+                              placeholder="请输入手机号" 
+                              prefix={<div className="my-icon"><img className="input-icon" src={inviti} /></div>} 
+                              onChange={this.onInputTele.bind(this)} 
+                              value={phoneNum}/>
+                          </div>
+                          
                         </div>
-                        <div className="join-area">
-                          <span className="join-fir">已有账号，</span>
-                          <span className="join-sec" onClick={this.handleModeChange.bind(this, 'login')}>马上登录</span>
-                        </div>
+                        <div className="btn-box">
+                            <div 
+                              className="register-com" 
+                              onClick={this.registerFinish.bind(this)}>
+                              确认信息并注册
+                            </div>
+                          </div>
+                          <div className="join-area">
+                            <span className="join-fir">已有账号，</span>
+                            <span className="join-sec" onClick={this.handleModeChange.bind(this, 'login')}>马上登录</span>
+                          </div>
                       </div>
                   </div>
                 </div>
@@ -403,6 +493,6 @@ export default class Login extends React.Component {
             )
           }
       </div>
-    );
+    )
   }
 }
