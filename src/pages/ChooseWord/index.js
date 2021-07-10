@@ -178,7 +178,7 @@ export default class Choose extends React.Component {
           whichKeyUp: 'space',
         });
         this.backToTransfer()
-        message.success('新数据以同步');
+        message.success('新数据已同步');
       } else {
         if (isCurrentWordStrange == null) {
           return
@@ -218,7 +218,7 @@ export default class Choose extends React.Component {
         });
         // window.location.href = `${baseUrl}/#/home`;
         this.backToTransfer()
-        message.success('新数据以同步');
+        message.success('新数据已同步');
       } else {
         if (isCurrentWordStrange == null) {
           return
@@ -239,7 +239,7 @@ export default class Choose extends React.Component {
       message.success('选词数已够今日背词需要哦');
     }
     if(this.recordWordList.length == this.wordcount * 2) {
-      message.success('很棒了，可以先去背一背再选啦, 接着选也行~');
+      message.success('很棒了，可已先去背一背再选啦, 接着选也行~');
     }
     console.log("recordResult" , this.recordWordList)
   }

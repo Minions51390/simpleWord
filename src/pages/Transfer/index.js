@@ -776,7 +776,7 @@ export default class Login extends React.Component {
                             ?
                              choiceText
                             :
-                             "该词库以背完"
+                             "该词库已背完"
                         }
                         {/* <span className="big-text">{nextChoiceDay}</span>天 */}
                       </div>

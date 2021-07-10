@@ -96,7 +96,7 @@ export default class Login extends React.Component {
     const {registerAd, registerPa, email, captcha, invitCode, emailReg, isShowViceInviteCode, viceInviteCode, realName, phoneNum} = this.state;
     // 用户名检验
     if (!registerAd || registerAd.indexOf('@') !== -1 || this.rowLength(registerAd)) {
-      message.error('用户名不可以带@且不能为空！');
+      message.error('用户名不可已带@且不能为空！');
       return;
     }
     // 密码检验
@@ -173,7 +173,7 @@ export default class Login extends React.Component {
   loginFinish() {
     const {loginAd, loginPa} = this.state;
     if (!loginAd || loginAd.indexOf('@') !== -1 || this.rowLength(loginAd)) {
-      message.error('用户名不可以带@且不能为空！');
+      message.error('用户名不可已带@且不能为空！');
       return;
     }
     // 密码检验
@@ -351,7 +351,7 @@ export default class Login extends React.Component {
                     <div className="info-title">You have my word.</div>
                     <div className="info-sub">我们向您承诺</div>
                     <div className="info-msg">Through our word recitation program, you can master at least 2000 words in 30 days. It is reasonable and scientific to ensure that you will not forget after reciting, and complete the learning plan efficiently and step by step.</div>
-                    <div className="info-chi">通过我们的背词计划，您可以在30天内掌握至少2000个单词，合理而且科学，保证您不会背完即忘，高效完成学习计划，循序渐进，水滴石穿。</div>
+                    <div className="info-chi">通过我们的背词计划，您可已在30天内掌握至少2000个单词，合理而且科学，保证您不会背完即忘，高效完成学习计划，循序渐进，水滴石穿。</div>
                   </div>
                 </div>
             </div>

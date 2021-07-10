@@ -140,7 +140,7 @@ export default class ReciteWords extends React.Component {
           whichKeyUp: 'space',
         });
         // this.backToTransfer()
-        message.success('新数据以同步');
+        message.success('新数据已同步');
       } else {
         this.onSpaceKeyUp()
       }
@@ -160,7 +160,7 @@ export default class ReciteWords extends React.Component {
           whichKeyUp: 'space',
         });
         // this.backToTransfer()
-        message.success('新数据以同步');
+        message.success('新数据已同步');
       } else {
         this.onSpaceKeyUp()
       }

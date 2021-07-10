@@ -69,7 +69,11 @@ export default class TestWords extends React.Component {
   }
 
   postStrangeWordList() {
-	const {count} = this.state;
+    if(this.recordWordList.length == 0) {
+      return
+    }
+
+	  const {count} = this.state;
     let values = {};
     values.testType = this.testType;
     values.testPaper = this.recordWordList;
@@ -79,10 +83,10 @@ export default class TestWords extends React.Component {
       console.log("postStrangeWordList 请求成功:", res);
         // window.location.href = `${baseUrl}/#/Transfer`;
         // window.location.reload()
+      this.recordWordList = []
     }).catch(err => {
       console.log("请求失败:", err);
     });
-    this.recordWordList = []
   }
 
   onFinish(values) {
@@ -110,7 +114,7 @@ export default class TestWords extends React.Component {
           whichKeyDown: 'space',
           whichKeyUp: 'space',
         });
-        message.success('新数据以同步');
+        message.success('新数据已同步');
 	  } else if(isShowAnswer){
 		  this.goNext()
 	  }  else if(currentAnswer != null){
@@ -146,7 +150,7 @@ export default class TestWords extends React.Component {
           whichKeyDown: 'space',
           whichKeyUp: 'space',
         });
-        message.success('新数据以同步');
+        message.success('新数据已同步');
 	  } else if(isShowAnswer){
 		  this.goNext()
 	  } else if(currentAnswer != null){
