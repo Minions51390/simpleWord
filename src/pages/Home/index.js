@@ -143,8 +143,8 @@ export default class Login extends React.Component {
       realName: realName,
       phone: phoneNum,
     }
-    if(!viceInviteCode) {
-      data.viceInviteCode = viceInviteCode
+    if(isShowViceInviteCode) {
+      postData.viceInviteCode = viceInviteCode;
     }
     HTTP.post("/auth/register", postData).then(res => {
       if (!res && !res.data && res.data.state == null) {
