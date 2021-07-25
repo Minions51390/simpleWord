@@ -348,10 +348,10 @@ export default class Login extends React.Component {
                 <img className="top-img" src={cirBg}></img>
                 <div className="info-list-wrapper">
                   <div className="info-list">
-                    <div className="info-title">You have my word.</div>
-                    <div className="info-sub">我们向您承诺</div>
-                    <div className="info-msg">Through our word recitation program, you can master at least 2000 words in 30 days. It is reasonable and scientific to ensure that you will not forget after reciting, and complete the learning plan efficiently and step by step.</div>
-                    <div className="info-chi">通过我们的背词计划，您可已在30天内掌握至少2000个单词，合理而且科学，保证您不会背完即忘，高效完成学习计划，循序渐进，水滴石穿。</div>
+                    <div className="info-title">倾心所选 成你所愿</div>
+                    <div className="info-sub">We give our word, you have your words.</div>
+                    {/* <div className="info-msg">Through our word recitation program, you can master at least 2000 words in 30 days. It is reasonable and scientific to ensure that you will not forget after reciting, and complete the learning plan efficiently and step by step.</div>
+                    <div className="info-chi">通过我们的背词计划，您可已在30天内掌握至少2000个单词，合理而且科学，保证您不会背完即忘，高效完成学习计划，循序渐进，水滴石穿。</div> */}
                   </div>
                 </div>
             </div>

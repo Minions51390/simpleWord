@@ -128,10 +128,10 @@ export default class About extends React.Component {
                 <img className="top-img" src={cirBg}></img>
                 <div className="info-list-wrapper">
                   <div className="info-list">
-                    <div className="info-title">You have my word.</div>
-                    <div className="info-sub">我们向您承诺</div>
-                    <div className="info-msg">Through our word recitation program, you can master at least 2000 words in 30 days. It is reasonable and scientific to ensure that you will not forget after reciting, and complete the learning plan efficiently and step by step.</div>
-                    <div className="info-chi">我们致力于给莘莘学子更好的背单词体验！！！</div>
+                    <div className="info-title">倾心所选 成你所愿</div>
+                    <div className="info-sub">We give our word, you have your words.</div>
+                    {/* <div className="info-msg">Through our word recitation program, you can master at least 2000 words in 30 days. It is reasonable and scientific to ensure that you will not forget after reciting, and complete the learning plan efficiently and step by step.</div>
+                    <div className="info-chi">我们致力于给莘莘学子更好的背单词体验！！！</div> */}
                   </div>
                 </div>
             </div>

@@ -228,7 +228,9 @@ export default class ReciteWords extends React.Component {
       this.setState({
         isFinish: true
       });
+      this.postStrangeWordList()
       message.success('恭喜你！已完成今日计划~');
+      message.success('新数据已同步');
     }
   }
 
