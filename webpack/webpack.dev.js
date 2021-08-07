@@ -48,6 +48,7 @@ module.exports = smart(webpackCommonConf, {
         proxy: {
             '/api': {
                 target: 'http://47.107.238.126',
+                // target: 'http://www.qingcheng-eng.com',
                 // target: 'http://81.70.229.127',
                 changeOrigin: true,
                 secure: false,

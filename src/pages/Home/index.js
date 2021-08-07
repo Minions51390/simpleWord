@@ -17,7 +17,7 @@ import passi from './assets/passi.png';
 import inviti from './assets/inviti.png';
 import codei from './assets/codei.png';
 import emaili from './assets/emaili.png';
-import wechat from './assets/wechat.jpeg';
+import wechat from './assets/qingchengWechat.png';
 import userIcon from './assets/userIcon.png';
 
 export default class Login extends React.Component {
@@ -332,7 +332,7 @@ export default class Login extends React.Component {
             <img className="right-img" src={rightBg}></img>
             <div className="icon-list">
               <div className="icon-email">
-                <Popconfirm placement="top" title="koihyman@qingchengword.onaliyun.com" icon={<img style={{position: 'absolute', top: '8px', width: '14px', height: '14px'}} src={userIcon}></img>}>
+                <Popconfirm placement="top" title="koihyman@qingchengeng.com" icon={<img style={{position: 'absolute', top: '8px', width: '14px', height: '14px'}} src={userIcon}></img>}>
                   <img className="little-img" src={emailpng}></img>
                 </Popconfirm>
               </div>

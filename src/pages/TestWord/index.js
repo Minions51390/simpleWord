@@ -32,6 +32,7 @@ export default class TestWords extends React.Component {
     };
     this.testType = null
     this.recordWordList = [];
+    this.postStrangeWordListLock = false
   }
 
   componentWillMount() {
@@ -72,7 +73,10 @@ export default class TestWords extends React.Component {
     if(this.recordWordList.length == 0) {
       return
     }
-
+    if(this.postStrangeWordListLock) {
+      message.success('无需重复提交');
+      return
+    }
 	  const {count} = this.state;
     let values = {};
     values.testType = this.testType;
@@ -84,7 +88,10 @@ export default class TestWords extends React.Component {
         // window.location.href = `${baseUrl}/#/Transfer`;
         // window.location.reload()
       this.recordWordList = []
+      this.postStrangeWordListLock = true
+      message.success('新数据已同步');
     }).catch(err => {
+      message.error('上传失败');
       console.log("请求失败:", err);
     });
   }
@@ -114,7 +121,7 @@ export default class TestWords extends React.Component {
           whichKeyDown: 'space',
           whichKeyUp: 'space',
         });
-        message.success('新数据已同步');
+        message.success('正在上传...');
 	  } else if(isShowAnswer){
 		  this.goNext()
 	  }  else if(currentAnswer != null){
@@ -143,14 +150,14 @@ export default class TestWords extends React.Component {
   }
 
   onClickButton() {
-    const {currentWordIndex, currentAnswer, isShowAnswer, isFinish} = this.state;
+    const {currentWordIndex, currentAnswer, isShowAnswer, questionList, isFinish} = this.state;
 	if (isFinish) {
         this.postStrangeWordList()
         this.setState({
           whichKeyDown: 'space',
           whichKeyUp: 'space',
         });
-        message.success('新数据已同步');
+        message.success('正在上传...');
 	  } else if(isShowAnswer){
 		  this.goNext()
 	  } else if(currentAnswer != null){

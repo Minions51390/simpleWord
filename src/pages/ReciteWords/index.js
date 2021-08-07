@@ -47,6 +47,7 @@ export default class ReciteWords extends React.Component {
     this.finishTime = null
     this.newWordsCount = null
     this.uniqwordList = []
+    this.postStrangeWordListLock = false
   }
 
   componentWillMount() {
@@ -86,6 +87,10 @@ export default class ReciteWords extends React.Component {
   }
 
   postStrangeWordList() {
+    if(this.postStrangeWordListLock) {
+      message.success('无需重复提交，右下角退出即可');
+      return
+    }
     let dateObj = new Date();
     this.finishTime = dateObj.getTime()
     let studyTime = Math.round((this.finishTime - this.startTime) / 1000)
@@ -100,9 +105,11 @@ export default class ReciteWords extends React.Component {
     console.log('Success:', JSON.stringify(values) );
     HTTP.patch("/api/plan",values).then(res => {
       console.log("请求成功:", res);
-      
+      this.postStrangeWordListLock = true
+      message.success('新数据已同步');
     }).catch(err => {
       console.log("请求失败:", err);
+      message.error('上传失败');
     });
   }
 
@@ -140,7 +147,7 @@ export default class ReciteWords extends React.Component {
           whichKeyUp: 'space',
         });
         // this.backToTransfer()
-        message.success('新数据已同步');
+        message.success('正在上传...');
       } else {
         this.onSpaceKeyUp()
       }
@@ -160,7 +167,7 @@ export default class ReciteWords extends React.Component {
           whichKeyUp: 'space',
         });
         // this.backToTransfer()
-        message.success('新数据已同步');
+        message.success('正在上传...');
       } else {
         this.onSpaceKeyUp()
       }
@@ -230,7 +237,7 @@ export default class ReciteWords extends React.Component {
       });
       this.postStrangeWordList()
       message.success('恭喜你！已完成今日计划~');
-      message.success('新数据已同步');
+      message.success('正在上传...');
     }
   }
 
