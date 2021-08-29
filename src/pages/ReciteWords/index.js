@@ -91,6 +91,8 @@ export default class ReciteWords extends React.Component {
       message.success('无需重复提交，右下角退出即可');
       return
     }
+    message.success('正在上传...');
+    this.postStrangeWordListLock = true
     let dateObj = new Date();
     this.finishTime = dateObj.getTime()
     let studyTime = Math.round((this.finishTime - this.startTime) / 1000)
@@ -108,8 +110,9 @@ export default class ReciteWords extends React.Component {
       this.postStrangeWordListLock = true
       message.success('新数据已同步');
     }).catch(err => {
+      this.postStrangeWordListLock = false
       console.log("请求失败:", err);
-      message.error('上传失败');
+      message.error('上传失败，请重试');
     });
   }
 
@@ -147,7 +150,6 @@ export default class ReciteWords extends React.Component {
           whichKeyUp: 'space',
         });
         // this.backToTransfer()
-        message.success('正在上传...');
       } else {
         this.onSpaceKeyUp()
       }
@@ -167,7 +169,6 @@ export default class ReciteWords extends React.Component {
           whichKeyUp: 'space',
         });
         // this.backToTransfer()
-        message.success('正在上传...');
       } else {
         this.onSpaceKeyUp()
       }
@@ -237,7 +238,6 @@ export default class ReciteWords extends React.Component {
       });
       this.postStrangeWordList()
       message.success('恭喜你！已完成今日计划~');
-      message.success('正在上传...');
     }
   }
 

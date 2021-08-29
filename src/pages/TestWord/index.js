@@ -73,6 +73,8 @@ export default class TestWords extends React.Component {
     if(this.recordWordList.length == 0) {
       return
     }
+    message.success('正在上传...');
+    this.postStrangeWordListLock = true
     if(this.postStrangeWordListLock) {
       message.success('无需重复提交');
       return
@@ -91,8 +93,9 @@ export default class TestWords extends React.Component {
       this.postStrangeWordListLock = true
       message.success('新数据已同步');
     }).catch(err => {
-      message.error('上传失败');
+      this.postStrangeWordListLock = false
       console.log("请求失败:", err);
+      message.error('上传失败，请重试');
     });
   }
 
@@ -121,7 +124,6 @@ export default class TestWords extends React.Component {
           whichKeyDown: 'space',
           whichKeyUp: 'space',
         });
-        message.success('正在上传...');
 	  } else if(isShowAnswer){
 		  this.goNext()
 	  }  else if(currentAnswer != null){
@@ -157,7 +159,6 @@ export default class TestWords extends React.Component {
           whichKeyDown: 'space',
           whichKeyUp: 'space',
         });
-        message.success('正在上传...');
 	  } else if(isShowAnswer){
 		  this.goNext()
 	  } else if(currentAnswer != null){

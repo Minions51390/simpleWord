@@ -46,7 +46,7 @@ export default class Choose extends React.Component {
     this.wordLibId = null
     this.choiceIndex = null
     this.initChoiceIndex = null
-    this.postStrangeWordListLock = false
+    // this.postStrangeWordListLock = false
   }
 
   componentWillMount() {
@@ -111,10 +111,10 @@ export default class Choose extends React.Component {
   }
 
   postStrangeWordList(latestViewWordIndex, needback) {
-    if(this.postStrangeWordListLock) {
-      message.success('无需重复提交，右下角退出即可');
-      return
-    }
+    // if(this.postStrangeWordListLock) {
+    //   message.success('无需重复提交，右下角退出即可');
+    //   return
+    // }
     let values = {};
     // values.wordLibName = this.wordLibName;
     values.dictionaryId = this.wordLibId;
@@ -123,14 +123,14 @@ export default class Choose extends React.Component {
     console.log('Success:', JSON.stringify(values));
     HTTP.post("/api/plan",values).then(res => {
       console.log("请求成功:", res);
-      message.success('新数据已同步');
-      this.postStrangeWordListLock = true
+      // message.success('新数据已同步');
+      // this.postStrangeWordListLock = true
       if(needback == true) {
         window.location.href = `${baseUrl}/#/Transfer`;
         window.location.reload()
       }
     }).catch(err => {
-      message.error('上传失败');
+      // message.error('上传失败');
       console.log("请求失败:", err);
     });
     this.recordWordList = []
@@ -186,7 +186,8 @@ export default class Choose extends React.Component {
           whichKeyUp: 'space',
         });
         this.backToTransfer()
-        message.success('正在上传...');
+        message.success('新数据已同步');
+        // message.success('正在上传...');
       } else {
         if (isCurrentWordStrange == null) {
           return
@@ -226,7 +227,8 @@ export default class Choose extends React.Component {
         });
         // window.location.href = `${baseUrl}/#/home`;
         this.backToTransfer()
-        message.success('正在上传...');
+        // message.success('正在上传...');        
+        message.success('新数据已同步');
       } else {
         if (isCurrentWordStrange == null) {
           return
@@ -351,7 +353,7 @@ export default class Choose extends React.Component {
         </div>
         <div className="back_content" onClick={this.backToTransfer.bind(this)}>
           <img className="back_icon" src={backIcon}></img>
-          <span className="back_text">退出</span>
+          <span className="back_text">保存并退出</span>
         </div>
       </div>
     );

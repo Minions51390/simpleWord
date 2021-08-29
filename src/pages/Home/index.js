@@ -17,7 +17,7 @@ import passi from './assets/passi.png';
 import inviti from './assets/inviti.png';
 import codei from './assets/codei.png';
 import emaili from './assets/emaili.png';
-import wechat from './assets/qingchengWechat.png';
+import wechat from '../AboutUs/assets/qingchengWechat.png';
 import userIcon from './assets/userIcon.png';
 
 export default class Login extends React.Component {

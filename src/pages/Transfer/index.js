@@ -505,9 +505,9 @@ export default class Login extends React.Component {
       dictionaryId,
       dictionaryName,
       describe,
-      picture,
       isRecite,
       haveRecite,
+      picture,
     } = this.state.currentDic;
 
     const {
@@ -711,7 +711,7 @@ export default class Login extends React.Component {
                     </div>
                   </div>
                   <div className="main-place">
-                    <img src={GET4}></img>
+                    <img src={`${baseUrl}${picture}`}></img>
                     <div>
                       <div className="main-title">
                         {dictionaryName}
