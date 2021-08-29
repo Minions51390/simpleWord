@@ -88,7 +88,7 @@ export default class ReciteWords extends React.Component {
 
   postStrangeWordList() {
     if(this.postStrangeWordListLock) {
-      message.success('无需重复提交，右下角退出即可');
+      message.success('无需重复提交');
       return
     }
     message.success('正在上传...');

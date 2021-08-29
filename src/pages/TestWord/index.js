@@ -73,12 +73,12 @@ export default class TestWords extends React.Component {
     if(this.recordWordList.length == 0) {
       return
     }
-    message.success('正在上传...');
-    this.postStrangeWordListLock = true
     if(this.postStrangeWordListLock) {
       message.success('无需重复提交');
       return
     }
+    message.success('正在上传...');
+    this.postStrangeWordListLock = true
 	  const {count} = this.state;
     let values = {};
     values.testType = this.testType;
