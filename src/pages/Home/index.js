@@ -300,7 +300,7 @@ export default class Login extends React.Component {
       phoneNum: event.target.value
     });
   }
-  // 记住密码check
+  // 记住密码check 先下掉
   checkBoxChange(event) {
     console.log(event);
   }
@@ -362,6 +362,10 @@ export default class Login extends React.Component {
             </div>
             <img className="bottom-img" src={btBg}></img>
           </div>
+          <div className="icp-floor">
+            <span>{window.location.href.indexOf("qingchengeng") != -1 ? "黑ICP备 2021005033号-2" : "黑ICP备 2021005033号-1"}</span>
+            <span className="icp-floor-copyright">Copyright © 2020 - 2021 奥尊科技 版权所有</span>
+          </div>
           {
             mode === 'login'
             ?
@@ -385,9 +389,9 @@ export default class Login extends React.Component {
                         prefix={<div className="my-icon"><img className="input-icon" src={passi} /></div>} 
                         onChange={this.onInputLoginPa.bind(this)} 
                         value={loginPa}/>
-                      <div className="rem-box">
+                      {/* <div className="rem-box">
                         <Checkbox onChange={this.checkBoxChange.bind(this)}>记住密码</Checkbox>
-                      </div>
+                      </div> */}
                       <div className="btn-box">
                         <div className="register-box" onClick={this.handleModeChange.bind(this, 'register')}>注册</div>
                         <div className="login-box" onClick={this.loginFinish.bind(this)}>登录</div>
