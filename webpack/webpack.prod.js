@@ -18,8 +18,9 @@ module.exports = smart(webpackCommonConf, {
         path: distPath,
         // publicPath: 'http://cdn.abc.com'  // 修改所有静态文件 url 的前缀（如 cdn 域名），这里暂时用不到
         // publicPath:'//81.70.229.127/'
-        publicPath:'//47.107.238.126/'
-        // publicPath: 'http://www.qingcheng-eng.com'
+        // publicPath:'//47.107.238.126/'
+        // publicPath: '//www.qingcheng-eng.com/'
+        publicPath: '//www.qingchengeng.com/'
         
     },
     module: {

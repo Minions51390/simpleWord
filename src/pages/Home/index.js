@@ -10,6 +10,7 @@ import emailpng from './assets/email.png';
 import phonepng from './assets/phone.png';
 import chatpng from './assets/weChat.png';
 import btBg from './assets/btBg.png';
+import police from './assets/police.png';
 import loginpng from './assets/login.png';
 import cirBg from './assets/cirBg.png';
 import useri from './assets/useri.png';
@@ -365,6 +366,10 @@ export default class Login extends React.Component {
           <div className="icp-floor">
             <span>{window.location.href.indexOf("qingchengeng") != -1 ? "黑ICP备 2021005033号-2" : "黑ICP备 2021005033号-1"}</span>
             <span className="icp-floor-copyright">Copyright © 2020 - 2021 奥尊科技 版权所有</span>
+            <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=23010902000386" className="icp-floor-a">
+              <img src={police}/>
+              <span className="icp-floor-police">黑公网安备 23010902000386号</span>
+            </a>
           </div>
           {
             mode === 'login'
