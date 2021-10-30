@@ -77,7 +77,7 @@ export default class Login extends React.Component {
       if (res && res.data && res.data.data) {
         if (res.data.data.redirectUrl) {
           message.success('登录成功');
-          window.location.href = res.data.data.redirectUrl;
+          // window.location.href = res.data.data.redirectUrl;
         }
       }
     }).catch(err => {
@@ -198,7 +198,7 @@ export default class Login extends React.Component {
         return;
       }
       message.success('登录成功!');
-      window.location.href = res.data.data;
+      // window.location.href = res.data.data;
     }).catch(err => {
       message.error('登录失败!');
     });

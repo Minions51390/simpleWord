@@ -55,6 +55,12 @@ export default class Login extends React.Component {
           recitedWordsNumber: 0,
           todayWordsPlan: 6
         },
+        errorWordInfo: {
+          allCount: 100,
+          recitedCount: 80,
+          noRecitedTaskCount: 3,
+          hasTest: true,
+        },
         wordsStatistics: {
           allChoice: '',
           currentAlreadyChoice: '',
@@ -69,7 +75,22 @@ export default class Login extends React.Component {
         storeArr: [],
         isSelectDisable: false,
         checkedTab: 'home',
+        actTab: 1
     };
+  }
+  jumpTextPage() {
+    // @liushufang
+    const {
+      hasTest,
+    } = this.state.errorWordInfo;
+    if (hasTest) {
+      console.log("跳转参数");
+    }
+  }
+  changeTab(val) {
+    this.setState({
+      actTab: val
+    });
   }
   // 蒙层s
   handleModeChange(showOver, e) {
@@ -169,6 +190,13 @@ export default class Login extends React.Component {
 
         this.setState({
           reciteWordInfo: reciteWordInfo,
+        });
+      }
+      if (responseData && responseData.errorWordInfo) {
+        const errorWordInfo = responseData.errorWordInfo;
+
+        this.setState({
+          errorWordInfo: errorWordInfo,
         });
       }
       if (responseData && responseData.wordsStatistics) {
@@ -494,7 +522,8 @@ export default class Login extends React.Component {
       storeArr,
       isSelectDisable,
       testInfo,
-      checkedTab
+      checkedTab,
+      actTab,
     } = this.state;
     // var testInfo = [
     //   {testType: "dailyTest"},
@@ -515,6 +544,12 @@ export default class Login extends React.Component {
       todayWordsPlan,
       choiceWordsMethod
     } = this.state.reciteWordInfo;
+    const {
+      allCount,
+      recitedCount,
+      noRecitedTaskCount,
+      hasTest,
+    } = this.state.errorWordInfo;
 
     const {
       allChoice,
@@ -592,23 +627,47 @@ export default class Login extends React.Component {
                 <div className="left-top">
                   <div className="left-top-shadow"></div>
                   <div className="top-line">
-                    <div className="left-s">学习计划</div>
-                    
+                    <div className={`left-s ${actTab === 1 ? "act" : ""}`} onClick={this.changeTab.bind(this, 1)}>学习计划</div>
+                    <div className={`left-s ${actTab === 2 ? "act" : ""}`} onClick={this.changeTab.bind(this, 2)}>消灭错词</div>
                   </div>
-                  <div className="sec-line">
-                    <div className="sec-item">
-                      <div className="day-count">{todayWordsPlan ? todayWordsPlan : '0'}</div>
-                      <div className="day-text">今日计划背词数</div>
-                    </div>
-                    <div className="sec-item">
-                      <div className="day-count">{recitedWordsNumber ? recitedWordsNumber : '0'}</div>
-                      <div className="day-text">全部已背词数</div>
-                    </div>
-                  </div>
+                  {
+                    actTab === 1 ?
+                      <div className="sec-line">
+                        <div className="sec-item">
+                          <div className="day-count">{todayWordsPlan ? todayWordsPlan : '0'}</div>
+                          <div className="day-text">今日计划背词数</div>
+                        </div>
+                        <div className="sec-item">
+                          <div className="day-count">{recitedWordsNumber ? recitedWordsNumber : '0'}</div>
+                          <div className="day-text">全部已背词数</div>
+                        </div>
+                      </div>
+                    :
+                      <div className="sec-line">
+                        <div className="sec-item sec-err">
+                          <div className="err-i">
+                            <div>累计错词数：</div>
+                            <div className="wei">{allCount}</div>
+                          </div>
+                          <div className="err-i">
+                            <div>待背任务数：</div>
+                            <div className="wei">{noRecitedTaskCount}</div>
+                          </div>
+                          <div className="err-i">
+                            <div>已背错词数：</div>
+                            <div className="wei">{recitedCount}</div>
+                          </div>
+                        </div>
+                        <div className="sec-item err-text">
+                          <div className="tag">每累计错词20个，为您自动生成一份背词任务；错词任务不会影响日常背词计划，要自觉加油哦~</div>
+                        </div>
+                      </div>
+                  }
                   <div className="thr-line">
                     <div className={nextChoiceDay > 0 && testInfo.length == 0 ? 'text-btn' : 'text-btn-none'} onClick={this.handleStart.bind(this)}>
                       开始背词
                     </div>
+                    <div className={`checkit ${!hasTest ? "disable" : ""}`} onClick={this.jumpTextPage.bind(this)}>开始检测</div>
                   </div>
                 </div>
                 <div className="left-title left-sec">
