@@ -85,6 +85,7 @@ export default class Login extends React.Component {
     } = this.state.errorWordInfo;
     if (hasTest) {
       console.log("跳转参数");
+      window.location.href="/#/testWord";
     }
   }
   changeTab(val) {
