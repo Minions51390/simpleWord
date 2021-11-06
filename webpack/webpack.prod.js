@@ -20,7 +20,8 @@ module.exports = smart(webpackCommonConf, {
         // publicPath:'//81.70.229.127/'
         // publicPath:'//47.107.238.126/'
         // publicPath: '//www.qingcheng-eng.com/'
-        publicPath: '//www.qingchengeng.com/'
+        publicPath: '//47.107.238.126:8088/' //二期错题结课测试环境
+        // publicPath: '//www.qingchengeng.com/'
         
     },
     module: {

@@ -48,6 +48,7 @@ export default class ReciteWords extends React.Component {
     this.newWordsCount = null
     this.uniqwordList = []
     this.postStrangeWordListLock = false
+    this.planType = 'usual'
   }
 
   componentWillMount() {
@@ -57,6 +58,7 @@ export default class ReciteWords extends React.Component {
       window.location.reload()
     }
     this.wordLibName = getQueryString('lib_name')
+    this.planType = getQueryString('planType')
     // this.wordLibId = parseInt(getQueryString('lib_id'))
     this.loadWordLib()
   }
@@ -68,7 +70,7 @@ export default class ReciteWords extends React.Component {
   }
 
   loadWordLib() {
-    HTTP.get("/api/plan").then(res => {
+    HTTP.get(`/api/plan?planType=${this.planType}`).then(res => {
       console.log("请求成功:", res.data);
       var wordList = res.data.data.wordList
       var count = res.data.data.count
@@ -103,6 +105,7 @@ export default class ReciteWords extends React.Component {
     values.studyTime = studyTime;
     values.wordsList = this.uniqwordList;
     values.newWordsCount = this.newWordsCount;
+    values.planType = this.planType;
     // values.isFinish = isFinish;
     console.log('Success:', JSON.stringify(values) );
     HTTP.patch("/api/plan",values).then(res => {

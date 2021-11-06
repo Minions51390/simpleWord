@@ -364,7 +364,9 @@ export default class Login extends React.Component {
             <img className="bottom-img" src={btBg}></img>
           </div>
           <div className="icp-floor">
-            <span>{window.location.href.indexOf("qingchengeng") != -1 ? "黑ICP备 2021005033号-2" : "黑ICP备 2021005033号-1"}</span>
+            <a target="_blank" href="https://beian.miit.gov.cn/">
+              <span className="icp-floor-icp">{window.location.href.indexOf("qingchengeng") != -1 ? "黑ICP备 2021005033号-2" : "黑ICP备 2021005033号-1"}</span>
+            </a>
             <span className="icp-floor-copyright">Copyright © 2020 - 2021 奥尊科技 版权所有</span>
             <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=23010902000386" className="icp-floor-a">
               <img src={police}/>

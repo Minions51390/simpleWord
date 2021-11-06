@@ -78,14 +78,23 @@ export default class Login extends React.Component {
         actTab: 1
     };
   }
+  // 错词 开始背词
+  jumpRecitePage() {
+    const {
+      hasTest,
+      noRecitedTaskCount
+    } = this.state.errorWordInfo;
+    if (noRecitedTaskCount > 0 && !hasTest) {
+      window.location.href = `${baseUrl}/#/reciteWords?lib_name=${dictionaryName}&planType=error`;
+    }
+  }
+
   jumpTextPage() {
-    // @liushufang
     const {
       hasTest,
     } = this.state.errorWordInfo;
     if (hasTest) {
-      console.log("跳转参数");
-      window.location.href="/#/testWord";
+      window.location.href = `${baseUrl}/#/testWord?testType=errorWordTest`;
     }
   }
   changeTab(val) {
@@ -664,12 +673,22 @@ export default class Login extends React.Component {
                         </div>
                       </div>
                   }
-                  <div className="thr-line">
-                    <div className={nextChoiceDay > 0 && testInfo.length == 0 ? 'text-btn' : 'text-btn-none'} onClick={this.handleStart.bind(this)}>
-                      开始背词
-                    </div>
-                    <div className={`checkit ${!hasTest ? "disable" : ""}`} onClick={this.jumpTextPage.bind(this)}>开始检测</div>
-                  </div>
+                  
+                    {
+                      actTab === 1 ?
+                      <div className="thr-line">
+                        <div className={nextChoiceDay > 0 && testInfo.length == 0 ? 'text-btn' : 'text-btn-none'} onClick={this.handleStart.bind(this)}>
+                          开始背词
+                        </div>
+                      </div>
+                      :
+                      <div className="thr-line">
+                        <div className={noRecitedTaskCount > 0 && !hasTest ? 'text-btn' : 'text-btn-none'} onClick={this.jumpRecitePage.bind(this)}>
+                          开始背词
+                        </div>
+                        <div className={`checkit ${!hasTest ? "disable" : ""}`} onClick={this.jumpTextPage.bind(this)}>开始检测</div>
+                      </div>
+                    }
                 </div>
                 <div className="left-title left-sec">
                   考核测试
