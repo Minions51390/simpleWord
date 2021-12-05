@@ -242,11 +242,11 @@ export default class TestWords extends React.Component {
           <span className="question_type">{questionType}</span><br/>
           <span className="word_text">{questionList[currentWordIndex].stem}</span><br/>
           <Radio.Group 
-            className="button_content_space_between"
+            className="radio_content_space_between"
             name="radiogroup"
             value={this.state.currentAnswer}
             defaultValue={this.state.currentAnswer}> 
-          {/* <div className="button_content_space_between"> */}
+          {/* <div className="radio_content_space_between"> */}
           {/* //  <Button className={whichKeyDown == 'left' ? "style_button" : null } icon={<ArrowLeftOutlined />} shape="round" onClick={this.onClick.bind(this, "left")}>会
           //     <div className={whichKeyUp == 'left' ? "click-animating-node" : null }></div>
             

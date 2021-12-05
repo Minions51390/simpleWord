@@ -80,6 +80,7 @@ export default class Login extends React.Component {
   }
   // 错词 开始背词
   jumpRecitePage() {
+    const {dictionaryName} = this.state.currentDic;
     const {
       hasTest,
       noRecitedTaskCount
