@@ -881,7 +881,7 @@ export default class Login extends React.Component {
           <div className="dashboard-dom">
             <iframe 
               className="dashboard-iframe" 
-              src="http://47.107.238.126/admin/#/stu"
+              src="/admin/#/stu"
               // src="http://localhost:3006/admin/#/stu/"
               frameborder="no"
               border="0" 
