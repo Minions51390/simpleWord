@@ -439,7 +439,7 @@ export default class ReciteWords extends React.Component {
                     &nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;继续
                   </span>
                 </div>
-                {(currentWord.count > 0 || singleWordTimes > 0) && (
+                {(currentWord.count > 0 || singleWordTimes > 0) && getQueryString("planType") !== "error" && (
                   <div
                     className="space_key"
                     onClick={this.onClick.bind(this, "s")}
