@@ -213,7 +213,7 @@ export default class ReciteWords extends React.Component {
       }
     } else if (event.keyCode == 83) {
       /** s键子 */
-      if (currentWord.count > 1) {
+      if (currentWord.count > 0) {
         if (isFinish) {
           this.postStrangeWordList();
           this.setState({
@@ -246,7 +246,7 @@ export default class ReciteWords extends React.Component {
       }
     } else if (item == "s") {
       /** s键子 */
-      if (currentWord.count > 1) {
+      if (currentWord.count > 0) {
         if (isFinish) {
           this.postStrangeWordList();
           this.setState({
@@ -437,7 +437,7 @@ export default class ReciteWords extends React.Component {
                     &nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;继续
                   </span>
                 </div>
-                {currentWord.count > 1 && (
+                {currentWord.count > 0 && (
                   <div
                     className="space_key"
                     onClick={this.onClick.bind(this, "s")}
