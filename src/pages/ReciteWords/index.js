@@ -197,6 +197,7 @@ export default class ReciteWords extends React.Component {
       currentWord,
       wordList,
       isCurrentWordStrange,
+      singleWordTimes,
       isFinish,
     } = this.state;
     if (event.keyCode == 32) {
@@ -213,7 +214,7 @@ export default class ReciteWords extends React.Component {
       }
     } else if (event.keyCode == 83) {
       /** s键子 */
-      if (currentWord.count > 0) {
+      if (currentWord.count > 0 || singleWordTimes > 0) {
         if (isFinish) {
           this.postStrangeWordList();
           this.setState({
@@ -230,7 +231,7 @@ export default class ReciteWords extends React.Component {
     if (this.audioControler != null && this.audioControler.paused == false) {
       return;
     }
-    const { currentWordIndex, currentWord, wordList, isCurrentWordStrange, isFinish } =
+    const { currentWordIndex, currentWord, wordList, isCurrentWordStrange, isFinish, singleWordTimes } =
       this.state;
     if (item == "space") {
       //空格键
@@ -246,7 +247,7 @@ export default class ReciteWords extends React.Component {
       }
     } else if (item == "s") {
       /** s键子 */
-      if (currentWord.count > 0) {
+      if (currentWord.count > 0 || singleWordTimes > 0) {
         if (isFinish) {
           this.postStrangeWordList();
           this.setState({
@@ -353,6 +354,7 @@ export default class ReciteWords extends React.Component {
       wordList,
       isFinish,
       singleWordMeaningIsVisible,
+      singleWordTimes,
       count,
     } = this.state;
     return (
@@ -437,7 +439,7 @@ export default class ReciteWords extends React.Component {
                     &nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;继续
                   </span>
                 </div>
-                {currentWord.count > 0 && (
+                {(currentWord.count > 0 || singleWordTimes > 0) && (
                   <div
                     className="space_key"
                     onClick={this.onClick.bind(this, "s")}
