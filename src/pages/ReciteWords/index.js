@@ -17,7 +17,7 @@ import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
 import { getQueryString } from "../../utils/stringUtils";
 import HTTP from "../../utils/api.js";
 
-import promise from "../home/assets/promise.png";
+import promise from "../Home/assets/promise.png";
 import whiteBookBg from "../../assets/whiteBookBg.png";
 import backIcon from "../../assets/backIcon.png";
 import spaceIcon from "../../assets/spaceIcon.png";
@@ -117,6 +117,7 @@ export default class ReciteWords extends React.Component {
         this.setState({
           wordList: wordList || [],
           count: count,
+          currentWord: wordList[0]
         });
         this.dateIndex = res.data.data.reciteIndex;
         this.newWordsCount = res.data.data.newWordsCount;
