@@ -8,7 +8,7 @@ import { ArrowLeftOutlined, ArrowRightOutlined} from '@ant-design/icons';
 import {getQueryString} from '../../utils/stringUtils';
 import HTTP from '../../utils/api.js';
 
-import promise from '../home/assets/promise.png';
+import promise from '../Home/assets/promise.png';
 import whiteBookBg from '../../assets/whiteBookBg.png';
 import faultImg from './assets/fault.png';
 import rightImg from './assets/right.png';
