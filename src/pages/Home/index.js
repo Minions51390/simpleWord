@@ -463,6 +463,8 @@ export default class Login extends React.Component {
             <span className="icp-floor-icp">
               {window.location.href.indexOf("qingchengeng") != -1
                 ? "黑ICP备 2021005033号-2"
+                : window.location.href.indexOf("chingchengedu.com") != -1
+                ? "黑ICP备2021005033号-3 "
                 : "黑ICP备 2021005033号-1"}
             </span>
           </a>
