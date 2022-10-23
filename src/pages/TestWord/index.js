@@ -132,7 +132,7 @@ export default class TestWords extends React.Component {
       });
       let isBingo = currentAnswer == questionList[currentWordIndex].solution
       console.log('currentAnswer', currentAnswer )
-      this.recordResult(questionList[currentWordIndex].wordId, isBingo)
+      this.recordResult(questionList[currentWordIndex].wordId, isBingo, currentAnswer)
     } else {
       return
     }
@@ -167,15 +167,15 @@ export default class TestWords extends React.Component {
       });
       let isBingo = currentAnswer == questionList[currentWordIndex].solution
       console.log('currentAnswer', currentAnswer )
-      this.recordResult(questionList[currentWordIndex].wordId, isBingo)
+      this.recordResult(questionList[currentWordIndex].wordId, isBingo, currentAnswer)
     } else {
       return
     }
   }
 
-  recordResult(wordId, isBingo){
+  recordResult(wordId, isBingo, choice){
     this.recordWordList.push(
-      {wordId, result: isBingo}
+      {wordId, result: isBingo, choice}
     )
     console.log("recordResult" , this.recordWordList)
   }
