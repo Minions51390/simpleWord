@@ -10,6 +10,7 @@ import {
   Col,
   Row,
   Progress,
+  Popconfirm,
   message,
 } from "antd";
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
@@ -112,6 +113,7 @@ export default class ReciteWords extends React.Component {
         console.log("请求成功:", res.data);
         var wordList = setListCount(res.data.data.wordList);
         console.log(wordList);
+        // message.info("请跟读发音");
         var count = res.data.data.count;
         //   wordList.length = 20
         this.setState({
@@ -278,6 +280,24 @@ export default class ReciteWords extends React.Component {
     if (this.state.singleWordTimes == 1) {
       this.goNext();
     } else {
+      const { wordList, currentWordIndex } = this.state;
+      if (getQueryString("planType") !== "error") {
+        /** 学习计划 */
+        if (currentWordIndex < 30) {
+          if (wordList[currentWordIndex].count === 0) {
+            message.info("请跟读发音");
+          } else if (wordList[currentWordIndex].count === 1) {
+            message.info("请回想单词释义并跟读发音");
+          } else{
+            message.info("请回想单词释义并跟读发音");
+          }
+        }
+      } else {
+        /** 消灭错词 */
+        if (currentWordIndex < 40) {
+          message.info("请回想单词释义并跟读发音");
+        }
+      }
       this.goSingleNextTime();
     }
     if (this.state.singleWordTimes == 0) {
@@ -329,6 +349,25 @@ export default class ReciteWords extends React.Component {
       this.setState({
         currentWordIndex: this.state.currentWordIndex + 1,
         currentWord: this.state.wordList[this.state.currentWordIndex + 1],
+      }, () => {
+        const { wordList, currentWordIndex } = this.state;
+        if (getQueryString("planType") !== "error") {
+          /** 学习计划 */
+          if (currentWordIndex < 30) {
+            if (wordList[currentWordIndex].count === 0) {
+              message.info("请跟读发音和释义");
+            } else if (wordList[currentWordIndex].count === 1) {
+              message.info("请跟读单词发音和释义");
+            } else {
+              message.info("请跟读单词发音和释义");
+            }
+          }
+        } else {
+          /** 消灭错词 */
+          if (currentWordIndex < 40) {
+            message.info("请跟读发音和释义");
+          }
+        }
       });
     } else {
       this.setState({
@@ -476,10 +515,17 @@ export default class ReciteWords extends React.Component {
             </div>
           )}
         </div>
-        <div className="back_content" onClick={this.backToTransfer.bind(this)}>
-          <img className="back_icon" src={backIcon}></img>
-          <span className="back_text">退出</span>
-        </div>
+        <Popconfirm
+          title="是否确定退出"
+          onConfirm={this.backToTransfer.bind(this)}
+          okText="确认"
+          cancelText="取消"
+        >
+          <div className="back_content">
+            <img className="back_icon" src={backIcon}></img>
+            <span className="back_text">退出</span>
+          </div>
+        </Popconfirm>
       </div>
     );
   }

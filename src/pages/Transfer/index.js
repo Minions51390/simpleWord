@@ -919,6 +919,7 @@ export default class Login extends React.Component {
                       <Input 
                         className="pass-mar"
                         size="large" 
+                        disabled
                         placeholder="请输入您的邮箱" 
                         prefix={<div className="my-icon">邮箱</div>} 
                         onChange={this.onInputEmail.bind(this)} 
