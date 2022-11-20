@@ -114,12 +114,19 @@ export default class ReciteWords extends React.Component {
         var wordList = setListCount(res.data.data.wordList);
         console.log(wordList);
         // message.info("请跟读发音");
+        if (getQueryString("planType") !== "error") {
+          /** 学习计划 */
+          message.info("请跟读发音");
+        } else {
+          /** 消灭错词 */
+          message.info("请回想单词释义并跟读发音");
+        }
         var count = res.data.data.count;
         //   wordList.length = 20
         this.setState({
           wordList: wordList || [],
           count: count,
-          currentWord: wordList[0]
+          currentWord: wordList[0],
         });
         this.dateIndex = res.data.data.reciteIndex;
         this.newWordsCount = res.data.data.newWordsCount;
@@ -211,7 +218,6 @@ export default class ReciteWords extends React.Component {
           whichKeyDown: null,
           whichKeyUp: "space",
         });
-        // this.backToTransfer()
       } else {
         this.onSpaceKeyUp();
       }
@@ -234,8 +240,14 @@ export default class ReciteWords extends React.Component {
     if (this.audioControler != null && this.audioControler.paused == false) {
       return;
     }
-    const { currentWordIndex, currentWord, wordList, isCurrentWordStrange, isFinish, singleWordTimes } =
-      this.state;
+    const {
+      currentWordIndex,
+      currentWord,
+      wordList,
+      isCurrentWordStrange,
+      isFinish,
+      singleWordTimes,
+    } = this.state;
     if (item == "space") {
       //空格键
       if (isFinish) {
@@ -244,7 +256,6 @@ export default class ReciteWords extends React.Component {
           whichKeyDown: null,
           whichKeyUp: "space",
         });
-        // this.backToTransfer()
       } else {
         this.onSpaceKeyUp();
       }
@@ -283,33 +294,31 @@ export default class ReciteWords extends React.Component {
       const { wordList, currentWordIndex } = this.state;
       if (getQueryString("planType") !== "error") {
         /** 学习计划 */
-        if (currentWordIndex < 30) {
-          if (wordList[currentWordIndex].count === 0) {
-            message.info("请跟读发音");
-          } else if (wordList[currentWordIndex].count === 1) {
-            message.info("请回想单词释义并跟读发音");
-          } else{
-            message.info("请回想单词释义并跟读发音");
-          }
+        if (wordList[currentWordIndex].count === 0) {
+          message.info("请跟读发音和释义");
+        } else if (wordList[currentWordIndex].count === 1) {
+          message.info("请跟读单词发音和释义");
+        } else {
+          message.info("请跟读单词发音和释义");
         }
       } else {
         /** 消灭错词 */
-        if (currentWordIndex < 40) {
-          message.info("请回想单词释义并跟读发音");
-        }
+        message.info("请跟读发音和释义");
       }
       this.goSingleNextTime();
     }
-    if (this.state.singleWordTimes == 0) {
-      this.setState({
-        singleWordMeaningIsVisible: false,
-      });
-    } else {
-      this.setState({
-        singleWordMeaningIsVisible: true,
-      });
-    }
-    this.playTts();
+    setTimeout(() => {
+      if (this.state.singleWordTimes == 0) {
+        this.setState({
+          singleWordMeaningIsVisible: false,
+        });
+      } else {
+        this.setState({
+          singleWordMeaningIsVisible: true,
+        });
+      }
+      this.playTts();
+    });
   }
 
   onBreakKeyUp() {
@@ -321,8 +330,18 @@ export default class ReciteWords extends React.Component {
       singleWordTimes: 0,
       wordList: [...preList, ...nextList],
     });
-    this.goNext();
-    console.log(wordList[currentWordIndex]);
+    setTimeout(() => {
+      this.goNext();
+      if (this.state.singleWordTimes == 0) {
+        this.setState({
+          singleWordMeaningIsVisible: false,
+        });
+      } else {
+        this.setState({
+          singleWordMeaningIsVisible: true,
+        });
+      }
+    });
   }
 
   playTts() {
@@ -346,29 +365,28 @@ export default class ReciteWords extends React.Component {
       singleWordTimes: 0,
     });
     if (this.state.currentWordIndex + 1 < this.state.wordList.length) {
-      this.setState({
-        currentWordIndex: this.state.currentWordIndex + 1,
-        currentWord: this.state.wordList[this.state.currentWordIndex + 1],
-      }, () => {
-        const { wordList, currentWordIndex } = this.state;
-        if (getQueryString("planType") !== "error") {
-          /** 学习计划 */
-          if (currentWordIndex < 30) {
+      this.setState(
+        {
+          currentWordIndex: this.state.currentWordIndex + 1,
+          currentWord: this.state.wordList[this.state.currentWordIndex + 1],
+        },
+        () => {
+          const { wordList, currentWordIndex } = this.state;
+          if (getQueryString("planType") !== "error") {
+            /** 学习计划 */
             if (wordList[currentWordIndex].count === 0) {
-              message.info("请跟读发音和释义");
+              message.info("请跟读发音");
             } else if (wordList[currentWordIndex].count === 1) {
-              message.info("请跟读单词发音和释义");
+              message.info("请回想单词释义并跟读发音");
             } else {
-              message.info("请跟读单词发音和释义");
+              message.info("请回想单词释义并跟读发音");
             }
-          }
-        } else {
-          /** 消灭错词 */
-          if (currentWordIndex < 40) {
-            message.info("请跟读发音和释义");
+          } else {
+            /** 消灭错词 */
+            message.info("请回想单词释义并跟读发音");
           }
         }
-      });
+      );
     } else {
       this.setState({
         isFinish: true,
@@ -479,20 +497,21 @@ export default class ReciteWords extends React.Component {
                     &nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;继续
                   </span>
                 </div>
-                {(currentWord.count > 0 || singleWordTimes > 0) && getQueryString("planType") !== "error" && (
-                  <div
-                    className="space_key"
-                    onClick={this.onClick.bind(this, "s")}
-                  >
-                    <span className="radio_text">
-                      按下&nbsp;&nbsp;&nbsp;“&nbsp;&nbsp;&nbsp;
-                    </span>
-                    <img className="s_icon" src={sIcon}></img>
-                    <span className="radio_text">
-                      &nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;跳过
-                    </span>
-                  </div>
-                )}
+                {(currentWord.count > 0 || singleWordTimes > 0) &&
+                  getQueryString("planType") !== "error" && (
+                    <div
+                      className="space_key"
+                      onClick={this.onClick.bind(this, "s")}
+                    >
+                      <span className="radio_text">
+                        按下&nbsp;&nbsp;&nbsp;“&nbsp;&nbsp;&nbsp;
+                      </span>
+                      <img className="s_icon" src={sIcon}></img>
+                      <span className="radio_text">
+                        &nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;跳过
+                      </span>
+                    </div>
+                  )}
               </div>
             )}
           </div>
