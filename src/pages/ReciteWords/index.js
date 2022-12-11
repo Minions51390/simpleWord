@@ -76,11 +76,12 @@ export default class ReciteWords extends React.Component {
       isCurrentWordStrange: null,
       singleWordTimes: 0,
       singleWordMeaningIsVisible: false,
+      staleIndex: 0,
     };
     this.recordWordList = [];
     this.wordLibName = null;
     // this.wordLibId = null
-    this.dateIndex = null;
+    this.dateIndex = 0;
     this.audioControler = null;
     this.startTime = null;
     this.finishTime = null;
@@ -88,6 +89,7 @@ export default class ReciteWords extends React.Component {
     this.uniqwordList = [];
     this.postStrangeWordListLock = false;
     this.planType = "usual";
+    this.isStale = false;
   }
 
   componentWillMount() {
@@ -97,8 +99,8 @@ export default class ReciteWords extends React.Component {
       window.location.reload();
     }
     this.wordLibName = getQueryString("lib_name");
-    this.planType = getQueryString("planType");
-    // this.wordLibId = parseInt(getQueryString('lib_id'))
+    this.planType = getQueryString("planType") || "usual";
+    this.isStale = getQueryString("isStale") === "true" || false;
     this.loadWordLib();
   }
 
@@ -113,13 +115,16 @@ export default class ReciteWords extends React.Component {
         console.log("请求成功:", res.data);
         var wordList = setListCount(res.data.data.wordList);
         console.log(wordList);
-        // message.info("请跟读发音");
         if (getQueryString("planType") !== "error") {
-          /** 学习计划 */
-          message.info("请跟读发音");
+            if (this.dateIndex < 20) {
+                /** 学习计划 */
+                message.info("请跟读发音");
+            }
         } else {
-          /** 消灭错词 */
-          message.info("请回想单词释义并跟读发音");
+            if (this.dateIndex < 10) {
+                /** 消灭错词 */
+                message.info("请回想单词释义并跟读发音");
+            }
         }
         var count = res.data.data.count;
         //   wordList.length = 20
@@ -127,6 +132,8 @@ export default class ReciteWords extends React.Component {
           wordList: wordList || [],
           count: count,
           currentWord: wordList[0],
+          staleIndex: res.data.data.staleIndex,
+          currentWordIndex: res.data.data.staleIndex,
         });
         this.dateIndex = res.data.data.reciteIndex;
         this.newWordsCount = res.data.data.newWordsCount;
@@ -138,7 +145,7 @@ export default class ReciteWords extends React.Component {
     this.startTime = dateObj.getTime();
   }
 
-  postStrangeWordList() {
+  postStrangeWordList(status, fn) {
     /** 清除忽略单词 */
     this.setState({
       ignoreList: [],
@@ -152,18 +159,32 @@ export default class ReciteWords extends React.Component {
     let dateObj = new Date();
     this.finishTime = dateObj.getTime();
     let studyTime = Math.round((this.finishTime - this.startTime) / 1000);
-    console.log("时间", this.finishTime, this.startTime, studyTime);
-    // const {isFinish} = this.state;
     let values = {};
-    values.reciteIndex = this.dateIndex + 1;
-    values.studyTime = studyTime;
-    values.wordsList = this.uniqwordList;
-    values.newWordsCount = this.newWordsCount;
-    values.planType = this.planType;
-    // values.isFinish = isFinish;
+    if (status) {
+        values = {
+            reciteIndex: this.dateIndex + 1,
+            studyTime,
+            wordsList: this.uniqwordList,
+            newWordsCount: this.newWordsCount,
+            planType: this.planType,
+            done: status,
+            latestReciteWord: this.state.currentWordIndex,
+        };
+    } else {
+        values = {
+            reciteIndex: this.dateIndex + 1,
+            studyTime,
+            wordsList: this.uniqwordList,
+            newWordsCount: this.newWordsCount,
+            planType: this.planType,
+            done: status,
+            latestReciteWord: this.state.currentWordIndex,
+        };
+    }
     console.log("Success:", JSON.stringify(values));
     HTTP.patch("/api/plan", values)
       .then((res) => {
+        fn();
         console.log("请求成功:", res);
         this.postStrangeWordListLock = true;
         message.success("新数据已同步");
@@ -213,7 +234,7 @@ export default class ReciteWords extends React.Component {
     if (event.keyCode == 32) {
       //空格键
       if (isFinish) {
-        this.postStrangeWordList();
+        this.postStrangeWordList(true, () => {});
         this.setState({
           whichKeyDown: null,
           whichKeyUp: "space",
@@ -225,7 +246,7 @@ export default class ReciteWords extends React.Component {
       /** s键子 */
       if (currentWord.count > 0 || singleWordTimes > 0) {
         if (isFinish) {
-          this.postStrangeWordList();
+          this.postStrangeWordList(true, () => {});
           this.setState({
             whichKeyDown: null,
             whichKeyUp: "space",
@@ -251,7 +272,7 @@ export default class ReciteWords extends React.Component {
     if (item == "space") {
       //空格键
       if (isFinish) {
-        this.postStrangeWordList();
+        this.postStrangeWordList(true, () => {});
         this.setState({
           whichKeyDown: null,
           whichKeyUp: "space",
@@ -263,7 +284,7 @@ export default class ReciteWords extends React.Component {
       /** s键子 */
       if (currentWord.count > 0 || singleWordTimes > 0) {
         if (isFinish) {
-          this.postStrangeWordList();
+          this.postStrangeWordList(true, () => {});
           this.setState({
             whichKeyDown: null,
             whichKeyUp: "space",
@@ -283,8 +304,13 @@ export default class ReciteWords extends React.Component {
   }
 
   backToTransfer() {
-    window.location.href = `${baseUrl}/#/Transfer`;
-    window.location.reload();
+    /** 上报单词数 */
+    this.postStrangeWordList(false, () => {
+        message.info("当前进度已保存");
+        setTimeout(() => {
+            window.location.href = `${baseUrl}/#/Transfer`;
+        }, 500);
+    });
   }
 
   onSpaceKeyUp() {
@@ -293,17 +319,21 @@ export default class ReciteWords extends React.Component {
     } else {
       const { wordList, currentWordIndex } = this.state;
       if (getQueryString("planType") !== "error") {
-        /** 学习计划 */
-        if (wordList[currentWordIndex].count === 0) {
-          message.info("请跟读发音和释义");
-        } else if (wordList[currentWordIndex].count === 1) {
-          message.info("请跟读单词发音和释义");
-        } else {
-          message.info("请跟读单词发音和释义");
+        if (this.dateIndex < 20) {
+            /** 学习计划 */
+            if (wordList[currentWordIndex].count === 0) {
+                message.info("请跟读发音和释义");
+            } else if (wordList[currentWordIndex].count === 1) {
+                message.info("请跟读单词发音和释义");
+            } else {
+                message.info("请跟读单词发音和释义");
+            }
         }
       } else {
-        /** 消灭错词 */
-        message.info("请跟读发音和释义");
+        if (this.dateIndex < 10) {
+            /** 消灭错词 */
+            message.info("请跟读发音和释义");
+        }
       }
       this.goSingleNextTime();
     }
@@ -373,17 +403,21 @@ export default class ReciteWords extends React.Component {
         () => {
           const { wordList, currentWordIndex } = this.state;
           if (getQueryString("planType") !== "error") {
-            /** 学习计划 */
-            if (wordList[currentWordIndex].count === 0) {
-              message.info("请跟读发音");
-            } else if (wordList[currentWordIndex].count === 1) {
-              message.info("请回想单词释义并跟读发音");
-            } else {
-              message.info("请回想单词释义并跟读发音");
+            if (this.dateIndex < 20) {
+                /** 学习计划 */
+                if (wordList[currentWordIndex].count === 0) {
+                    message.info("请跟读发音");
+                } else if (wordList[currentWordIndex].count === 1) {
+                    message.info("请回想单词释义并跟读发音");
+                } else {
+                    message.info("请回想单词释义并跟读发音");
+                }
             }
           } else {
-            /** 消灭错词 */
-            message.info("请回想单词释义并跟读发音");
+            if (this.dateIndex < 20) {
+                /** 消灭错词 */
+                message.info("请回想单词释义并跟读发音");
+            }
           }
         }
       );
@@ -391,7 +425,7 @@ export default class ReciteWords extends React.Component {
       this.setState({
         isFinish: true,
       });
-      this.postStrangeWordList();
+      this.postStrangeWordList(true, () => {});
       message.success("恭喜你！已完成今日计划~");
     }
   }

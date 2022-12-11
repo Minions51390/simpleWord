@@ -75,19 +75,10 @@ export default class Login extends React.Component {
         storeArr: [],
         isSelectDisable: false,
         checkedTab: 'home',
-        actTab: 1
+        actTab: 1,
+        stale: false,
+        errorStale: false,
     };
-  }
-  // 错词 开始背词
-  jumpRecitePage() {
-    const {dictionaryName} = this.state.currentDic;
-    const {
-      hasTest,
-      noRecitedTaskCount
-    } = this.state.errorWordInfo;
-    if (noRecitedTaskCount > 0 && !hasTest) {
-      window.location.href = `${baseUrl}/#/reciteWords?lib_name=${dictionaryName}&planType=error`;
-    }
   }
 
   jumpTextPage() {
@@ -119,6 +110,7 @@ export default class Login extends React.Component {
   }
   // 开始背词
   handleStart() {
+    const { stale } = this.state;
     const {nextChoiceDay} = this.state.wordsStatistics;
     const {dictionaryName} = this.state.currentDic;
     const {testInfo} = this.state;
@@ -127,10 +119,24 @@ export default class Login extends React.Component {
       return;
     }
     if (nextChoiceDay > 0) {
-      window.location.href = `${baseUrl}/#/reciteWords?lib_name=${dictionaryName}`;
+      window.location.href = `${baseUrl}/#/reciteWords?lib_name=${dictionaryName}&isStale=${stale}`;
     }
     return;
   }
+
+  // 错词 开始背词
+  jumpRecitePage() {
+    const {dictionaryName} = this.state.currentDic;
+    const { errorStale } = this.state;
+    const {
+      hasTest,
+      noRecitedTaskCount
+    } = this.state.errorWordInfo;
+    if (noRecitedTaskCount > 0 && !hasTest) {
+      window.location.href = `${baseUrl}/#/reciteWords?lib_name=${dictionaryName}&planType=error&isStale=${errorStale}`;
+    }
+  }
+
   // 开始选词
   handleChoose(choiceIndex) {
     const {newWord} = this.state.userInfo;
@@ -297,6 +303,28 @@ export default class Login extends React.Component {
     }).catch(err => {
         message.error('个人信息获取失败!');
     });
+  }
+
+  getWordList() {
+    const { actTab } = this.state;
+    HTTP.get(`/api/plan?planType=usual`)
+      .then((res) => {
+        this.setState({
+            stale: res.data.data.stale
+        });
+      })
+      .catch((err) => {
+        console.log("请求失败:", err);
+      });
+    HTTP.get(`/api/plan?planType=error`)
+      .then((res) => {
+        this.setState({
+            errorStale: res.data.data.stale
+        });
+      })
+      .catch((err) => {
+        console.log("请求失败:", err);
+      });
   }
 
   //退出登录
@@ -498,6 +526,7 @@ export default class Login extends React.Component {
 
   componentDidMount() {
     this.getHomeMes();
+    this.getWordList();
   }
 
   _renderItem(testInfo) {
@@ -535,6 +564,8 @@ export default class Login extends React.Component {
       testInfo,
       checkedTab,
       actTab,
+      stale,
+      errorStale,
     } = this.state;
     // var testInfo = [
     //   {testType: "dailyTest"},
@@ -681,12 +712,28 @@ export default class Login extends React.Component {
                         <div className={nextChoiceDay > 0 && testInfo.length == 0 ? 'text-btn' : 'text-btn-none'} onClick={this.handleStart.bind(this)}>
                           开始背词
                         </div>
+                        {
+                            stale ?
+                                <div className={nextChoiceDay > 0 && testInfo.length == 0 ? 'text-btn ml24' : 'text-btn-none ml24'} onClick={this.handleStart.bind(this)}>
+                                    继续背词
+                                </div>
+                            :
+                                <div></div>
+                        }
                       </div>
                       :
                       <div className="thr-line">
                         <div className={noRecitedTaskCount > 0 && !hasTest ? 'text-btn' : 'text-btn-none'} onClick={this.jumpRecitePage.bind(this)}>
                           开始背词
                         </div>
+                        {
+                            errorStale ?
+                                <div className={nextChoiceDay > 0 && testInfo.length == 0 ? 'text-btn ml24' : 'text-btn-none ml24'} onClick={this.jumpRecitePage.bind(this)}>
+                                    继续背词
+                                </div>
+                            :
+                                <div></div>
+                        }
                         <div className={`checkit ${!hasTest ? "disable" : ""}`} onClick={this.jumpTextPage.bind(this)}>开始检测</div>
                       </div>
                     }
