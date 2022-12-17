@@ -109,7 +109,7 @@ export default class Login extends React.Component {
     })
   }
   // 开始背词
-  handleStart() {
+  handleStart(type) {
     const { stale } = this.state;
     const {nextChoiceDay} = this.state.wordsStatistics;
     const {dictionaryName} = this.state.currentDic;
@@ -119,13 +119,17 @@ export default class Login extends React.Component {
       return;
     }
     if (nextChoiceDay > 0) {
-      window.location.href = `${baseUrl}/#/reciteWords?lib_name=${dictionaryName}&isStale=${stale}`;
+        if (type === 'restart') {
+            window.location.href = `${baseUrl}/#/reciteWords?lib_name=${dictionaryName}&isStale=false`;
+        } else {
+            window.location.href = `${baseUrl}/#/reciteWords?lib_name=${dictionaryName}&isStale=${!!stale}`;
+        }
     }
     return;
   }
 
   // 错词 开始背词
-  jumpRecitePage() {
+  jumpRecitePage(type) {
     const {dictionaryName} = this.state.currentDic;
     const { errorStale } = this.state;
     const {
@@ -133,7 +137,11 @@ export default class Login extends React.Component {
       noRecitedTaskCount
     } = this.state.errorWordInfo;
     if (noRecitedTaskCount > 0 && !hasTest) {
-      window.location.href = `${baseUrl}/#/reciteWords?lib_name=${dictionaryName}&planType=error&isStale=${errorStale}`;
+        if (type === 'restart') {
+            window.location.href = `${baseUrl}/#/reciteWords?lib_name=${dictionaryName}&planType=error&isStale=false`;
+        } else {
+            window.location.href = `${baseUrl}/#/reciteWords?lib_name=${dictionaryName}&planType=error&isStale=${!!errorStale}`;
+        }
     }
   }
 
@@ -709,12 +717,12 @@ export default class Login extends React.Component {
                     {
                       actTab === 1 ?
                       <div className="thr-line">
-                        <div className={nextChoiceDay > 0 && testInfo.length == 0 ? 'text-btn' : 'text-btn-none'} onClick={this.handleStart.bind(this)}>
+                        <div className={nextChoiceDay > 0 && testInfo.length == 0 ? 'text-btn' : 'text-btn-none'} onClick={this.handleStart.bind(this, 'restart')}>
                           开始背词
                         </div>
                         {
                             stale ?
-                                <div className={nextChoiceDay > 0 && testInfo.length == 0 ? 'text-btn ml24' : 'text-btn-none ml24'} onClick={this.handleStart.bind(this)}>
+                                <div className={nextChoiceDay > 0 && testInfo.length == 0 ? 'text-btn ml24' : 'text-btn-none ml24'} onClick={this.handleStart.bind(this, 'continue')}>
                                     继续背词
                                 </div>
                             :
@@ -723,12 +731,12 @@ export default class Login extends React.Component {
                       </div>
                       :
                       <div className="thr-line">
-                        <div className={noRecitedTaskCount > 0 && !hasTest ? 'text-btn' : 'text-btn-none'} onClick={this.jumpRecitePage.bind(this)}>
+                        <div className={noRecitedTaskCount > 0 && !hasTest ? 'text-btn' : 'text-btn-none'} onClick={this.jumpRecitePage.bind(this, 'restart')}>
                           开始背词
                         </div>
                         {
                             errorStale ?
-                                <div className={nextChoiceDay > 0 && testInfo.length == 0 ? 'text-btn ml24' : 'text-btn-none ml24'} onClick={this.jumpRecitePage.bind(this)}>
+                                <div className={nextChoiceDay > 0 && testInfo.length == 0 ? 'text-btn ml24' : 'text-btn-none ml24'} onClick={this.jumpRecitePage.bind(this, 'continue')}>
                                     继续背词
                                 </div>
                             :

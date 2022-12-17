@@ -77,6 +77,7 @@ export default class ReciteWords extends React.Component {
       singleWordTimes: 0,
       singleWordMeaningIsVisible: false,
       staleIndex: 0,
+      wordMode: false,
     };
     this.recordWordList = [];
     this.wordLibName = null;
@@ -116,12 +117,12 @@ export default class ReciteWords extends React.Component {
         var wordList = setListCount(res.data.data.wordList);
         console.log(wordList);
         if (getQueryString("planType") !== "error") {
-            if (this.dateIndex < 20) {
+            if (res.data.data.reciteIndex < 20) {
                 /** 学习计划 */
                 message.info("请跟读发音");
             }
         } else {
-            if (this.dateIndex < 10) {
+            if (res.data.data.reciteIndex < 10) {
                 /** 消灭错词 */
                 message.info("请回想单词释义并跟读发音");
             }
@@ -132,8 +133,8 @@ export default class ReciteWords extends React.Component {
           wordList: wordList || [],
           count: count,
           currentWord: wordList[0],
-          staleIndex: res.data.data.staleIndex,
-          currentWordIndex: res.data.data.staleIndex,
+          staleIndex: this.isStale ? res.data.data.staleIndex : 0,
+          currentWordIndex: this.isStale ? res.data.data.staleIndex : 0,
         });
         this.dateIndex = res.data.data.reciteIndex;
         this.newWordsCount = res.data.data.newWordsCount;
@@ -341,10 +342,12 @@ export default class ReciteWords extends React.Component {
       if (this.state.singleWordTimes == 0) {
         this.setState({
           singleWordMeaningIsVisible: false,
+          wordMode: false,
         });
       } else {
         this.setState({
           singleWordMeaningIsVisible: true,
+          wordMode: true,
         });
       }
       this.playTts();
@@ -365,10 +368,12 @@ export default class ReciteWords extends React.Component {
       if (this.state.singleWordTimes == 0) {
         this.setState({
           singleWordMeaningIsVisible: false,
+          wordMode: false,
         });
       } else {
         this.setState({
           singleWordMeaningIsVisible: true,
+          wordMode: true,
         });
       }
     });
@@ -437,6 +442,27 @@ export default class ReciteWords extends React.Component {
     }
   }
 
+  changeWordMode() {
+    this.setState({
+        wordMode: !this.state.wordMode
+    });
+  }
+
+  piaoHong(word) {
+    const data = JSON.parse(JSON.stringify(word));
+    let scale = data.scale;
+    const leftAffix = data.left_affix;
+    const rightAffix = data.right_affix;
+    console.log(scale)
+    if (leftAffix) {
+        scale = scale.replace(leftAffix, `<span style="color: #EE9C39">${leftAffix}</span> `);
+    }
+    if (rightAffix) {
+        scale = scale.replace(rightAffix, ` <span style="color: #EE9C39">${rightAffix}</span>`);
+    }
+    return `<div>${scale}</div>`;
+  }
+
   render() {
     const {
       currentWord,
@@ -448,6 +474,7 @@ export default class ReciteWords extends React.Component {
       singleWordMeaningIsVisible,
       singleWordTimes,
       count,
+      wordMode,
     } = this.state;
     return (
       <div className="recite_wrapper">
@@ -476,7 +503,24 @@ export default class ReciteWords extends React.Component {
             </span>
             <br />
             <span className="word_text">
-              {isFinish ? "success" : wordList[currentWordIndex].text}
+                {
+                    isFinish
+                        ?
+                    "success"
+                        :
+                    (
+                        wordMode
+                            ?
+                        <div
+                            onClick={this.changeWordMode.bind(this)}
+                            dangerouslySetInnerHTML={{__html: this.piaoHong(wordList[currentWordIndex])}}
+                        ></div>
+                            :
+                        <div onClick={this.changeWordMode.bind(this)}>
+                            { wordList[currentWordIndex].text }
+                        </div>
+                    )
+                }
             </span>
             <br />
             <div className="word_meaning_wrapper">
