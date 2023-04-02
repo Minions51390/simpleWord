@@ -31,6 +31,7 @@ export default class TestWords extends React.Component {
       isFinish: false,
     };
     this.testType = null
+	this.paperId = 1;
     this.recordWordList = [];
     this.postStrangeWordListLock = false
   }
@@ -41,7 +42,8 @@ export default class TestWords extends React.Component {
       window.location.href = `${baseUrl}/#/Transfer`;
       window.location.reload()
     }
-    this.testType = getQueryString('testType')
+    this.testType = getQueryString('testType');
+	this.paperId = +(getQueryString('paperId') || 0);
     this.loadQuestionsList()
   }
   
@@ -51,9 +53,10 @@ export default class TestWords extends React.Component {
   }
 
   loadQuestionsList() {
-    HTTP.get("/api/test", {
+    HTTP.get("/plan/test-paper", {
 		params: {
 			testType: this.testType,
+			paperId: this.paperId,
 			}
 	}).then(res => {
       console.log("test 请求成功:", res.data);
@@ -82,10 +85,10 @@ export default class TestWords extends React.Component {
 	  const {count} = this.state;
     let values = {};
     values.testType = this.testType;
+	values.paperId = this.paperId;
     values.testPaper = this.recordWordList;
-    values.subjectCount = count;
     console.log('postStrangeWordList Success:', JSON.stringify(values));
-    HTTP.post("/api/test",values).then(res => {
+    HTTP.post("/plan/test-paper", values).then(res => {
       console.log("postStrangeWordList 请求成功:", res);
         // window.location.href = `${baseUrl}/#/Transfer`;
         // window.location.reload()
@@ -132,7 +135,7 @@ export default class TestWords extends React.Component {
       });
       let isBingo = currentAnswer == questionList[currentWordIndex].solution
       console.log('currentAnswer', currentAnswer )
-      this.recordResult(questionList[currentWordIndex].wordId, isBingo, currentAnswer)
+      this.recordResult(questionList[currentWordIndex].sId, isBingo, currentAnswer)
     } else {
       return
     }
@@ -167,15 +170,15 @@ export default class TestWords extends React.Component {
       });
       let isBingo = currentAnswer == questionList[currentWordIndex].solution
       console.log('currentAnswer', currentAnswer )
-      this.recordResult(questionList[currentWordIndex].wordId, isBingo, currentAnswer)
+      this.recordResult(questionList[currentWordIndex].sId, isBingo, currentAnswer)
     } else {
       return
     }
   }
 
-  recordResult(wordId, isBingo, choice){
+  recordResult(sId, isBingo, choice){
     this.recordWordList.push(
-      {wordId, result: isBingo, choice}
+      {sId, result: isBingo, choice}
     )
     console.log("recordResult" , this.recordWordList)
   }
@@ -207,11 +210,15 @@ export default class TestWords extends React.Component {
 
   render() {
     const {currentWordIndex, questionList, currentAnswer, isShowAnswer, count, isFinish, whichKeyUp, whichKeyDown} = this.state;
-	let testTypeText = '' 
-      if(this.testType == 'dailyTest') {
+	let testTypeText = '';
+	if(this.testType == 'testPaper') {
         testTypeText = '当日小测'
-      } else if(this.testType == 'specialTest') {
+      } else if(this.testType == 'stageTestPaper') {
         testTypeText = '阶段考试'
+      } else if (this.testType == 'errorTestPaper') {
+		testTypeText = '错题考试';
+	  } else {
+		testTypeText = '试题考试';
 	  }
 	let questionType = ''
 	if (questionList[currentWordIndex] && questionList[currentWordIndex].type == 'en-to-ch') {

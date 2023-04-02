@@ -80,7 +80,7 @@ export default class Choose extends React.Component {
     
     const key = 'updatable'
     message.loading({ content: 'Loading...', key});
-    HTTP.get('/api/dictionary/words', {
+    HTTP.get('/material/word/list', {
       params: {
         startIndex: choiceIndex,
         dicId: wordLibId,
@@ -121,7 +121,7 @@ export default class Choose extends React.Component {
     values.strangeWordList = this.recordWordList;
     values.latestViewWordIndex = latestViewWordIndex;
     console.log('Success:', JSON.stringify(values));
-    HTTP.post("/api/plan",values).then(res => {
+    HTTP.post("/plan/words",values).then(res => {
       console.log("请求成功:", res);
       // message.success('新数据已同步');
       // this.postStrangeWordListLock = true

@@ -109,7 +109,7 @@ export default class Login extends React.Component {
     delete values.latest_achievement;
     delete values.qq_number;
     console.log('Success:', values);
-    HTTP.post("/api/profile", values).then(res => {
+    HTTP.post("/profile/user", values).then(res => {
         message.success('设置成功!');
         window.location.href = `${baseUrl}/#/chooseStore`;
     }).catch(err => {
@@ -121,7 +121,7 @@ export default class Login extends React.Component {
     console.log('Failed:', errorInfo);
   }
   componentWillMount() {
-    HTTP.get("/api/profile")
+    HTTP.get("/profile/user")
     .then(res => {
         console.log(res);
         if (res && res.data && res.data.msg) {

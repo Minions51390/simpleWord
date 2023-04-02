@@ -48,8 +48,6 @@ export default class Login extends React.Component {
           dictionaryName: '',
           describe: '',
           picture: '',
-          isRecite: false,
-          haveRecite: false,
         },
         reciteWordInfo: {
           recitedWordsNumber: 0,
@@ -59,7 +57,6 @@ export default class Login extends React.Component {
           allCount: 100,
           recitedCount: 80,
           noRecitedTaskCount: 3,
-          hasTest: true,
         },
         wordsStatistics: {
           allChoice: '',
@@ -81,13 +78,45 @@ export default class Login extends React.Component {
     };
   }
 
+  canErrorJump() {
+	const {
+		testInfo,
+    } = this.state;
+	for (let index = 0; index < testInfo.length; index++) {
+		if (testInfo[index].testType === "errorTestPaper") {
+			return true;
+		}
+	}
+	return false;
+  }
+
+  findTextType(testType) {
+	const {
+		testInfo,
+    } = this.state;
+	for (let index = 0; index < testInfo.length; index++) {
+		if (testInfo[index].testType === testType) {
+			return true;
+		}
+	}
+	return false;
+  }
+
   jumpTextPage() {
     const {
-      hasTest,
-    } = this.state.errorWordInfo;
-    if (hasTest) {
-      window.location.href = `${baseUrl}/#/testWord?testType=errorWordTest`;
-    }
+		testInfo,
+    } = this.state;
+	let errorTextObj = {};
+	for (let index = 0; index < testInfo.length; index++) {
+		if (testInfo[index].testType === "errorTestPaper") {
+			errorTextObj = testInfo[index];
+			break;
+		}
+	}
+	if (!errorTextObj.paperId) {
+		return;
+	}
+    window.location.href = `${baseUrl}/#/testWord?testType=${errorTextObj.testType}&paperId=${errorTextObj.paperId}`;
   }
   changeTab(val) {
     this.setState({
@@ -113,8 +142,7 @@ export default class Login extends React.Component {
     const { stale } = this.state;
     const {nextChoiceDay} = this.state.wordsStatistics;
     const {dictionaryName} = this.state.currentDic;
-    const {testInfo} = this.state;
-    if (testInfo.length !== 0) {
+    if (!this.findTextType('testPaper')) {
       message.info('请先完成测验~');
       return;
     }
@@ -133,10 +161,11 @@ export default class Login extends React.Component {
     const {dictionaryName} = this.state.currentDic;
     const { errorStale } = this.state;
     const {
-      hasTest,
       noRecitedTaskCount
     } = this.state.errorWordInfo;
-    if (noRecitedTaskCount > 0 && !hasTest) {
+	const {
+    } = this.state;
+    if (noRecitedTaskCount > 0 && !this.findTextType('errorTestPaper')) {
         if (type === 'restart') {
             window.location.href = `${baseUrl}/#/reciteWords?lib_name=${dictionaryName}&planType=error&isStale=false`;
         } else {
@@ -160,10 +189,10 @@ export default class Login extends React.Component {
   }
 
   // 开始测试
-  handleTest(testType) {
+  handleTest(testType, paperId) {
     // const {newWord} = this.state.userInfo;
     // const {dictionaryId, dictionaryName} = this.state.currentDic;
-    window.location.href = `${baseUrl}/#/testWord?testType=${testType}`;
+    window.location.href = `${baseUrl}/#/testWord?testType=${testType}&paperId=${paperId}`;
     // if(!newWord) {
     //   this.setState({ 
     //     showOver: true
@@ -175,7 +204,7 @@ export default class Login extends React.Component {
   }
   // 获取首页信息
   getHomeMes(dicId) {
-    HTTP.get("/api/home", {
+    HTTP.get("/plan/info", {
       params: {
         dicId: dicId
       }
@@ -238,7 +267,7 @@ export default class Login extends React.Component {
   }
   // 获取词库信息
   getLib() {
-    HTTP.get("/api/dictionary/info").then(res => {
+    HTTP.get("/material/dictionary/list").then(res => {
       if (!res && !res.data && res.data.state == null) {
         return
       }
@@ -256,7 +285,7 @@ export default class Login extends React.Component {
           storeArr: datas,
         })
       }
-      console.log("/api/dictionary/info", res);
+      console.log("/material/dictionary/list", res);
     }).catch(err => {
       message.error('服务器开小差了')
       console.log(err);
@@ -264,7 +293,7 @@ export default class Login extends React.Component {
   }
   // 获取用户信息
   getMes() {
-    HTTP.get("/api/profile")
+    HTTP.get("/profile/user")
     .then(res => {
         if (!res && !res.data && res.data.state == null) {
           message.error('服务器开小差了')
@@ -315,19 +344,19 @@ export default class Login extends React.Component {
 
   getWordList() {
     const { actTab } = this.state;
-    HTTP.get(`/api/plan?planType=usual`)
+    HTTP.get(`/plan/recite-paper?planType=usual`)
       .then((res) => {
         this.setState({
-            stale: res.data.data.stale
+            stale: res.data.data.startIndex > 0
         });
       })
       .catch((err) => {
         console.log("请求失败:", err);
       });
-    HTTP.get(`/api/plan?planType=error`)
+    HTTP.get(`/plan/recite-paper?planType=error`)
       .then((res) => {
         this.setState({
-            errorStale: res.data.data.stale
+            errorStale: res.data.data.startIndex > 0
         });
       })
       .catch((err) => {
@@ -405,7 +434,7 @@ export default class Login extends React.Component {
       message.error('每日背词数不能大于1000！');
       return;
     }
-    HTTP.post("/api/profile", {
+    HTTP.post("/profile/user", {
       realName: realName,
       province: province,
       city: city,
@@ -538,14 +567,18 @@ export default class Login extends React.Component {
   }
 
   _renderItem(testInfo) {
-    var testListBox = []
+    var testListBox = [];
     testInfo.forEach((value, index) => {
       let testTypeText = '' 
-      if(value.testType == 'dailyTest') {
+      if(value.testType == 'testPaper') {
         testTypeText = '当日小测'
-      } else if(value.testType == 'specialTest') {
+      } else if(value.testType == 'stageTestPaper') {
         testTypeText = '阶段考试'
-      }
+      } else if (value.testType == 'errorTestPaper') {
+		testTypeText = '错题考试';
+	  } else {
+		testTypeText = '试题考试';
+	  }
 
       testListBox.push(<div key={'item' + index}>
       <div className="test-title">
@@ -555,7 +588,7 @@ export default class Login extends React.Component {
         考核完成后方可继续背词
       </div>
       <div className="thr-line">
-        <div className="test-btn" onClick={this.handleTest.bind(this, value.testType)}>
+        <div className="test-btn" onClick={this.handleTest.bind(this, value.testType, value.paperId)}>
           开始测验
         </div>
       </div>
@@ -575,17 +608,12 @@ export default class Login extends React.Component {
       stale,
       errorStale,
     } = this.state;
-    // var testInfo = [
-    //   {testType: "dailyTest"},
-    //   {testType: "specialTest"}
-    // ]
+
     const {
       count,
       dictionaryId,
       dictionaryName,
       describe,
-      isRecite,
-      haveRecite,
       picture,
     } = this.state.currentDic;
 
@@ -598,7 +626,6 @@ export default class Login extends React.Component {
       allCount,
       recitedCount,
       noRecitedTaskCount,
-      hasTest,
     } = this.state.errorWordInfo;
 
     const {
@@ -717,12 +744,12 @@ export default class Login extends React.Component {
                     {
                       actTab === 1 ?
                       <div className="thr-line">
-                        <div className={nextChoiceDay > 0 && testInfo.length == 0 ? 'text-btn' : 'text-btn-none'} onClick={this.handleStart.bind(this, 'restart')}>
+                        <div className={nextChoiceDay > 0 && !this.findTextType('testPaper') ? 'text-btn' : 'text-btn-none'} onClick={this.handleStart.bind(this, 'restart')}>
                           开始背词
                         </div>
                         {
                             stale ?
-                                <div className={nextChoiceDay > 0 && testInfo.length == 0 ? 'text-btn ml24' : 'text-btn-none ml24'} onClick={this.handleStart.bind(this, 'continue')}>
+                                <div className={nextChoiceDay > 0 && !this.findTextType('testPaper') ? 'text-btn ml24' : 'text-btn-none ml24'} onClick={this.handleStart.bind(this, 'continue')}>
                                     继续背词
                                 </div>
                             :
@@ -731,18 +758,18 @@ export default class Login extends React.Component {
                       </div>
                       :
                       <div className="thr-line">
-                        <div className={noRecitedTaskCount > 0 && !hasTest ? 'text-btn' : 'text-btn-none'} onClick={this.jumpRecitePage.bind(this, 'restart')}>
+                        <div className={noRecitedTaskCount > 0 && !this.findTextType('errorTestPaper') ? 'text-btn' : 'text-btn-none'} onClick={this.jumpRecitePage.bind(this, 'restart')}>
                           开始背词
                         </div>
                         {
                             errorStale ?
-                                <div className={nextChoiceDay > 0 && testInfo.length == 0 ? 'text-btn ml24' : 'text-btn-none ml24'} onClick={this.jumpRecitePage.bind(this, 'continue')}>
+                                <div className={nextChoiceDay > 0 && !this.findTextType('errorTestPaper') ? 'text-btn ml24' : 'text-btn-none ml24'} onClick={this.jumpRecitePage.bind(this, 'continue')}>
                                     继续背词
                                 </div>
                             :
                                 <div></div>
                         }
-                        <div className={`checkit ${!hasTest ? "disable" : ""}`} onClick={this.jumpTextPage.bind(this)}>开始检测</div>
+                        <div className={`checkit ${!this.canErrorJump(testInfo) ? "disable" : ""}`} onClick={this.jumpTextPage.bind(this)}>开始检测</div>
                       </div>
                     }
                 </div>
@@ -920,7 +947,7 @@ export default class Login extends React.Component {
                     (
                       <div>
                           <div className="thr-line">
-                            <div className={isRecite == haveRecite ? 'text-btn' : 'text-btn-none'} onClick={this.handleChoose.bind(this, choiceIndex)}>
+                            <div className={'text-btn'} onClick={this.handleChoose.bind(this, choiceIndex)}>
                               开始选词
                             </div>
                           </div>

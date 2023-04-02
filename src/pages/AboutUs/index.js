@@ -61,7 +61,7 @@ export default class About extends React.Component {
   }
   // 获取用户信息
   getMes() {
-    HTTP.get("/api/profile")
+    HTTP.get("/profile/user")
     .then(res => {
       if (!res && !res.data && res.data.state == null) {
         return

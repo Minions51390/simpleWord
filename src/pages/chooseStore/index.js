@@ -150,7 +150,7 @@ export default class Login extends React.Component {
   };
 
   componentWillMount() {
-    HTTP.get("/api/profile")
+    HTTP.get("/profile/user")
     .then(res => {
       console.log("请求成功:", res.data);
       if (!(res && res.data && res.data.msg && res.data.msg.email)) {

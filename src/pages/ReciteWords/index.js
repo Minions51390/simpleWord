@@ -76,8 +76,9 @@ export default class ReciteWords extends React.Component {
       isCurrentWordStrange: null,
       singleWordTimes: 0,
       singleWordMeaningIsVisible: false,
-      staleIndex: 0,
+      startIndex: 0,
       wordMode: false,
+	  recitePaperId: 0,
     };
     this.recordWordList = [];
     this.wordLibName = null;
@@ -111,7 +112,7 @@ export default class ReciteWords extends React.Component {
   }
 
   loadWordLib() {
-    HTTP.get(`/api/plan?planType=${this.planType}`)
+    HTTP.get(`/plan/recite-paper?planType=${this.planType}`)
       .then((res) => {
         console.log("请求成功:", res.data);
         var wordList = setListCount(res.data.data.wordList);
@@ -130,11 +131,12 @@ export default class ReciteWords extends React.Component {
         var count = res.data.data.count;
         //   wordList.length = 20
         this.setState({
+		  recitePaperId: res.data.data.recitePaperId,
           wordList: wordList || [],
           count: count,
           currentWord: wordList[0],
-          staleIndex: this.isStale ? res.data.data.staleIndex : 0,
-          currentWordIndex: this.isStale ? res.data.data.staleIndex : 0,
+          startIndex: this.isStale ? res.data.data.startIndex : 0,
+          currentWordIndex: this.isStale ? res.data.data.startIndex : 0,
         });
         this.dateIndex = res.data.data.reciteIndex;
         this.newWordsCount = res.data.data.newWordsCount;
@@ -163,27 +165,21 @@ export default class ReciteWords extends React.Component {
     let values = {};
     if (status) {
         values = {
-            reciteIndex: this.dateIndex + 1,
+            recitePaperId: this.state.recitePaperId,
             studyTime,
-            wordsList: this.uniqwordList,
-            newWordsCount: this.newWordsCount,
-            planType: this.planType,
             done: status,
             latestReciteWord: this.state.currentWordIndex,
         };
     } else {
         values = {
-            reciteIndex: this.dateIndex + 1,
+            recitePaperId: this.state.recitePaperId,
             studyTime,
-            wordsList: this.uniqwordList,
-            newWordsCount: this.newWordsCount,
-            planType: this.planType,
             done: status,
             latestReciteWord: this.state.currentWordIndex,
         };
     }
     console.log("Success:", JSON.stringify(values));
-    HTTP.patch("/api/plan", values)
+    HTTP.patch("/plan/recite-paper", values)
       .then((res) => {
         fn();
         console.log("请求成功:", res);
