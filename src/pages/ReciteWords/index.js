@@ -154,6 +154,9 @@ export default class ReciteWords extends React.Component {
       ignoreList: [],
     });
     if (this.postStrangeWordListLock) {
+		if (!status) {
+			window.location.href = `${baseUrl}/#/Transfer`;
+		}
       message.success("无需重复提交");
       return;
     }
@@ -168,14 +171,14 @@ export default class ReciteWords extends React.Component {
             recitePaperId: this.state.recitePaperId,
             studyTime,
             done: status,
-            latestReciteWord: this.state.currentWordIndex,
+            latestReciteWordIndex: this.state.currentWordIndex,
         };
     } else {
         values = {
             recitePaperId: this.state.recitePaperId,
             studyTime,
             done: status,
-            latestReciteWord: this.state.currentWordIndex,
+            latestReciteWordIndex: this.state.currentWordIndex,
         };
     }
     console.log("Success:", JSON.stringify(values));

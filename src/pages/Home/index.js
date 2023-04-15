@@ -71,7 +71,7 @@ export default class Login extends React.Component {
   }
   // 获取用户身份及是否登录
   getMes() {
-    HTTP.get("/api/role")
+    HTTP.get("/profile/role")
       .then((res) => {
         if (!res && !res.data && res.data.state == null) {
           return;

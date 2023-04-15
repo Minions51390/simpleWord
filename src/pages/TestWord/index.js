@@ -88,7 +88,7 @@ export default class TestWords extends React.Component {
 	values.paperId = this.paperId;
     values.testPaper = this.recordWordList;
     console.log('postStrangeWordList Success:', JSON.stringify(values));
-    HTTP.post("/plan/test-paper", values).then(res => {
+    HTTP.patch("/plan/test-paper", values).then(res => {
       console.log("postStrangeWordList 请求成功:", res);
         // window.location.href = `${baseUrl}/#/Transfer`;
         // window.location.reload()
