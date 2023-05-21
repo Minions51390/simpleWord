@@ -14,7 +14,9 @@ import {
   Row,
   Radio,
   message,
+  Upload,
 } from "antd";
+import ImgCrop from "antd-img-crop";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import baseUrl from "../../utils/config.js";
 import promise from "./assets/promise.png";
@@ -26,6 +28,7 @@ import btBg from "./assets/btBg.png";
 import cirBg from "./assets/cirBg.png";
 import GET4 from "./assets/CET-4.png";
 import userIcon from "./assets/userIcon.png";
+import wechat from "./assets/qiyewechat.png";
 const wordCountArr = [6, 9, 12, 15, 18, 21, 24, 27, 30];
 const emailReg = new RegExp(
   "^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$"
@@ -40,6 +43,7 @@ const contentStyle = {
   textAlign: "center",
   background: "#364d79",
 };
+const { TextArea } = Input;
 export default class Login extends React.Component {
   constructor(props) {
     super(props);
@@ -89,6 +93,12 @@ export default class Login extends React.Component {
       actTab: 1,
       stale: false,
       errorStale: false,
+      showTips: false,
+      feedbackModal: false,
+      upDataModal: false,
+      weixin: "",
+      qus: "",
+      fileList: [],
     };
   }
 
@@ -595,6 +605,103 @@ export default class Login extends React.Component {
     });
   }
 
+  hoverHeader() {
+    this.setState({
+      showTips: true,
+    });
+  }
+
+  blurHeader() {
+    this.setState({
+      showTips: false,
+    });
+  }
+
+  showFeedbackModal() {
+    this.setState({
+      feedbackModal: true,
+    });
+  }
+
+  hideFeedbackModal() {
+    this.setState({
+      feedbackModal: false,
+    });
+  }
+
+  confirmFeed(e) {
+    e.stopPropagation();
+    this.setState({
+      upDataModal: true,
+    });
+  }
+
+  canStopPropagation(e) {
+    e.stopPropagation();
+  }
+
+  onWeixinChange(event) {
+    this.setState({
+      weixin: event.target.value,
+    });
+  }
+
+  onQusChange(event) {
+    this.setState({
+      qus: event.target.value,
+    });
+  }
+
+  doUpDataModal() {
+    this.setState({
+      upDataModal: false,
+      feedbackModal: false,
+    });
+  }
+
+  uploadDate() {
+    const { weixin, qus } = this.state;
+    HTTP.post("/feedback", {
+      tp: 3,
+      weixin,
+      desc: qus,
+      pictures: [
+        "https://img0.baidu.com/it/u=4162443464,2854908495&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500",
+      ],
+    });
+    message.info("已提交~");
+  }
+
+  moduleUpdate() {
+    this.uploadDate();
+    this.doUpDataModal();
+  }
+
+  //   onChange(fileList) {
+  //     this.setState({
+  //       fileList,
+  //     });
+  //   }
+
+  //   async onPreview(file) {
+  //     let src = file.url;
+  //     if (!src) {
+  //       src = await new Promise((resolve) => {
+  //         const reader = new FileReader();
+  //         reader.readAsDataURL(file.originFileObj);
+  //         reader.onload = () => resolve(reader.result);
+  //       });
+  //     }
+  //     const image = new Image();
+  //     image.src = src;
+  //     const imgWindow = window.open(src);
+  //     imgWindow?.document.write(image.outerHTML);
+  //   }
+
+  //   customRequest(file) {
+  //     console.log(file);
+  //   }
+
   async componentDidMount() {
     await this.getHomeMes();
     setTimeout(() => {
@@ -648,6 +755,12 @@ export default class Login extends React.Component {
       actTab,
       stale,
       errorStale,
+      showTips,
+      feedbackModal,
+      upDataModal,
+      weixin,
+      qus,
+      fileList,
     } = this.state;
 
     const { count, dictionaryId, dictionaryName, describe, picture } =
@@ -732,10 +845,25 @@ export default class Login extends React.Component {
               关于我们
             </Link>
           </div>
-          <div className="header_right">
-            <div onClick={this.handleModeChange.bind(this, true)}>
+          <div
+            className="header_right"
+            onMouseEnter={this.hoverHeader.bind(this)}
+            onMouseLeave={this.blurHeader.bind(this)}
+          >
+            <div className="div">
               <img className="login-icon" src={userIcon}></img>
-              <div className="login">Hi，{realName}</div>
+              <div className="login div">Hi，{realName}</div>
+            </div>
+            <div className={showTips ? "right_hover" : "right_hover none"}>
+              <div
+                className="item"
+                onClick={this.handleModeChange.bind(this, true)}
+              >
+                个人信息
+              </div>
+              <div className="item" onClick={this.showFeedbackModal.bind(this)}>
+                建议&反馈
+              </div>
             </div>
           </div>
         </div>
@@ -1180,6 +1308,70 @@ export default class Login extends React.Component {
           </div>
         ) : (
           <div></div>
+        )}
+        {feedbackModal ? (
+          <div className="feed-bg" onClick={this.hideFeedbackModal.bind(this)}>
+            <div
+              className="feed-area-top"
+              onClick={(e) => this.canStopPropagation(e)}
+            >
+              <div className="title">建议&反馈</div>
+              {upDataModal ? (
+                <div className="warp">
+                  <div className="text">您的微信：</div>
+                  <Input
+                    style={{ width: 400 }}
+                    value={weixin}
+                    onChange={this.onWeixinChange.bind(this)}
+                  />
+                  <div className="text">描述您的问题:</div>
+                  <TextArea
+                    value={qus}
+                    showCount
+                    maxLength={400}
+                    style={{ height: 80, width: 400, resize: "none" }}
+                    onChange={this.onQusChange.bind(this)}
+                  />
+                  {/* <div className="text">相关图片:</div>
+                  <Upload
+                      action=""
+                      listType="picture-card"
+                      fileList={fileList}
+                      method="post"
+                      onChange={this.onChange.bind(this)}
+                      onPreview={this.onPreview.bind(this)}
+                      customRequest={this.customRequest.bind(this)}
+                    >
+                      {fileList.length < 10 && "+ Upload"}
+                    </Upload> */}
+                  <div className="tools">
+                    <div
+                      className="close"
+                      onClick={this.doUpDataModal.bind(this)}
+                    >
+                      关闭
+                    </div>
+                    <div className="btn" onClick={this.moduleUpdate.bind(this)}>
+                      提交
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="warp">
+                  <div className="content">
+                    如果您在使用本软件的过程中，遇到了什么问如果您在使用本软件的过程中，遇到了什么问题，请添加下方官方客服微信，并向客服描述您所遇到的问题，我们将积极为您解决。感谢您对支持！
+                  </div>
+                  <img className="wechat-icon" src={wechat}></img>
+                  <div className="tips">微信扫一扫</div>
+                  <div className="btn" onClick={(e) => this.confirmFeed(e)}>
+                    确定
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div> </div>
         )}
       </div>
     );

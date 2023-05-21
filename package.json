@@ -51,6 +51,7 @@
     },
     "dependencies": {
         "@loadable/component": "^5.13.1",
+        "antd-img-crop": "^4.12.2",
         "antd-mobile": "^2.3.4",
         "react": "^16.13.1",
         "react-dom": "^16.13.1",
