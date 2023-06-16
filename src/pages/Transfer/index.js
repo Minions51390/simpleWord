@@ -16,7 +16,6 @@ import {
   message,
   Upload,
 } from "antd";
-import ImgCrop from "antd-img-crop";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import baseUrl from "../../utils/config.js";
 import promise from "./assets/promise.png";
@@ -70,6 +69,7 @@ export default class Login extends React.Component {
       reciteWordInfo: {
         recitedWordsNumber: 0,
         todayWordsPlan: 6,
+        canRecite: true,
       },
       errorWordInfo: {
         allCount: 100,
@@ -80,7 +80,6 @@ export default class Login extends React.Component {
         allChoice: "",
         currentAlreadyChoice: "",
         currentRecite: "",
-        canRecite: true,
         surplusChoice: "",
         choiceIndex: 0,
         choiceWordsMethod: "arbitrarily",
@@ -158,7 +157,7 @@ export default class Login extends React.Component {
   // 开始背词
   handleStart(type) {
     const { stale } = this.state;
-    const { canRecite } = this.state.wordsStatistics;
+    const { canRecite } = this.state.reciteWordInfo;
     const { dictionaryName } = this.state.currentDic;
     if (this.findTextType("testPaper")) {
       message.info("请先完成测验~");
@@ -178,9 +177,8 @@ export default class Login extends React.Component {
   jumpRecitePage(type) {
     const { dictionaryName } = this.state.currentDic;
     const { errorStale } = this.state;
-    const { noRecitedTaskCount } = this.state.errorWordInfo;
-    const {} = this.state;
-    if (noRecitedTaskCount > 0 && !this.findTextType("errorTestPaper")) {
+    const { ewCanRecite } = this.state.errorWordInfo;
+    if (ewCanRecite) {
       if (type === "restart") {
         window.location.href = `${baseUrl}/#/reciteWords?lib_name=${dictionaryName}&planType=error&isStale=false`;
       } else {
@@ -365,7 +363,7 @@ export default class Login extends React.Component {
   getWordList() {
     if (
       !this.findTextType("testPaper") &&
-      this.state.wordsStatistics.canRecite
+      this.state.reciteWordInfo.canRecite
     ) {
       HTTP.get(`/plan/recite-paper?planType=usual`)
         .then((res) => {
@@ -766,16 +764,15 @@ export default class Login extends React.Component {
     const { count, dictionaryId, dictionaryName, describe, picture } =
       this.state.currentDic;
 
-    const { recitedWordsNumber, todayWordsPlan, choiceWordsMethod } =
+    const { recitedWordsNumber, todayWordsPlan, choiceWordsMethod, canRecite } =
       this.state.reciteWordInfo;
-    const { allCount, recitedCount, noRecitedTaskCount } =
+    const { allCount, recitedCount, noRecitedTaskCount, ewCanRecite } =
       this.state.errorWordInfo;
 
     const {
       allChoice,
       currentAlreadyChoice,
       currentRecite,
-      canRecite,
       surplusChoice,
       choiceIndex,
     } = this.state.wordsStatistics;
@@ -931,9 +928,7 @@ export default class Login extends React.Component {
                     <div className="thr-line">
                       <div
                         className={
-                          canRecite &&
-                          !this.findTextType("testPaper") &&
-                          testInfo.length
+                          canRecite
                             ? "text-btn"
                             : "text-btn-none"
                         }
@@ -944,9 +939,7 @@ export default class Login extends React.Component {
                       {stale ? (
                         <div
                           className={
-                            canRecite &&
-                            !this.findTextType("testPaper") &&
-                            testInfo.length
+                            canRecite
                               ? "text-btn ml24"
                               : "text-btn-none ml24"
                           }
@@ -962,9 +955,7 @@ export default class Login extends React.Component {
                     <div className="thr-line">
                       <div
                         className={
-                          noRecitedTaskCount > 0 &&
-                          !this.findTextType("errorTestPaper") &&
-                          testInfo.length
+                          ewCanRecite
                             ? "text-btn"
                             : "text-btn-none"
                         }
@@ -975,9 +966,7 @@ export default class Login extends React.Component {
                       {errorStale ? (
                         <div
                           className={
-                            noRecitedTaskCount &&
-                            !this.findTextType("errorTestPaper") &&
-                            testInfo.length
+                            ewCanRecite
                               ? "text-btn ml24"
                               : "text-btn-none ml24"
                           }

@@ -78,7 +78,7 @@ export default class ReciteWords extends React.Component {
       singleWordMeaningIsVisible: false,
       startIndex: 0,
       wordMode: false,
-	  recitePaperId: 0,
+      recitePaperId: 0,
     };
     this.recordWordList = [];
     this.wordLibName = null;
@@ -131,7 +131,7 @@ export default class ReciteWords extends React.Component {
         var count = res.data.data.count;
         //   wordList.length = 20
         this.setState({
-		  recitePaperId: res.data.data.recitePaperId,
+          recitePaperId: res.data.data.recitePaperId,
           wordList: wordList || [],
           count: count,
           currentWord: wordList[0],
