@@ -1,13 +1,32 @@
-import React, { useState } from 'react';
-import { Input, Upload } from 'antd';
+import React, { useState, useRef, useEffect } from 'react';
+import { Input, message, Button } from 'antd';
 import wechat from "./assets/qiyewechat.png";
+import AddSvg from './assets/add.svg';
 import './index.less';
+import HTTP from "../../utils/api.js";
+
+const PreviewItem = ({ file }) => {
+  const [src, setSrc] = useState('');
+  useEffect(() => {
+    let reader = new FileReader();
+    reader.onload = function(){
+      setSrc(reader.result)
+    };
+    reader.readAsDataURL(file);
+  }, []);
+
+  return (
+    <div className="previewItem" style={{ backgroundImage: `url(${src})` }}></div>
+  );
+}
 
 const FeedbackModal = ({ visible, close }) => {
   const [upDataModal, setUpDataModal] = useState(false);
   const [question, setQuestion] = useState('');
   const [weixin, setWeixin] = useState('');
   const [uploadFileList, setUploadFileList] = useState([]);
+  const [uploadLoading, setUploadLoading] = useState(false);
+  const uploadRef = useRef();
 
   const doUpDataModal = () => {
     setUpDataModal(false);
@@ -22,21 +41,31 @@ const FeedbackModal = ({ visible, close }) => {
     setWeixin(e.target.value);
   }
 
-  const uploadDate = () => {
-    const { weixin, qus } = this.state;
-    HTTP.post("/feedback", {
+  const uploadDate = async () => {
+    setUploadLoading(true);
+    const imageList = [];
+    for(let i = 0; i < uploadFileList.length; i++) {
+      const data = new FormData();
+      data.append('file',  uploadFileList[i]);
+      const res = await HTTP.post("/feedback/picture", data, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+      });
+      imageList.push(res?.data?.data);
+    }
+    await HTTP.post("/feedback/", {
       tp: 3,
       weixin,
-      desc: qus,
-      pictures: [
-        "https://img0.baidu.com/it/u=4162443464,2854908495&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500",
-      ],
+      desc: question,
+      pictures: imageList,
     });
+    setUploadLoading(false);
     message.info("已提交~");
   }
 
-  const moduleUpdate = () => {
-    uploadDate();
+  const moduleUpdate = async () => {
+    await uploadDate();
     doUpDataModal();
   };
 
@@ -45,12 +74,18 @@ const FeedbackModal = ({ visible, close }) => {
     setUpDataModal(true);
   };
 
-  const customRequest = () => {};
-
-  const uploadChange = ({ file, fileList }) => {
-    console.log(file, fileList);
-    setUploadFileList(fileList);
+  const uploadChange = (e) => {
+    console.log(e.target.files);
+    if (uploadFileList.concat(Array.from(e.target.files)).length > 10) {
+      message.error('最多上传10张图片');
+      return;
+    }
+    setUploadFileList(uploadFileList.concat(Array.from(e.target.files)));
   };
+
+  const handleClickUpload = () => {
+    uploadRef?.current?.click();
+  }
 
   if (!visible) {
     return null;
@@ -76,20 +111,23 @@ const FeedbackModal = ({ visible, close }) => {
               value={question}
               showCount
               maxLength={400}
-              style={{ height: 80, width: 400, resize: "none" }}
+              style={{ width: 400, resize: "none" }}
               onChange={questionChange}
+              rows={4}
             />
             <div className="text">相关图片:</div>
-            <Upload
-              action=""
-              listType="picture-card"
-              fileList={uploadFileList}
-              method="post"
-              onChange={uploadChange}
-              customRequest={customRequest}
-            >
-              {uploadFileList.length < 10 && "+ Upload"}
-            </Upload>
+            <div className="uploadContent">
+              {uploadFileList?.map(item => {
+                return <PreviewItem key={item.name} file={item} />;
+              })}
+              {uploadFileList.length <= 10 && (
+                <div className="uploadBtn" onClick={handleClickUpload}>
+                  <input accept=".jpeg,.png,.jpg" ref={uploadRef} multiple type="file" onChange={uploadChange} />
+                  <AddSvg className="addIcon" />
+                  <span>({uploadFileList.length} / 10)</span>
+                </div>
+              )}
+            </div>
             <div className="tools">
               <div
                 className="close"
@@ -97,9 +135,9 @@ const FeedbackModal = ({ visible, close }) => {
               >
                 关闭
               </div>
-              <div className="btn" onClick={moduleUpdate}>
+              <Button className="btn" type="primary" loading={uploadLoading} onClick={moduleUpdate}>
                 提交
-              </div>
+              </Button>
             </div>
           </div>
         ) : (
