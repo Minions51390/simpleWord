@@ -22,12 +22,10 @@ import promise from "./assets/promise.png";
 import rightBg from "./assets/rightBg.png";
 import emailpng from "./assets/email.png";
 import phonepng from "./assets/phone.png";
-import chatpng from "./assets/weChat.png";
 import btBg from "./assets/btBg.png";
 import cirBg from "./assets/cirBg.png";
 import GET4 from "./assets/CET-4.png";
 import userIcon from "./assets/userIcon.png";
-import wechat from "./assets/qiyewechat.png";
 const wordCountArr = [6, 9, 12, 15, 18, 21, 24, 27, 30];
 const emailReg = new RegExp(
   "^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$"
@@ -368,7 +366,7 @@ export default class Login extends React.Component {
       HTTP.get(`/plan/recite-paper?planType=usual`)
         .then((res) => {
           this.setState({
-            stale: res.data.data.startIndex > 0,
+            stale: res?.data?.data?.startIndex > 0,
           });
         })
         .catch((err) => {
@@ -858,9 +856,9 @@ export default class Login extends React.Component {
               >
                 个人信息
               </div>
-              <div className="item" onClick={this.showFeedbackModal.bind(this)}>
+              {/* <div className="item" onClick={this.showFeedbackModal.bind(this)}>
                 建议&反馈
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
@@ -1297,70 +1295,6 @@ export default class Login extends React.Component {
           </div>
         ) : (
           <div></div>
-        )}
-        {feedbackModal ? (
-          <div className="feed-bg" onClick={this.hideFeedbackModal.bind(this)}>
-            <div
-              className="feed-area-top"
-              onClick={(e) => this.canStopPropagation(e)}
-            >
-              <div className="title">建议&反馈</div>
-              {upDataModal ? (
-                <div className="warp">
-                  <div className="text">您的微信：</div>
-                  <Input
-                    style={{ width: 400 }}
-                    value={weixin}
-                    onChange={this.onWeixinChange.bind(this)}
-                  />
-                  <div className="text">描述您的问题:</div>
-                  <TextArea
-                    value={qus}
-                    showCount
-                    maxLength={400}
-                    style={{ height: 80, width: 400, resize: "none" }}
-                    onChange={this.onQusChange.bind(this)}
-                  />
-                  {/* <div className="text">相关图片:</div>
-                  <Upload
-                      action=""
-                      listType="picture-card"
-                      fileList={fileList}
-                      method="post"
-                      onChange={this.onChange.bind(this)}
-                      onPreview={this.onPreview.bind(this)}
-                      customRequest={this.customRequest.bind(this)}
-                    >
-                      {fileList.length < 10 && "+ Upload"}
-                    </Upload> */}
-                  <div className="tools">
-                    <div
-                      className="close"
-                      onClick={this.doUpDataModal.bind(this)}
-                    >
-                      关闭
-                    </div>
-                    <div className="btn" onClick={this.moduleUpdate.bind(this)}>
-                      提交
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="warp">
-                  <div className="content">
-                    如果您在使用本软件的过程中，遇到了什么问如果您在使用本软件的过程中，遇到了什么问题，请添加下方官方客服微信，并向客服描述您所遇到的问题，我们将积极为您解决。感谢您对支持！
-                  </div>
-                  <img className="wechat-icon" src={wechat}></img>
-                  <div className="tips">微信扫一扫</div>
-                  <div className="btn" onClick={(e) => this.confirmFeed(e)}>
-                    确定
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        ) : (
-          <div> </div>
         )}
       </div>
     );

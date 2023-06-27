@@ -1,0 +1,101 @@
+.feed-bg {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(3, 13, 60, 0.5);
+    overflow: hidden;
+    z-index: 20;
+    .feed-area-top {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 496px;
+      height: 481px;
+      box-shadow: 0px 0px 100px 0px rgba(255, 255, 255, 1) inset,
+        0px 40px 100px 0px rgba(11, 31, 65, 0.8);
+      border: 2px solid rgba(255, 255, 255, 0.58);
+      border-radius: 4px;
+      background: rgba(255, 255, 255);
+      z-index: 1;
+      align-items: center;
+      .title {
+        width: 114px;
+        height: 33px;
+        font-size: 24px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #102f5c;
+        line-height: 33px;
+        margin-top: 40px;
+      }
+      .warp {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        .text {
+          width: 400px;
+          color: #102f5c;
+          margin-top: 20px;
+        }
+        .tools {
+          margin-top: 30px;
+          width: 400px;
+          display: flex;
+          justify-content: space-between;
+          .close {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 160px;
+            height: 40px;
+            border-radius: 20px;
+            border: 1px solid #102f5c;
+            cursor: pointer;
+          }
+        }
+        .content {
+          margin-top: 24px;
+          width: 400px;
+          height: 90px;
+          font-size: 16px;
+          font-family: PingFangSC-Regular, PingFang SC;
+          font-weight: 400;
+          color: #102f5c;
+          line-height: 24px;
+        }
+        .wechat-icon {
+          margin-top: 31px;
+          width: 132px;
+          height: 132px;
+        }
+        .tips {
+          margin-top: 15px;
+          width: 70px;
+          height: 22px;
+          font-size: 14px;
+          font-family: PingFangSC-Regular, PingFang SC;
+          font-weight: 400;
+          color: rgba(0, 0, 0, 0.45);
+          line-height: 22px;
+        }
+        .btn {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-top: 16px;
+          width: 160px;
+          height: 40px;
+          background: #102f5c;
+          border-radius: 20px;
+          color: #fff;
+          cursor: pointer;
+        }
+      }
+    }
+  }
