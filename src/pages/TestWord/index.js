@@ -75,6 +75,7 @@ export default class TestWords extends React.Component {
 
   postStrangeWordList(fn) {
     if(this.recordWordList.length == 0) {
+      fn?.();
       return
     }
     if(this.postStrangeWordListLock) {
@@ -190,6 +191,7 @@ export default class TestWords extends React.Component {
     this.postStrangeWordList(() => {
       message.info("当前进度已保存");
       setTimeout(() => {
+        debugger;
           window.location.href = `${baseUrl}/#/Transfer`;
           window.location.reload()
       }, 500);
@@ -235,7 +237,7 @@ export default class TestWords extends React.Component {
 		questionType = '单选题（请选择所给中文释义的正确单词）'
 	}
 	return (
-      <div className="recite_wrapper">
+      <div className="test_wrapper">
 		<img className="background-img" src={whiteBookBg}></img>
 		<div className="fix_header">
 			<div className="header_left">
