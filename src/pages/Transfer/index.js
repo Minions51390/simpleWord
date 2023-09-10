@@ -188,6 +188,7 @@ export default class Login extends React.Component {
 
   // 开始选词
   handleChoose(choiceIndex) {
+    console.log('liushufang==', choiceIndex)
     const { newWord } = this.state.userInfo;
     const { dictionaryId, dictionaryName } = this.state.currentDic;
     if (!newWord) {
@@ -220,6 +221,9 @@ export default class Login extends React.Component {
       params: {
         dicId: dicId,
       },
+      headers: {
+        "mode": 'dev'
+      }
     })
       .then((res) => {
         if (!res && !res.data && res.data.state == null) {
@@ -773,8 +777,13 @@ export default class Login extends React.Component {
       currentAlreadyChoice,
       currentRecite,
       surplusChoice,
-      choiceIndex,
     } = this.state.wordsStatistics;
+    const choiceIndex = this.state.wordsStatistics.choiceIndex ?? 0;
+    console.log('liushufang== allChoice', allChoice)
+    console.log('liushufang== currentAlreadyChoice', currentAlreadyChoice)
+    console.log('liushufang== currentRecite', currentRecite)
+    console.log('liushufang== surplusChoice', surplusChoice)
+    console.log('liushufang== choiceIndex', choiceIndex)
 
     const {
       realName,
@@ -1044,9 +1053,10 @@ export default class Login extends React.Component {
                           <div className="thr-line">
                             <div
                               className="test-btn"
-                              onClick={this.handleChoose.bind(
+                              onClick={this.handleTest.bind(
                                 this,
-                                choiceIndex
+                                testInfo[0].testType,
+                                testInfo[0].paperId
                               )}
                             >
                               开始测验

@@ -32,6 +32,8 @@ import FeedbackModal from "../../components/FeedbackModal";
 //   labelCol: { span: 4 },
 //   wrapperCol: { span: 20 },
 // };
+const STATIC_BASE_URL = 'http://101.43.227.70:8022';
+
 const tailLayout = {
   wrapperCol: { offset: 4, span: 20 },
 };
@@ -581,7 +583,7 @@ export default class ReciteWords extends React.Component {
                 controls="controls"
                 hidden
                 autoPlay
-                src={`${baseUrl}/static/tts/${wordList[currentWordIndex].text}.mp3`}
+                src={`${STATIC_BASE_URL}/static/tts/uk/${wordList[currentWordIndex].text}.mp3`}
               ></audio>
             )}
             {isFinish && (

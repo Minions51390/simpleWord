@@ -28,9 +28,9 @@ export default class Choose extends React.Component {
     super(props);
     this.state = {
       wordList: [],
-      isLatest: false, // 一旦为true意味着已经选完全部了。
+      // isLatest: false, // 一旦为true意味着已经选完全部了。
       totalCount: 0,
-      // startIndex: 0, // 本次返回的首个单词的索引
+      startIndex: 0, // 本次返回的首个单词的索引
       // endIndex: 299, // 本次返回的末尾单词的索引
       // dictionaryId: 0,
       // count: 0,
@@ -41,12 +41,35 @@ export default class Choose extends React.Component {
       isFinish: false,
       isCurrentWordStrange: null,
     };
+    this.wordcount 
+
     this.recordWordList = [];
+    this.recordKnownWordList = [];
     this.wordLibName = null
     this.wordLibId = null
     this.choiceIndex = null
-    this.initChoiceIndex = null
+    this.initialChoiceIndex = 0
     // this.postStrangeWordListLock = false
+
+
+
+
+
+  // String dicId = '';
+  // List<Word?>? data = null;
+  // int currentWordIndex = 0;
+  // int wordCount = 0;
+  // int initialChoiceIndex = 0;
+  // List<int> recordWordList = [];
+  // List<int> recordKnownWordList = [];
+  // // int singleWordTimes = 0;
+  // // bool singleWordMeaningIsVisible = false;
+  // bool isFinish = false;
+  // List<int> uniqwordList = [];
+  // bool postStrangeWordListLock = false;
+  // int startTime = 0;
+  // AudioPlayer audioPlayer = AudioPlayer();
+  // bool isPlaying = true;
   }
 
   componentWillMount() {
@@ -57,7 +80,7 @@ export default class Choose extends React.Component {
     }
     this.wordLibName = getQueryString('lib_name')
     this.wordLibId = parseInt(getQueryString('lib_id'))
-    this.initChoiceIndex = parseInt(getQueryString('choiceIndex'))
+    this.initialChoiceIndex = parseInt(getQueryString('choiceIndex'))
     this.choiceIndex = parseInt(getQueryString('choiceIndex'))
     this.wordcount = parseInt(getQueryString('wordcount'))
     
@@ -80,33 +103,49 @@ export default class Choose extends React.Component {
     
     const key = 'updatable'
     message.loading({ content: 'Loading...', key});
-    HTTP.get('/material/word/list', {
+
+
+    // HTTP.get('/plan/word/list', {
+    //   params: {
+    //     type: 'unselected',
+    //   },
+    //   headers: {
+    //     "mode": 'dev'
+    //   }
+    // }).then(res => {
+
+
+    HTTP.get('/plan/word/list', {
       params: {
-        startIndex: choiceIndex,
-        dicId: wordLibId,
+        type: 'unselected',
+      },
+      headers: {
+        "mode": 'dev'
       }
     }).then(res => {
       
       console.log("请求成功:", res.data);
-      var wordList = res.data.data.words
-      var count = res.data.data.count
-      var isLatest = res.data.data.isLatest
+      var wordList = res.data.data.wordList
+      // var count = res.data.data.count
+      // var isLatest = res.data.data.isLatest
       var totalCount = res.data.data.totalCount
-      var endIndex = res.data.data.endIndex
-      this.choiceIndex = endIndex + 1
+      var startIndex = res.data.data.startIndex
+      // var endIndex = res.data.data.endIndex
+      // this.choiceIndex = endIndex + 1
       // console.log("wordList:", wordList, res.data.data.words.length);
       // wordList.length = 20
       this.setState(
         {
-          isLatest: isLatest, 
+          // isLatest: isLatest, 
           totalCount: totalCount,
-          wordList: this.state.wordList.concat(wordList),
+          startIndex: startIndex,
+          wordList: wordList,
         }, 
         message.success({ content: 'Loaded!', key, duration: 2 })
       );
     }).catch(err => {
       console.log("请求失败:", err);
-      message.console.error({ content: err, key, duration: 2 });
+      console.error({ content: err, key, duration: 2 });
     });
   }
 
@@ -118,10 +157,17 @@ export default class Choose extends React.Component {
     let values = {};
     // values.wordLibName = this.wordLibName;
     values.dictionaryId = this.wordLibId;
-    values.strangeWordList = this.recordWordList;
-    values.latestViewWordIndex = latestViewWordIndex;
+    values.wordList = this.recordWordList;
+    // values.latestViewWordIndex = latestViewWordIndex;
     console.log('Success:', JSON.stringify(values));
-    HTTP.post("/plan/words",values).then(res => {
+
+    HTTP.post("/plan/words/selected",values).then(res => {
+
+
+
+
+
+    // HTTP.post("/plan/words",values).then(res => {
       console.log("请求成功:", res);
       // message.success('新数据已同步');
       // this.postStrangeWordListLock = true
@@ -193,7 +239,7 @@ export default class Choose extends React.Component {
           return
         }
         if (isCurrentWordStrange) {
-          this.recordResult(wordList[currentWordIndex - this.initChoiceIndex].id)
+          this.recordResult(wordList[currentWordIndex - this.initialChoiceIndex].id)
         }
         this.goNext()
       }
@@ -234,7 +280,7 @@ export default class Choose extends React.Component {
           return
         }
         if (isCurrentWordStrange) {
-          this.recordResult(parseInt(wordList[currentWordIndex - this.initChoiceIndex].id))
+          this.recordResult(parseInt(wordList[currentWordIndex - this.initialChoiceIndex].id))
         }
         this.goNext()
       }
@@ -263,9 +309,10 @@ export default class Choose extends React.Component {
         isCurrentWordStrange: null,
         whichRadioChecked: null,
       });
-      if(this.state.currentWordIndex + 1 > this.state.wordList.length - 10 && !isLatest) {
-        this.loadWordLib(this.wordLibName, this.wordLibId, this.choiceIndex)
-      }
+      // 目前会一次返回全部单词，暂时注释以下逻辑
+      // if(this.state.currentWordIndex + 1 > this.state.wordList.length - 10 && !isLatest) {
+      //   this.loadWordLib(this.wordLibName, this.wordLibId, this.choiceIndex)
+      // }
       this.forceUpdate()
     } else {
       this.setState({
@@ -301,12 +348,12 @@ export default class Choose extends React.Component {
           <div className="choose_left">选择单词</div>
           <div className="choose_right">{this.wordLibName}</div>
         </div>
-        {wordList.length != 0 && wordList[currentWordIndex - this.initChoiceIndex] != null &&
+        {wordList.length != 0 && wordList[currentWordIndex - this.initialChoiceIndex] != null &&
           <div className="choose_content">
-            <span className="word_phonetic_symbol">{isFinish ? '/səkˈses/' : `/${wordList[currentWordIndex - this.initChoiceIndex].phoneticSymbols}/`}</span><br/>
-            <span className="word_text">{isFinish ? 'success' : wordList[currentWordIndex - this.initChoiceIndex].text}</span><br/>
+            <span className="word_phonetic_symbol">{isFinish ? '/səkˈses/' : `/${wordList[currentWordIndex - this.initialChoiceIndex].phoneticSymbols}/`}</span><br/>
+            <span className="word_text">{isFinish ? 'success' : wordList[currentWordIndex - this.initialChoiceIndex].text}</span><br/>
             <div className="word_meaning_wrapper">
-              <span className="word_meaning">{isFinish ? 'n. 成功; 胜利; 发财; 成名; 成功的人(或事物)' : wordList[currentWordIndex - this.initChoiceIndex].meaning}</span>
+              <span className="word_meaning">{isFinish ? 'n. 成功; 胜利; 发财; 成名; 成功的人(或事物)' : wordList[currentWordIndex - this.initialChoiceIndex].meaning}</span>
             </div>
             <br/>
             {isFinish ? 
