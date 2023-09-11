@@ -87,7 +87,7 @@ export default class Login extends React.Component {
           if (res.data.data.redirectUrl) {
             message.success("登录成功");
             if (process.env.NODE_ENV === "development") {
-              window.location.href = `${baseUrl}/#/home`;
+              window.location.href = `${baseUrl}/#/Transfer`;
             } else {
               window.location.href = res.data.data.redirectUrl;
             }

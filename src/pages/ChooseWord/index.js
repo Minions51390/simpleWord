@@ -329,7 +329,7 @@ export default class Choose extends React.Component {
   }
 
   render() {
-    const {currentWordIndex, whichKeyDown, whichKeyUp, wordList, isFinish, totalCount} = this.state;
+    const {startIndex, currentWordIndex, whichKeyDown, whichKeyUp, wordList, isFinish, totalCount} = this.state;
     return (
       <div className="choose_wrapper">
         <img className="background-img" src={whiteBookBg}></img>
@@ -396,7 +396,7 @@ export default class Choose extends React.Component {
         }
         <div className="progress_content">
           <div className="progress_before"/>
-          <span className="progress_text">{`${currentWordIndex + 1} / ${totalCount}`}</span>
+          <span className="progress_text">{`${startIndex} / ${totalCount}`}</span>
         </div>
         <div className="back_content" onClick={this.backToTransfer.bind(this)}>
           <img className="back_icon" src={backIcon}></img>
