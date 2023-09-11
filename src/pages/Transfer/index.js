@@ -188,7 +188,6 @@ export default class Login extends React.Component {
 
   // 开始选词
   handleChoose(choiceIndex) {
-    console.log('liushufang==', choiceIndex)
     const { newWord } = this.state.userInfo;
     const { dictionaryId, dictionaryName } = this.state.currentDic;
     if (!newWord) {
@@ -779,11 +778,7 @@ export default class Login extends React.Component {
       surplusChoice,
     } = this.state.wordsStatistics;
     const choiceIndex = this.state.wordsStatistics.choiceIndex ?? 0;
-    console.log('liushufang== allChoice', allChoice)
-    console.log('liushufang== currentAlreadyChoice', currentAlreadyChoice)
-    console.log('liushufang== currentRecite', currentRecite)
-    console.log('liushufang== surplusChoice', surplusChoice)
-    console.log('liushufang== choiceIndex', choiceIndex)
+    
 
     const {
       realName,
