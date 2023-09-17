@@ -20,7 +20,7 @@ module.exports = smart(webpackCommonConf, {
         // publicPath:'//81.70.229.127/'
         // publicPath:'//47.107.238.126/'
         // publicPath: '//www.qingcheng-eng.com/'
-        // publicPath: '//47.107.238.126:8088/' //二期错题结课测试环境
+        // publicPath: '//47.107.238.126:8088/' //二期错词结课测试环境
         // publicPath: '//www.qingchengeng.com/'
         publicPath: './'
         
@@ -95,7 +95,7 @@ module.exports = smart(webpackCommonConf, {
                     comments: false, // 删除所有的注释
                 },
                 compress: {
-                    // 删除所有的 `console` 语句，可已兼容ie浏览器
+                    // 删除所有的 `console` 语句，可以兼容ie浏览器
                     drop_console: false,
                     // 内嵌定义了但是只用到一次的变量
                     collapse_vars: true,
