@@ -172,12 +172,16 @@
   line-height: 75px;
   font-weight: 500;
 }
+.recite_wrapper .word_long_text {
+    font-size: 17px;
+    line-height: 32px;
+}
 .recite_wrapper .word_meaning {
   font-size: 20px;
   color: #1A263F;
 }
 .recite_wrapper .word_meaning_wrapper {
-  margin-top: 24px;
+  /* margin-top: 24px; */
 }
 .recite_wrapper .button_content_mid {
   margin: auto;
@@ -244,7 +248,7 @@
   position: absolute;
   right: 0px;
   left: 0;
-  bottom: 155px;
+  bottom: 140px;
   display: flex;
   color: #1A263F;
   justify-content: center;
