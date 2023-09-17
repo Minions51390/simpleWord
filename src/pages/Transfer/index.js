@@ -718,7 +718,7 @@ export default class Login extends React.Component {
       } else if (value.testType == "stageTestPaper") {
         testTypeText = "阶段考试";
       } else if (value.testType == "errorTestPaper") {
-        testTypeText = "错题考试";
+        testTypeText = "错词考试";
       } else {
         testTypeText = "试题考试";
       }
