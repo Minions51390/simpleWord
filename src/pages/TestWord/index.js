@@ -31,7 +31,7 @@ export default class TestWords extends React.Component {
       isFinish: false,
     };
     this.testType = null
-	this.paperId = 1;
+	  this.paperId = 1;
     this.recordWordList = [];
     this.postStrangeWordListLock = false
   }
@@ -62,6 +62,7 @@ export default class TestWords extends React.Component {
       console.log("test 请求成功:", res.data);
       var questionList = res.data.data.subjectDetail
       var count = res.data.data.subjectCount
+      this.paperId = res.data.data.paperId;
     //   wordList.length = 20
       this.setState({
         questionList: questionList || [],
