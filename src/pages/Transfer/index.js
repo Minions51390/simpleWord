@@ -270,7 +270,8 @@ export default class Login extends React.Component {
           });
         }
         if (responseData && responseData.wordsStatistics) {
-          const testInfo = responseData.testInfo;
+        //   const testInfo = responseData.testInfo.filter(item=>item.testType !== 'errorTestPaper');
+          const testInfo = responseData.testInfo
           this.setState({
             testInfo: testInfo,
           });
@@ -722,7 +723,7 @@ export default class Login extends React.Component {
       } else {
         testTypeText = "试题考试";
       }
-      if(testTypeText !== "错词考试"){
+    //   if(testTypeText !== "错词考试"){
         testListBox.push(
             <div key={"item" + index}>
               <div className="test-title">{testTypeText}</div>
@@ -741,7 +742,7 @@ export default class Login extends React.Component {
               </div>
             </div>
           );
-      }
+    //   }
     });
     return testListBox;
   }
