@@ -718,29 +718,30 @@ export default class Login extends React.Component {
       } else if (value.testType == "stageTestPaper") {
         testTypeText = "阶段考试";
       } else if (value.testType == "errorTestPaper") {
-        testTypeText = "错题考试";
+        testTypeText = "错词考试";
       } else {
         testTypeText = "试题考试";
       }
-
-      testListBox.push(
-        <div key={"item" + index}>
-          <div className="test-title">{testTypeText}</div>
-          <div className="test-text">考核完成后方可继续背词</div>
-          <div className="thr-line">
-            <div
-              className="test-btn"
-              onClick={this.handleTest.bind(
-                this,
-                value.testType,
-                value.paperId
-              )}
-            >
-              开始测验
+      if(testTypeText !== "错词考试"){
+        testListBox.push(
+            <div key={"item" + index}>
+                <div className="test-title">{testTypeText}</div>
+                <div className="test-text">考核完成后方可继续背词</div>
+                <div className="thr-line">
+                <div
+                    className="test-btn"
+                    onClick={this.handleTest.bind(
+                    this,
+                    value.testType,
+                    value.paperId
+                    )}
+                >
+                    开始测验
+                </div>
+                </div>
             </div>
-          </div>
-        </div>
-      );
+        );
+      }
     });
     return testListBox;
   }

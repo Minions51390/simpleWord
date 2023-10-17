@@ -258,7 +258,7 @@ export default class TestWords extends React.Component {
 			{!isFinish && questionList.length != 0  && questionList[currentWordIndex] != null && 
         <div className="choose_content">
           <span className="question_type">{questionType}</span><br/>
-          <span className="word_text">{questionList[currentWordIndex].stem}</span><br/>
+          <span className={`word_text ${questionList[currentWordIndex].stem.length > 70 ? "word_long_text": ""}`}>{questionList[currentWordIndex].stem}</span><br/>
           <Radio.Group 
             className="radio_content_space_between"
             name="radiogroup"
