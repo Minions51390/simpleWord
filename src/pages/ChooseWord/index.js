@@ -97,9 +97,9 @@ export default class Choose extends React.Component {
   }
 
   loadWordLib(wordLibName, wordLibId, choiceIndex) {
-    if(this.state.currentWordIndex != 0) {
-      this.postStrangeWordList(this.state.currentWordIndex - 1)
-    }
+    // if(this.state.currentWordIndex != 0) {
+    //   this.postStrangeWordList(this.state.currentWordIndex - 1)
+    // }
     
     const key = 'updatable'
     message.loading({ content: 'Loading...', key});
@@ -149,7 +149,7 @@ export default class Choose extends React.Component {
     });
   }
 
-  postStrangeWordList(latestViewWordIndex, needback) {
+  async postStrangeWordList() {
     // if(this.postStrangeWordListLock) {
     //   message.success('无需重复提交，右下角退出即可');
     //   return
@@ -158,10 +158,9 @@ export default class Choose extends React.Component {
     // values.wordLibName = this.wordLibName;
     values.dictionaryId = this.wordLibId;
     values.wordList = this.recordWordList;
-    // values.latestViewWordIndex = latestViewWordIndex;
     console.log('Success:', JSON.stringify(values));
 
-    HTTP.post("/plan/words/selected",values).then(res => {
+    await HTTP.post("/plan/words/selected",values).then(res => {
 
 
 
@@ -171,10 +170,7 @@ export default class Choose extends React.Component {
       console.log("请求成功:", res);
       // message.success('新数据已同步');
       // this.postStrangeWordListLock = true
-      if(needback == true) {
-        window.location.href = `${baseUrl}/#/Transfer`;
-        window.location.reload()
-      }
+      
     }).catch(err => {
       // message.error('上传失败');
       console.log("请求失败:", err);
@@ -182,6 +178,23 @@ export default class Choose extends React.Component {
     this.recordWordList = []
   }
 
+  async postKnownWordList() {
+    let values = {};
+    // values.wordLibName = this.wordLibName;
+    values.dictionaryId = this.wordLibId;
+    values.wordList = this.recordKnownWordList;
+    console.log('Success:', JSON.stringify(values));
+
+    await HTTP.post("/plan/words/ignore",values).then(res => {
+    // HTTP.post("/plan/words",values).then(res => {
+      console.log("请求成功:", res);
+      
+    }).catch(err => {
+      // message.error('上传失败');
+      console.log("请求失败:", err);
+    });
+    this.recordKnownWordList = []
+  }
   onFinish(values) {
     console.log('Success:', values);
   }
@@ -227,6 +240,7 @@ export default class Choose extends React.Component {
     } else if(event.keyCode == 32) { //空格键
       if (isFinish) {
         this.postStrangeWordList()
+        this.postKnownWordList()
         this.setState({
           whichKeyDown: 'space',
           whichKeyUp: 'space',
@@ -239,15 +253,20 @@ export default class Choose extends React.Component {
           return
         }
         if (isCurrentWordStrange) {
-          this.recordResult(wordList[currentWordIndex - this.initialChoiceIndex].id)
+          this.recordResult(parseInt(wordList[currentWordIndex - this.initialChoiceIndex].id))
+        }else {
+          this.recordKnownResult(parseInt(wordList[currentWordIndex - this.initialChoiceIndex].id))
         }
         this.goNext()
       }
     }
   }
 
-  backToTransfer() {
-    this.postStrangeWordList(this.state.currentWordIndex - 1, true)
+  async backToTransfer() {
+    await this.postStrangeWordList(true)
+    await this.postKnownWordList(true)
+    window.location.href = `${baseUrl}/#/Transfer`;
+    window.location.reload()
   }
 
   onClick(item) {
@@ -267,6 +286,7 @@ export default class Choose extends React.Component {
     } else if(item == "space") { //空格键
       if (isFinish) {
         this.postStrangeWordList()
+        this.postKnownWordList()
         this.setState({
           whichKeyDown: 'space',
           whichKeyUp: 'space'
@@ -281,6 +301,8 @@ export default class Choose extends React.Component {
         }
         if (isCurrentWordStrange) {
           this.recordResult(parseInt(wordList[currentWordIndex - this.initialChoiceIndex].id))
+        } else {
+          this.recordKnownResult(parseInt(wordList[currentWordIndex - this.initialChoiceIndex].id))
         }
         this.goNext()
       }
@@ -292,12 +314,20 @@ export default class Choose extends React.Component {
       wordid
     )
     if(this.recordWordList.length == this.wordcount) {
-      message.success('选词数已够今日背词需要哦');
+      message.success('选词数已够今日背词需要啦');
     }
     if(this.recordWordList.length == this.wordcount * 2) {
-      message.success('很棒了，可已先去背一背再选啦, 接着选也行~');
+      message.success('很棒了，可以先去背一背再选啦, 接着选也行~');
     }
     console.log("recordResult" , this.recordWordList)
+  }
+
+  recordKnownResult(wordid){
+    this.recordKnownWordList.push(
+      wordid
+    )
+    
+    console.log("recordKnownResult" , this.recordKnownWordList)
   }
 
   goNext() {
@@ -306,6 +336,7 @@ export default class Choose extends React.Component {
     if(this.state.currentWordIndex + 1 < totalCount) {
       this.setState({
         currentWordIndex: this.state.currentWordIndex + 1,
+        startIndex: this.state.startIndex + 1,
         isCurrentWordStrange: null,
         whichRadioChecked: null,
       });

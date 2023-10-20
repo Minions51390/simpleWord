@@ -463,12 +463,12 @@ export default class ReciteWords extends React.Component {
     const leftAffix = data.left_affix;
     const rightAffix = data.right_affix;
     console.log(scale)
-    if (leftAffix) {
-        scale = scale.replace(leftAffix, `<span style="color: #EE9C39">${leftAffix}</span> `);
-    }
-    if (rightAffix) {
-        scale = scale.replace(rightAffix, ` <span style="color: #EE9C39">${rightAffix}</span>`);
-    }
+    // if (leftAffix) {
+    //     scale = scale.replace(leftAffix, `<span style="color: #EE9C39">${leftAffix}</span> `);
+    // }
+    // if (rightAffix) {
+    //     scale = scale.replace(rightAffix, ` <span style="color: #EE9C39">${rightAffix}</span>`);
+    // }
     return `<div>${scale}</div>`;
   }
 

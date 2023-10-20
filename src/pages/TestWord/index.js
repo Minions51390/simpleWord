@@ -227,7 +227,7 @@ export default class TestWords extends React.Component {
       } else if(this.testType == 'stageTestPaper') {
         testTypeText = '阶段考试'
       } else if (this.testType == 'errorTestPaper') {
-		testTypeText = '错题考试';
+		testTypeText = '错词考试';
 	  } else {
 		testTypeText = '试题考试';
 	  }

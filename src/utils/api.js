@@ -6,7 +6,7 @@ const url = {
     // prod: 'http://81.70.229.127'
     // prod: 'http://www.qingchengeng.com'
     // prod: 'http://www.qingcheng-eng.com'
-    prod: '/api/v1' //二期错题结课测试环境
+    prod: '/api/v1' //二期错词结课测试环境
     
     // prod: 'http://47.107.238.126'
 }

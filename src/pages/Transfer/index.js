@@ -57,6 +57,7 @@ export default class Login extends React.Component {
         school: "",
         newWord: "",
         grade: "",
+        userId: 0,
       },
       currentDic: {
         count: "",
@@ -97,6 +98,7 @@ export default class Login extends React.Component {
       weixin: "",
       qus: "",
       fileList: [],
+      writingList: [],
     };
   }
 
@@ -224,7 +226,7 @@ export default class Login extends React.Component {
         "mode": 'dev'
       }
     })
-      .then((res) => {
+      .then(async (res) => {
         if (!res && !res.data && res.data.state == null) {
           return;
         }
@@ -270,7 +272,8 @@ export default class Login extends React.Component {
           });
         }
         if (responseData && responseData.wordsStatistics) {
-          const testInfo = responseData.testInfo;
+        //   const testInfo = responseData.testInfo.filter(item=>item.testType !== 'errorTestPaper');
+          const testInfo = responseData.testInfo
           this.setState({
             testInfo: testInfo,
           });
@@ -312,6 +315,7 @@ export default class Login extends React.Component {
   }
   // 获取用户信息
   getMes() {
+    console.log('getMes')
     HTTP.get("/profile/user")
       .then((res) => {
         if (!res && !res.data && res.data.state == null) {
@@ -320,7 +324,6 @@ export default class Login extends React.Component {
         }
         let responseData = res.data.data;
         if (responseData) {
-          if (responseData.reciteVersion > 0) {
             this.setState({
               userInfo: {
                 area: responseData.area || "",
@@ -333,28 +336,11 @@ export default class Login extends React.Component {
                 qqNumber: responseData.qqNumber || "",
                 newWord: responseData.reciteVersion || 0,
                 grade: responseData.grade || "",
+                userId: responseData.userId || 0,
               },
               isSelectDisable: responseData.reciteVersion === 0 ? false : true,
-              showOver: false,
+              showOver: responseData.reciteVersion > 0 ? false : true,
             });
-          } else {
-            this.setState({
-              userInfo: {
-                area: responseData.area || "",
-                city: responseData.city || "",
-                email: responseData.email || "",
-                realName: responseData.realName || "",
-                school: responseData.school || "",
-                phone: responseData.phone || "",
-                province: responseData.province || "",
-                qqNumber: responseData.qqNumber || "",
-                newWord: responseData.reciteVersion || 0,
-                grade: responseData.grade || "",
-              },
-              isSelectDisable: responseData.reciteVersion === 0 ? false : true,
-              showOver: true,
-            });
-          }
         }
       })
       .catch((err) => {
@@ -390,6 +376,18 @@ export default class Login extends React.Component {
           console.log("请求失败:", err);
         });
     }
+  }
+
+  getWritingExamList() {
+      HTTP.get(`/stu-writing-exam/list?status=1&pageNo=1&pageSize=100`)
+        .then((res) => {
+          this.setState({
+            writingList: res?.data?.data?.data
+          })
+        })
+        .catch((err) => {
+          console.log("请求失败:", err);
+        });
   }
 
   //退出登录
@@ -508,6 +506,9 @@ export default class Login extends React.Component {
       .catch((err) => {
         message.error("设置失败!");
       });
+  }
+  handleWritingClick(val){
+    window.location.href = `${baseUrl}/#/writingDetail?paperId=${val.paperId}`;
   }
   // 选词库
   onChangeStore(value) {
@@ -677,35 +678,11 @@ export default class Login extends React.Component {
     this.doUpDataModal();
   }
 
-  //   onChange(fileList) {
-  //     this.setState({
-  //       fileList,
-  //     });
-  //   }
-
-  //   async onPreview(file) {
-  //     let src = file.url;
-  //     if (!src) {
-  //       src = await new Promise((resolve) => {
-  //         const reader = new FileReader();
-  //         reader.readAsDataURL(file.originFileObj);
-  //         reader.onload = () => resolve(reader.result);
-  //       });
-  //     }
-  //     const image = new Image();
-  //     image.src = src;
-  //     const imgWindow = window.open(src);
-  //     imgWindow?.document.write(image.outerHTML);
-  //   }
-
-  //   customRequest(file) {
-  //     console.log(file);
-  //   }
-
   async componentDidMount() {
     await this.getHomeMes();
     setTimeout(() => {
       this.getWordList();
+      this.getWritingExamList();
     });
   }
 
@@ -722,26 +699,26 @@ export default class Login extends React.Component {
       } else {
         testTypeText = "试题考试";
       }
-      if(testTypeText !== "错词考试"){
+    //   if(testTypeText !== "错词考试"){
         testListBox.push(
             <div key={"item" + index}>
-                <div className="test-title">{testTypeText}</div>
-                <div className="test-text">考核完成后方可继续背词</div>
-                <div className="thr-line">
+              <div className="test-title">{testTypeText}</div>
+              <div className="test-text">考核完成后方可继续背词</div>
+              <div className="thr-line">
                 <div
-                    className="test-btn"
-                    onClick={this.handleTest.bind(
+                  className="test-btn"
+                  onClick={this.handleTest.bind(
                     this,
                     value.testType,
                     value.paperId
-                    )}
+                  )}
                 >
-                    开始测验
+                  开始测验
                 </div>
-                </div>
+              </div>
             </div>
-        );
-      }
+          );
+    //   }
     });
     return testListBox;
   }
@@ -762,6 +739,7 @@ export default class Login extends React.Component {
       weixin,
       qus,
       fileList,
+      writingList,
     } = this.state;
 
     const { count, dictionaryId, dictionaryName, describe, picture } =
@@ -1060,6 +1038,62 @@ export default class Login extends React.Component {
                           </div>
                         </div>
                       )}
+                    </div>
+                  )}
+                </div>
+                <div className="left-title left-thr">作文任务</div>
+                <div className="left-sec-area">
+                  <div className="left-sec-shadow"></div>
+                  {/* 暂无检测 */}
+                  {writingList.length == 0 ? (
+                    <div className="thr-line">
+                      <div className="test-btn-none">暂无检测</div>
+                    </div>
+                  ) : (
+                    <div>
+                        {/* 多个检测 */}
+                        <Button
+                            className="leftButton"
+                            style={{ left: 26 }}
+                            onClick={() => {
+                                // 通过获取走马灯dom，调用Carousel的prev()方法
+                                this.card.prev();
+                            }}
+                        >
+                            <LeftOutlined />
+                        </Button>
+                        <Button
+                            className="rightButton"
+                            style={{ right: 26 }}
+                            onClick={() => {
+                                // 通过获取走马灯dom，调用Carousel的next()方法
+                                this.card.next();
+                            }}
+                        >
+                            <RightOutlined />
+                        </Button>
+
+                        <Carousel
+                            ref={(e) => {
+                                // 走马灯dom名card
+                                this.card = e;
+                            }}
+                            infinite={false}
+                            className="test-slider-box"
+                            dots={"slider-dot"}
+                        >
+                            {writingList.map((item) => {
+                                return (
+                                    <div className="writing-box">
+                                        <div className="writing-title">{item.writingExamName}</div>
+                                        <div className="writing-time">{item.endTime}</div>
+                                        <div className="writing-btn">
+                                            <div className="btn-text" onClick={this.handleWritingClick.bind(this, item)}>开始写作</div>
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </Carousel>
                     </div>
                   )}
                 </div>
