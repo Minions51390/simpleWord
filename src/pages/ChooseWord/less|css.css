@@ -1,0 +1,299 @@
+.choose_wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.choose_wrapper .background-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+}
+.choose_wrapper .fix_header {
+  position: fixed;
+  height: 68px;
+  width: 100%;
+  display: flex;
+  z-index: 10;
+}
+.choose_wrapper .fix_header .header_left {
+  display: flex;
+  align-items: flex-end;
+  flex: 1;
+  padding-left: 164px;
+  background: #fff;
+  opacity: 0;
+}
+.choose_wrapper .fix_header .header_left .main-img {
+  width: 85px;
+  height: 24px;
+  margin-top: 22px;
+  margin-bottom: 22px;
+}
+.choose_wrapper .fix_header .header_left .home-page {
+  margin-left: 105px;
+  font-size: 14px;
+  font-family: PingFangSC-Regular, PingFang SC;
+  font-weight: 400;
+  line-height: 68px;
+  color: #647895;
+  cursor: pointer;
+}
+.choose_wrapper .fix_header .header_left .home-page a {
+  color: #647895;
+  font-size: 14px;
+}
+.choose_wrapper .fix_header .header_left .about-us {
+  margin-left: 67px;
+  font-size: 14px;
+  font-family: PingFangSC-Regular, PingFang SC;
+  font-weight: 400;
+  color: #647895;
+  line-height: 68px;
+  cursor: pointer;
+}
+.choose_wrapper .fix_header .header_left .use-msg {
+  margin-left: 39px;
+  font-size: 14px;
+  font-family: PingFangSC-Regular, PingFang SC;
+  font-weight: 400;
+  color: #647895;
+  line-height: 68px;
+  cursor: pointer;
+}
+.choose_wrapper .fix_header .header_left .check {
+  position: relative;
+  color: #032352;
+}
+.choose_wrapper .fix_header .header_left .check:after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: #032352;
+  bottom: 0;
+  left: 0;
+}
+.choose_wrapper .choose_header {
+  position: absolute;
+  top: 68px;
+  height: 60px;
+  width: 100%;
+  align-items: center;
+}
+.choose_wrapper .choose_header .decoration {
+  position: absolute;
+  left: 165px;
+  top: 33px;
+  width: 24px;
+  height: 24px;
+  background: #FFCC43;
+  border-radius: 12px;
+}
+.choose_wrapper .choose_header .choose_left {
+  position: absolute;
+  left: 173px;
+  top: 40px;
+  color: #102F5C;
+  font-size: 24px;
+}
+.choose_wrapper .choose_header .choose_right {
+  position: absolute;
+  right: 165px;
+  top: 40px;
+  flex-direction: row-reverse;
+  text-decoration: none;
+  padding-right: 165;
+  line-height: 24px;
+  color: #102F5C;
+  font-size: 16px;
+}
+.choose_wrapper .choose_content {
+  position: absolute;
+  top: 30%;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  justify-content: center;
+}
+.choose_wrapper .progress_content {
+  position: absolute;
+  left: 189px;
+  bottom: 88px;
+  text-align: center;
+  justify-content: center;
+}
+.choose_wrapper .progress_content .progress_text {
+  font-size: 16px;
+  color: #1A263F;
+}
+.choose_wrapper .progress_content .progress_before {
+  position: absolute;
+  left: -24px;
+  top: 4px;
+  content: ' ';
+  width: 8px;
+  height: 16px;
+  background: #1A263F;
+  display: block;
+}
+.choose_wrapper .back_content {
+  position: absolute;
+  right: 165px;
+  bottom: 88px;
+  justify-content: center;
+}
+.choose_wrapper .back_content .back_icon {
+  width: 26px;
+  height: 26px;
+  margin-right: 15px;
+}
+.choose_wrapper .back_content .back_text {
+  vertical-align: middle;
+  font-size: 16px;
+  color: #032352;
+  margin-top: 20px;
+}
+.choose_wrapper .word_phonetic_symbol {
+  font-size: 36px;
+  color: #1A263F;
+}
+.choose_wrapper .word_text {
+  font-size: 64px;
+  color: #1A263F;
+  line-height: 75px;
+  font-weight: 500;
+}
+.choose_wrapper .word_long_text {
+  font-size: 17px;
+  line-height: 32px;
+}
+.choose_wrapper .word_meaning {
+  font-size: 20px;
+  color: #1A263F;
+}
+.choose_wrapper .word_meaning_wrapper {
+  margin-top: 24px;
+}
+.choose_wrapper .button_content_mid {
+  margin: auto;
+  margin-top: 5%;
+  width: 30%;
+  display: flex;
+  justify-content: center;
+}
+.choose_wrapper .button_content_space_between {
+  margin: auto;
+  margin-top: 5%;
+  width: 40%;
+  display: flex;
+  justify-content: space-between;
+}
+.choose_wrapper .style_button {
+  color: #40a9ff;
+  background: #fff;
+  border-color: #40a9ff;
+}
+.choose_wrapper .left_icon {
+  position: absolute;
+  top: 40px;
+  left: -25px;
+  width: 94px;
+  height: 54px;
+}
+.choose_wrapper .space_content {
+  position: relative;
+  display: flex;
+  color: #1A263F;
+}
+.choose_wrapper .space_icon {
+  position: absolute;
+  top: 40px;
+  left: -55px;
+  width: 187px;
+  height: 54px;
+}
+.choose_wrapper .right_icon {
+  position: absolute;
+  top: 40px;
+  left: -15px;
+  width: 94px;
+  height: 54px;
+}
+.choose_wrapper .right_radio::selection {
+  color: #fff;
+  background: #1A263F;
+  background-image: initial;
+  background-position-x: initial;
+  background-position-y: initial;
+  background-size: initial;
+  background-repeat-x: initial;
+  background-repeat-y: initial;
+  background-attachment: initial;
+  background-origin: initial;
+  background-clip: initial;
+  background-color: #1A263F;
+}
+.choose_wrapper .radio_text {
+  color: #1A263F;
+  font-size: 16px;
+  text-align: center;
+}
+.choose_wrapper .radio_cover {
+  width: 70px;
+  height: 35px;
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  z-index: 1000;
+}
+.ant-radio-inner::after {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  display: table;
+  width: 8px;
+  height: 8px;
+  background-color: #1A263F;
+  border-top: 0;
+  border-left: 0;
+  border-radius: 8px;
+  -webkit-transform: scale(0);
+  transform: scale(0);
+  opacity: 0;
+  -webkit-transition: all 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86);
+  transition: all 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86);
+  content: ' ';
+}
+html {
+  --antd-wave-shadow-color: #1A263F;
+}
+.ant-radio-checked::after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #1A263F;
+  border-radius: 50%;
+  visibility: hidden;
+  -webkit-animation: antRadioEffect 0.36s ease-in-out;
+  animation: antRadioEffect 0.36s ease-in-out;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  content: '';
+}
+.ant-radio-checked .ant-radio-inner {
+  border-color: #1A263F;
+}
+.ant-radio-wrapper:hover .ant-radio,
+.ant-radio:hover .ant-radio-inner,
+.ant-radio-input:focus + .ant-radio-inner {
+  border-color: #1A263F;
+}

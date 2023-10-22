@@ -13,6 +13,7 @@
   bottom: 0;
   width: 100%;
   height: 100%;
+  z-index: -999;
 }
 .recite_wrapper .fix_header {
   position: fixed;
@@ -80,38 +81,32 @@
   left: 0;
 }
 .recite_wrapper .choose_header {
-  position: absolute;
-  top: 68px;
   height: 60px;
-  width: 100%;
-  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin: 68px 165px 0;
 }
 .recite_wrapper .choose_header .decoration {
-  position: absolute;
-  left: 165px;
-  top: 33px;
   width: 24px;
   height: 24px;
-  background: #FFCC43;
+  background: #ffcc43;
   border-radius: 12px;
 }
 .recite_wrapper .choose_header .choose_left {
-  position: absolute;
-  left: 173px;
-  top: 40px;
-  color: #102F5C;
+  color: #102f5c;
   font-size: 24px;
+  transform: translate(10px, -16px);
 }
 .recite_wrapper .choose_header .choose_right {
-  position: absolute;
-  right: 165px;
-  top: 40px;
   flex-direction: row-reverse;
   text-decoration: none;
   padding-right: 165;
   line-height: 24px;
-  color: #102F5C;
+  color: #102f5c;
   font-size: 16px;
+}
+.recite_wrapper .choose_header .header_right {
+  cursor: pointer;
 }
 .recite_wrapper .choose_content {
   position: absolute;
@@ -135,16 +130,16 @@
 }
 .recite_wrapper .progress_content .progress_text {
   font-size: 16px;
-  color: #1A263F;
+  color: #1a263f;
 }
 .recite_wrapper .progress_content .progress_before {
   position: absolute;
   left: -24px;
   top: 4px;
-  content: ' ';
+  content: " ";
   width: 8px;
   height: 16px;
-  background: #1A263F;
+  background: #1a263f;
   display: block;
 }
 .recite_wrapper .audio_content {
@@ -163,21 +158,33 @@
 }
 .recite_wrapper .word_phonetic_symbol {
   font-size: 36px;
-  color: #1A263F;
+  color: #1a263f;
   font-weight: 300;
 }
 .recite_wrapper .word_text {
   font-size: 64px;
-  color: #1A263F;
-  line-height: 75px;
+  color: #1a263f;
+  line-height: 64px;
   font-weight: 500;
+  cursor: pointer;
+}
+.recite_wrapper .word_text .hard {
+  color: #EE9C39;
+}
+.recite_wrapper .word_long_text {
+  font-size: 17px;
+  line-height: 32px;
+}
+.recite_wrapper .word_long_text {
+    font-size: 17px;
+    line-height: 32px;
 }
 .recite_wrapper .word_meaning {
   font-size: 20px;
-  color: #1A263F;
+  color: #1a263f;
 }
 .recite_wrapper .word_meaning_wrapper {
-  margin-top: 24px;
+  margin-top: 0px;
 }
 .recite_wrapper .button_content_mid {
   margin: auto;
@@ -215,7 +222,7 @@
   animation: fadeEffect 2s cubic-bezier(0.08, 0.82, 0.17, 1), waveEffect 0.4s cubic-bezier(0.08, 0.82, 0.17, 1);
   -webkit-animation-fill-mode: forwards;
   animation-fill-mode: forwards;
-  content: '';
+  content: "";
   pointer-events: none;
 }
 .recite_wrapper .back_content {
@@ -223,6 +230,7 @@
   right: 165px;
   bottom: 88px;
   justify-content: center;
+  cursor: pointer;
 }
 .recite_wrapper .back_content .back_icon {
   width: 26px;
@@ -245,12 +253,31 @@
   right: 0px;
   left: 0;
   bottom: 155px;
+  color: #666;
+}
+.recite_wrapper .space_content .space_key {
   display: flex;
-  color: #1A263F;
+  color: #1a263f;
   justify-content: center;
   align-items: center;
 }
 .recite_wrapper .space_icon {
   width: 187px;
   height: 54px;
+}
+.recite_wrapper .s_icon {
+  width: 72px;
+  height: 52px;
+}
+.recite_drawer * {
+  padding: 0;
+}
+.recite_drawer .feedback {
+  position: absolute;
+  bottom: 45px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  text-decoration: underline;
+  cursor: pointer;
 }

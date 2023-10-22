@@ -2,7 +2,7 @@ import React from 'react';
 import './index.less'
 import { Link } from "react-router-dom";
 import Axios from 'axios';
-import { Form, Input, Button, Checkbox, Col, Row, Radio, Progress, message} from 'antd';
+import { Form, Input, Button, Checkbox, Col, Row, Radio, Progress, message, Popconfirm} from 'antd';
 import { ArrowLeftOutlined, ArrowRightOutlined} from '@ant-design/icons';
 // import getQueryString from ''
 import {getQueryString} from '../../utils/stringUtils';
@@ -31,7 +31,7 @@ export default class TestWords extends React.Component {
       isFinish: false,
     };
     this.testType = null
-	this.paperId = 1;
+	  this.paperId = 1;
     this.recordWordList = [];
     this.postStrangeWordListLock = false
   }
@@ -62,18 +62,21 @@ export default class TestWords extends React.Component {
       console.log("test 请求成功:", res.data);
       var questionList = res.data.data.subjectDetail
       var count = res.data.data.subjectCount
+      this.paperId = res.data.data.paperId;
     //   wordList.length = 20
       this.setState({
         questionList: questionList || [],
-        count: count
+        count: count,
+        currentWordIndex: res.data.data.startIndex,
 	  });
     }).catch(err => {
       console.log("请求失败:", err);
     });
   }
 
-  postStrangeWordList() {
+  postStrangeWordList(fn) {
     if(this.recordWordList.length == 0) {
+      fn?.();
       return
     }
     if(this.postStrangeWordListLock) {
@@ -85,11 +88,12 @@ export default class TestWords extends React.Component {
 	  const {count} = this.state;
     let values = {};
     values.testType = this.testType;
-	values.paperId = this.paperId;
+    values.paperId = this.paperId;
     values.testPaper = this.recordWordList;
     console.log('postStrangeWordList Success:', JSON.stringify(values));
     HTTP.patch("/plan/test-paper", values).then(res => {
       console.log("postStrangeWordList 请求成功:", res);
+      fn?.();
         // window.location.href = `${baseUrl}/#/Transfer`;
         // window.location.reload()
       this.recordWordList = []
@@ -184,8 +188,15 @@ export default class TestWords extends React.Component {
   }
 
   backToTransfer() {
-    window.location.href = `${baseUrl}/#/Transfer`;
-    window.location.reload()
+    /** 上报单词数 */
+    this.postStrangeWordList(() => {
+      message.info("当前进度已保存");
+      setTimeout(() => {
+        debugger;
+          window.location.href = `${baseUrl}/#/Transfer`;
+          window.location.reload()
+      }, 500);
+    });
   }
   
 
@@ -200,8 +211,8 @@ export default class TestWords extends React.Component {
       this.forceUpdate()
     } else {
       this.setState({
-		currentAnswer: null,
-		isShowAnswer: null,
+      currentAnswer: null,
+      isShowAnswer: null,
         isFinish: true
       });
     }
@@ -216,7 +227,7 @@ export default class TestWords extends React.Component {
       } else if(this.testType == 'stageTestPaper') {
         testTypeText = '阶段考试'
       } else if (this.testType == 'errorTestPaper') {
-		testTypeText = '错题考试';
+		testTypeText = '错词考试';
 	  } else {
 		testTypeText = '试题考试';
 	  }
@@ -227,7 +238,7 @@ export default class TestWords extends React.Component {
 		questionType = '单选题（请选择所给中文释义的正确单词）'
 	}
 	return (
-      <div className="recite_wrapper">
+      <div className="test_wrapper">
 		<img className="background-img" src={whiteBookBg}></img>
 		<div className="fix_header">
 			<div className="header_left">
@@ -247,7 +258,7 @@ export default class TestWords extends React.Component {
 			{!isFinish && questionList.length != 0  && questionList[currentWordIndex] != null && 
         <div className="choose_content">
           <span className="question_type">{questionType}</span><br/>
-          <span className="word_text">{questionList[currentWordIndex].stem}</span><br/>
+          <span className={`word_text ${questionList[currentWordIndex].stem.length > 70 ? "word_long_text": ""}`}>{questionList[currentWordIndex].stem}</span><br/>
           <Radio.Group 
             className="radio_content_space_between"
             name="radiogroup"
@@ -303,10 +314,17 @@ export default class TestWords extends React.Component {
             <img className="space_icon" src={spaceIcon}></img>
           </div>
       }
-      <div className="back_content" onClick={this.backToTransfer.bind(this)}>
-        <img className="back_icon" src={backIcon}></img>
-        <span className="back_text">退出</span>
-      </div>
+      <Popconfirm
+        title="是否确定退出"
+        onConfirm={this.backToTransfer.bind(this)}
+        okText="确认"
+        cancelText="取消"
+      >
+        <div className="back_content">
+          <img className="back_icon" src={backIcon}></img>
+          <span className="back_text">退出</span>
+        </div>
+      </Popconfirm>
       {/* <div className="progress_content">
         <div className="progress_before"/>
         <span className="progress_text">{`${currentWordIndex + 1} / ${count}`}</span>

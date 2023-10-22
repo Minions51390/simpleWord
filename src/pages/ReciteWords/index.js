@@ -12,6 +12,7 @@ import {
   Progress,
   Popconfirm,
   message,
+  Drawer,
 } from "antd";
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
 // import getQueryString from ''
@@ -25,10 +26,14 @@ import spaceIcon from "../../assets/spaceIcon.png";
 import sIcon from "../../assets/sIcon.png";
 import audioIcon from "./assets/audioIcon.png";
 import baseUrl from "../../utils/config.js";
+import MoreSvg from './assets/more.svg';
+import FeedbackModal from "../../components/FeedbackModal";
 // const layout = {
 //   labelCol: { span: 4 },
 //   wrapperCol: { span: 20 },
 // };
+// const STATIC_BASE_URL = 'http://101.43.227.70:8022';
+
 const tailLayout = {
   wrapperCol: { offset: 4, span: 20 },
 };
@@ -78,7 +83,9 @@ export default class ReciteWords extends React.Component {
       singleWordMeaningIsVisible: false,
       startIndex: 0,
       wordMode: false,
-	  recitePaperId: 0,
+      recitePaperId: 0,
+      drawerOpen: false,
+      feedbackModalVisible: false,
     };
     this.recordWordList = [];
     this.wordLibName = null;
@@ -115,31 +122,31 @@ export default class ReciteWords extends React.Component {
     HTTP.get(`/plan/recite-paper?planType=${this.planType}`)
       .then((res) => {
         console.log("请求成功:", res.data);
-        var wordList = setListCount(res.data.data.wordList);
+        var wordList = setListCount(res?.data?.data?.wordList || []);
         console.log(wordList);
         if (getQueryString("planType") !== "error") {
-            if (res.data.data.reciteIndex < 20) {
+            if (res.data.data?.reciteIndex < 20) {
                 /** 学习计划 */
                 message.info("请跟读发音");
             }
         } else {
-            if (res.data.data.reciteIndex < 10) {
+            if (res.data.data?.reciteIndex < 10) {
                 /** 消灭错词 */
                 message.info("请回想单词释义并跟读发音");
             }
         }
-        var count = res.data.data.count;
+        var count = res.data.data?.count;
         //   wordList.length = 20
         this.setState({
-		  recitePaperId: res.data.data.recitePaperId,
+          recitePaperId: res.data.data?.recitePaperId,
           wordList: wordList || [],
           count: count,
           currentWord: wordList[0],
           startIndex: this.isStale ? res.data.data.startIndex : 0,
           currentWordIndex: this.isStale ? res.data.data.startIndex : 0,
         });
-        this.dateIndex = res.data.data.reciteIndex;
-        this.newWordsCount = res.data.data.newWordsCount;
+        this.dateIndex = res.data.data?.reciteIndex;
+        this.newWordsCount = res.data.data?.newWordsCount;
       })
       .catch((err) => {
         console.log("请求失败:", err);
@@ -205,6 +212,9 @@ export default class ReciteWords extends React.Component {
   }
 
   onKeyDown(event) {
+    if (this.state.feedbackModalVisible) {
+      return;
+    }
     const { isCurrentWordStrange } = this.state;
     if (event.keyCode == 32) {
       //空格键
@@ -219,7 +229,7 @@ export default class ReciteWords extends React.Component {
   }
 
   onKeyUp(event) {
-    if (this.audioControler != null && this.audioControler.paused == false) {
+    if (this.audioControler != null && this.audioControler.paused == false || this.state.feedbackModalVisible) {
       return;
     }
 
@@ -453,13 +463,38 @@ export default class ReciteWords extends React.Component {
     const leftAffix = data.left_affix;
     const rightAffix = data.right_affix;
     console.log(scale)
-    if (leftAffix) {
-        scale = scale.replace(leftAffix, `<span style="color: #EE9C39">${leftAffix}</span> `);
-    }
-    if (rightAffix) {
-        scale = scale.replace(rightAffix, ` <span style="color: #EE9C39">${rightAffix}</span>`);
-    }
+    // if (leftAffix) {
+    //     scale = scale.replace(leftAffix, `<span style="color: #EE9C39">${leftAffix}</span> `);
+    // }
+    // if (rightAffix) {
+    //     scale = scale.replace(rightAffix, ` <span style="color: #EE9C39">${rightAffix}</span>`);
+    // }
     return `<div>${scale}</div>`;
+  }
+
+  openDrawer = () => {
+    this.setState({
+      drawerOpen: true,
+    });
+  }
+
+  closeDrawer = () => {
+    this.setState({
+      drawerOpen: false,
+    });
+  }
+
+  showFeedbackModal = () => {
+    this.setState({
+      feedbackModalVisible: true,
+      drawerOpen: false,
+    });
+  }
+
+  closeFeedbackModal = () => {
+    this.setState({
+      feedbackModalVisible: false,
+    });
   }
 
   render() {
@@ -474,6 +509,8 @@ export default class ReciteWords extends React.Component {
       singleWordTimes,
       count,
       wordMode,
+      drawerOpen,
+      feedbackModalVisible,
     } = this.state;
     return (
       <div className="recite_wrapper">
@@ -489,9 +526,14 @@ export default class ReciteWords extends React.Component {
           </div>
         </div>
         <div className="choose_header">
-          <div className="decoration"></div>
-          <div className="choose_left">背单词</div>
-          <div className="choose_right">{this.wordLibName}</div>
+          <div className="header_left">
+            <div className="decoration"></div>
+            <div className="choose_left">背单词</div>
+            <div className="choose_right">{this.wordLibName}</div>
+          </div>
+          <div className="header_right" onClick={this.openDrawer}>
+            <MoreSvg />
+          </div>
         </div>
         {wordList.length != 0 && wordList[currentWordIndex] != null && (
           <div className="choose_content">
@@ -541,7 +583,7 @@ export default class ReciteWords extends React.Component {
                 controls="controls"
                 hidden
                 autoPlay
-                src={`${baseUrl}/static/tts/${wordList[currentWordIndex].text}.mp3`}
+                src={`${baseUrl}/static/tts/uk/${wordList[currentWordIndex].text}.mp3`}
               ></audio>
             )}
             {isFinish && (
@@ -622,6 +664,12 @@ export default class ReciteWords extends React.Component {
             <span className="back_text">退出</span>
           </div>
         </Popconfirm>
+        <Drawer className="recite_drawer" placement="right" onClose={this.closeDrawer} visible={drawerOpen} closable={false}>
+          <div className="feedback" onClick={this.showFeedbackModal}>
+            <span>报错&反馈</span>
+          </div>
+        </Drawer>
+        <FeedbackModal visible={feedbackModalVisible} close={this.closeFeedbackModal} />
       </div>
     );
   }

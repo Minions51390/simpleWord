@@ -16,14 +16,12 @@ import {
   message,
   Upload,
 } from "antd";
-import ImgCrop from "antd-img-crop";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import baseUrl from "../../utils/config.js";
 import promise from "./assets/promise.png";
 import rightBg from "./assets/rightBg.png";
 import emailpng from "./assets/email.png";
 import phonepng from "./assets/phone.png";
-import chatpng from "./assets/weChat.png";
 import btBg from "./assets/btBg.png";
 import cirBg from "./assets/cirBg.png";
 import GET4 from "./assets/CET-4.png";
@@ -59,6 +57,7 @@ export default class Login extends React.Component {
         school: "",
         newWord: "",
         grade: "",
+        userId: 0,
       },
       currentDic: {
         count: "",
@@ -70,6 +69,7 @@ export default class Login extends React.Component {
       reciteWordInfo: {
         recitedWordsNumber: 0,
         todayWordsPlan: 6,
+        canRecite: true,
       },
       errorWordInfo: {
         allCount: 100,
@@ -80,7 +80,6 @@ export default class Login extends React.Component {
         allChoice: "",
         currentAlreadyChoice: "",
         currentRecite: "",
-        canRecite: true,
         surplusChoice: "",
         choiceIndex: 0,
         choiceWordsMethod: "arbitrarily",
@@ -99,6 +98,7 @@ export default class Login extends React.Component {
       weixin: "",
       qus: "",
       fileList: [],
+      writingList: [],
     };
   }
 
@@ -158,7 +158,7 @@ export default class Login extends React.Component {
   // 开始背词
   handleStart(type) {
     const { stale } = this.state;
-    const { canRecite } = this.state.wordsStatistics;
+    const { canRecite } = this.state.reciteWordInfo;
     const { dictionaryName } = this.state.currentDic;
     if (this.findTextType("testPaper")) {
       message.info("请先完成测验~");
@@ -178,9 +178,8 @@ export default class Login extends React.Component {
   jumpRecitePage(type) {
     const { dictionaryName } = this.state.currentDic;
     const { errorStale } = this.state;
-    const { noRecitedTaskCount } = this.state.errorWordInfo;
-    const {} = this.state;
-    if (noRecitedTaskCount > 0 && !this.findTextType("errorTestPaper")) {
+    const { ewCanRecite } = this.state.errorWordInfo;
+    if (ewCanRecite) {
       if (type === "restart") {
         window.location.href = `${baseUrl}/#/reciteWords?lib_name=${dictionaryName}&planType=error&isStale=false`;
       } else {
@@ -223,8 +222,11 @@ export default class Login extends React.Component {
       params: {
         dicId: dicId,
       },
+      headers: {
+        "mode": 'dev'
+      }
     })
-      .then((res) => {
+      .then(async (res) => {
         if (!res && !res.data && res.data.state == null) {
           return;
         }
@@ -270,7 +272,8 @@ export default class Login extends React.Component {
           });
         }
         if (responseData && responseData.wordsStatistics) {
-          const testInfo = responseData.testInfo;
+        //   const testInfo = responseData.testInfo.filter(item=>item.testType !== 'errorTestPaper');
+          const testInfo = responseData.testInfo
           this.setState({
             testInfo: testInfo,
           });
@@ -312,6 +315,7 @@ export default class Login extends React.Component {
   }
   // 获取用户信息
   getMes() {
+    console.log('getMes')
     HTTP.get("/profile/user")
       .then((res) => {
         if (!res && !res.data && res.data.state == null) {
@@ -320,7 +324,6 @@ export default class Login extends React.Component {
         }
         let responseData = res.data.data;
         if (responseData) {
-          if (responseData.reciteVersion > 0) {
             this.setState({
               userInfo: {
                 area: responseData.area || "",
@@ -333,28 +336,11 @@ export default class Login extends React.Component {
                 qqNumber: responseData.qqNumber || "",
                 newWord: responseData.reciteVersion || 0,
                 grade: responseData.grade || "",
+                userId: responseData.userId || 0,
               },
               isSelectDisable: responseData.reciteVersion === 0 ? false : true,
-              showOver: false,
+              showOver: responseData.reciteVersion > 0 ? false : true,
             });
-          } else {
-            this.setState({
-              userInfo: {
-                area: responseData.area || "",
-                city: responseData.city || "",
-                email: responseData.email || "",
-                realName: responseData.realName || "",
-                school: responseData.school || "",
-                phone: responseData.phone || "",
-                province: responseData.province || "",
-                qqNumber: responseData.qqNumber || "",
-                newWord: responseData.reciteVersion || 0,
-                grade: responseData.grade || "",
-              },
-              isSelectDisable: responseData.reciteVersion === 0 ? false : true,
-              showOver: true,
-            });
-          }
         }
       })
       .catch((err) => {
@@ -365,12 +351,12 @@ export default class Login extends React.Component {
   getWordList() {
     if (
       !this.findTextType("testPaper") &&
-      this.state.wordsStatistics.canRecite
+      this.state.reciteWordInfo.canRecite
     ) {
       HTTP.get(`/plan/recite-paper?planType=usual`)
         .then((res) => {
           this.setState({
-            stale: res.data.data.startIndex > 0,
+            stale: res?.data?.data?.startIndex > 0,
           });
         })
         .catch((err) => {
@@ -390,6 +376,18 @@ export default class Login extends React.Component {
           console.log("请求失败:", err);
         });
     }
+  }
+
+  getWritingExamList() {
+      HTTP.get(`/stu-writing-exam/list?status=1&pageNo=1&pageSize=100`)
+        .then((res) => {
+          this.setState({
+            writingList: res?.data?.data?.data
+          })
+        })
+        .catch((err) => {
+          console.log("请求失败:", err);
+        });
   }
 
   //退出登录
@@ -508,6 +506,9 @@ export default class Login extends React.Component {
       .catch((err) => {
         message.error("设置失败!");
       });
+  }
+  handleWritingClick(val){
+    window.location.href = `${baseUrl}/#/writingDetail?paperId=${val.paperId}`;
   }
   // 选词库
   onChangeStore(value) {
@@ -677,35 +678,11 @@ export default class Login extends React.Component {
     this.doUpDataModal();
   }
 
-  //   onChange(fileList) {
-  //     this.setState({
-  //       fileList,
-  //     });
-  //   }
-
-  //   async onPreview(file) {
-  //     let src = file.url;
-  //     if (!src) {
-  //       src = await new Promise((resolve) => {
-  //         const reader = new FileReader();
-  //         reader.readAsDataURL(file.originFileObj);
-  //         reader.onload = () => resolve(reader.result);
-  //       });
-  //     }
-  //     const image = new Image();
-  //     image.src = src;
-  //     const imgWindow = window.open(src);
-  //     imgWindow?.document.write(image.outerHTML);
-  //   }
-
-  //   customRequest(file) {
-  //     console.log(file);
-  //   }
-
   async componentDidMount() {
     await this.getHomeMes();
     setTimeout(() => {
       this.getWordList();
+      this.getWritingExamList();
     });
   }
 
@@ -718,29 +695,30 @@ export default class Login extends React.Component {
       } else if (value.testType == "stageTestPaper") {
         testTypeText = "阶段考试";
       } else if (value.testType == "errorTestPaper") {
-        testTypeText = "错题考试";
+        testTypeText = "错词考试";
       } else {
         testTypeText = "试题考试";
       }
-
-      testListBox.push(
-        <div key={"item" + index}>
-          <div className="test-title">{testTypeText}</div>
-          <div className="test-text">考核完成后方可继续背词</div>
-          <div className="thr-line">
-            <div
-              className="test-btn"
-              onClick={this.handleTest.bind(
-                this,
-                value.testType,
-                value.paperId
-              )}
-            >
-              开始测验
+    //   if(testTypeText !== "错词考试"){
+        testListBox.push(
+            <div key={"item" + index}>
+              <div className="test-title">{testTypeText}</div>
+              <div className="test-text">考核完成后方可继续背词</div>
+              <div className="thr-line">
+                <div
+                  className="test-btn"
+                  onClick={this.handleTest.bind(
+                    this,
+                    value.testType,
+                    value.paperId
+                  )}
+                >
+                  开始测验
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      );
+          );
+    //   }
     });
     return testListBox;
   }
@@ -761,24 +739,25 @@ export default class Login extends React.Component {
       weixin,
       qus,
       fileList,
+      writingList,
     } = this.state;
 
     const { count, dictionaryId, dictionaryName, describe, picture } =
       this.state.currentDic;
 
-    const { recitedWordsNumber, todayWordsPlan, choiceWordsMethod } =
+    const { recitedWordsNumber, todayWordsPlan, choiceWordsMethod, canRecite } =
       this.state.reciteWordInfo;
-    const { allCount, recitedCount, noRecitedTaskCount } =
+    const { allCount, recitedCount, noRecitedTaskCount, ewCanRecite } =
       this.state.errorWordInfo;
 
     const {
       allChoice,
       currentAlreadyChoice,
       currentRecite,
-      canRecite,
       surplusChoice,
-      choiceIndex,
     } = this.state.wordsStatistics;
+    const choiceIndex = this.state.wordsStatistics.choiceIndex ?? 0;
+    
 
     const {
       realName,
@@ -931,9 +910,7 @@ export default class Login extends React.Component {
                     <div className="thr-line">
                       <div
                         className={
-                          canRecite &&
-                          !this.findTextType("testPaper") &&
-                          testInfo.length
+                          canRecite
                             ? "text-btn"
                             : "text-btn-none"
                         }
@@ -944,9 +921,7 @@ export default class Login extends React.Component {
                       {stale ? (
                         <div
                           className={
-                            canRecite &&
-                            !this.findTextType("testPaper") &&
-                            testInfo.length
+                            canRecite
                               ? "text-btn ml24"
                               : "text-btn-none ml24"
                           }
@@ -962,9 +937,7 @@ export default class Login extends React.Component {
                     <div className="thr-line">
                       <div
                         className={
-                          noRecitedTaskCount > 0 &&
-                          !this.findTextType("errorTestPaper") &&
-                          testInfo.length
+                          ewCanRecite
                             ? "text-btn"
                             : "text-btn-none"
                         }
@@ -975,9 +948,7 @@ export default class Login extends React.Component {
                       {errorStale ? (
                         <div
                           className={
-                            noRecitedTaskCount &&
-                            !this.findTextType("errorTestPaper") &&
-                            testInfo.length
+                            ewCanRecite
                               ? "text-btn ml24"
                               : "text-btn-none ml24"
                           }
@@ -1056,9 +1027,10 @@ export default class Login extends React.Component {
                           <div className="thr-line">
                             <div
                               className="test-btn"
-                              onClick={this.handleChoose.bind(
+                              onClick={this.handleTest.bind(
                                 this,
-                                choiceIndex
+                                testInfo[0].testType,
+                                testInfo[0].paperId
                               )}
                             >
                               开始测验
@@ -1066,6 +1038,62 @@ export default class Login extends React.Component {
                           </div>
                         </div>
                       )}
+                    </div>
+                  )}
+                </div>
+                <div className="left-title left-thr">作文任务</div>
+                <div className="left-sec-area">
+                  <div className="left-sec-shadow"></div>
+                  {/* 暂无检测 */}
+                  {writingList.length == 0 ? (
+                    <div className="thr-line">
+                      <div className="test-btn-none">暂无检测</div>
+                    </div>
+                  ) : (
+                    <div>
+                        {/* 多个检测 */}
+                        <Button
+                            className="leftButton"
+                            style={{ left: 26 }}
+                            onClick={() => {
+                                // 通过获取走马灯dom，调用Carousel的prev()方法
+                                this.card.prev();
+                            }}
+                        >
+                            <LeftOutlined />
+                        </Button>
+                        <Button
+                            className="rightButton"
+                            style={{ right: 26 }}
+                            onClick={() => {
+                                // 通过获取走马灯dom，调用Carousel的next()方法
+                                this.card.next();
+                            }}
+                        >
+                            <RightOutlined />
+                        </Button>
+
+                        <Carousel
+                            ref={(e) => {
+                                // 走马灯dom名card
+                                this.card = e;
+                            }}
+                            infinite={false}
+                            className="test-slider-box"
+                            dots={"slider-dot"}
+                        >
+                            {writingList.map((item) => {
+                                return (
+                                    <div className="writing-box">
+                                        <div className="writing-title">{item.writingExamName}</div>
+                                        <div className="writing-time">{item.endTime}</div>
+                                        <div className="writing-btn">
+                                            <div className="btn-text" onClick={this.handleWritingClick.bind(this, item)}>开始写作</div>
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </Carousel>
                     </div>
                   )}
                 </div>
@@ -1363,7 +1391,7 @@ export default class Login extends React.Component {
                   </div>
                   <img className="wechat-icon" src={wechat}></img>
                   <div className="tips">微信扫一扫</div>
-                  <div className="btn" onClick={(e) => this.confirmFeed(e)}>
+                  <div className="btn" onClick={(e) => this.hideFeedbackModal(e)}>
                     确定
                   </div>
                 </div>
@@ -1371,7 +1399,7 @@ export default class Login extends React.Component {
             </div>
           </div>
         ) : (
-          <div> </div>
+          null
         )}
       </div>
     );

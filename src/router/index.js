@@ -12,6 +12,8 @@ const userMes = loadable(() => import('../pages/userMes'))
 const chooseStore = loadable(() => import('../pages/chooseStore'))
 const reciteWords = loadable(() => import('../pages/ReciteWords'))
 const TestWord = loadable(() => import('../pages/TestWord'))
+const WritingDetail = loadable(() => import('../pages/Writing/Detail'))
+const WritingList = loadable(() => import('../pages/Writing/List'))
 const Home = loadable(() => import('../pages/Home'))
 const Transfer = loadable(() => import('../pages/Transfer'))
 const AboutUS = loadable(() => import('../pages/AboutUs'))
@@ -31,6 +33,8 @@ export default class Root extends Component {
             <Route path="/chooseStore" component={chooseStore}/>
             <Route path="/reciteWords" component={reciteWords}/>
             <Route path="/testWord" component={TestWord}/>
+            <Route path="/writingList" component={WritingList}/>
+            <Route path="/writingDetail" component={WritingDetail}/>
           </Switch>
         </HashRouter>
     )

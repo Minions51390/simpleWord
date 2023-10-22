@@ -24,6 +24,7 @@
         "@babel/plugin-transform-runtime": "^7.11.5",
         "@babel/preset-env": "^7.7.4",
         "@babel/preset-react": "^7.12.7",
+        "@svgr/webpack": "^5.5.0",
         "antd": "^4.8.4",
         "autoprefixer": "^9.7.3",
         "axios": "^0.21.0",
@@ -51,7 +52,6 @@
     },
     "dependencies": {
         "@loadable/component": "^5.13.1",
-        "antd-img-crop": "^4.12.2",
         "antd-mobile": "^2.3.4",
         "react": "^16.13.1",
         "react-dom": "^16.13.1",
