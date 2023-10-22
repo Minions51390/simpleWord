@@ -58,9 +58,14 @@ export default class WritingDetail extends React.Component {
   // 获取作文内容
   getWritingDetail(){
     const { paperId } = this.state;
-        HTTP.get(`/writing-exam/result/detail?paperId=${paperId}`)
+        HTTP.get(`/stu-writing-exam/paper-detail?paperId=${paperId}`)
         .then(res => {
             console.log(res);
+            this.setState({
+                writing: res?.data?.data?.writingBaseInfo,
+                title: res?.data?.data?.writingAnswer?.title,
+                content: res?.data?.data?.writingAnswer?.content,
+            })
         }).catch(err => {
             message.error('获取作文失败!');
         });
