@@ -116,6 +116,28 @@ export default class WritingDetail extends React.Component {
     return length;
   }
 
+  errorItem() {
+    const data = [
+      "[拓展辨折]动名搭配 donate...money 在语料库中出现过 441次。",
+      "[拓展辨折]动名搭配 donate...money 在语料库中出现过 441次。动名搭配 donate...money 在语料库中出现过 441次。动名搭配 donate...money 在语料库中出现过 441次。动名搭配 donate...money 在语料库中出现过 441次。",
+      "[拓展辨折]动名搭配 donate...money 在语料库中出现过 441次。动名搭配 donate...money 在语料库中出现过 441次。",
+      "[拓展辨折]动名搭配 donate...money 在语料库中出现过 441次。",
+      "[拓展辨折]动名搭配 donate...money 在语料库中出现过 441次。动名搭配 donate...money 在语料库中出现过 441次。",
+    ];
+    return (
+      <div>
+        {data.map((item) => {
+          return (
+            <div className="errorItem">
+              <span className="errorItemCount"></span>
+              <div className="errorItemContent">{item}</div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
   render() {
     const { paperId, title, content, writing } = this.state;
     return (
@@ -189,7 +211,7 @@ export default class WritingDetail extends React.Component {
                         <div className="title">纠错</div>
                         <div className="count">29</div>
                       </div>
-                      <div className="error-content"></div>
+                      <div className="error-content">{this.errorItem()}</div>
                     </div>
                   </Tabs.TabPane>
                   <Tabs.TabPane tab="写作要求" key="2">
