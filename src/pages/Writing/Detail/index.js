@@ -11,6 +11,7 @@ import {
   Row,
   Radio,
   message,
+  Progress,
 } from "antd";
 import { LeftCircleOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import baseUrl from "../../../utils/config.js";
@@ -171,7 +172,25 @@ export default class WritingDetail extends React.Component {
               <div className="content-tab">
                 <Tabs defaultActiveKey="2">
                   <Tabs.TabPane tab="评语" key="1">
-                    Content of Tab Pane 1
+                    <div className="content-demand-commit">
+                      <div className="commit-left">
+                        阿克苏记得哈可接受的哈科技三打哈卡莎打卡机阿莎打卡机阿莎打卡机啊双打卡花洒打卡机啊哈四大会计说德哈卡叫啥阿克苏记得哈可接受的哈科技三打哈卡莎打卡机阿莎打卡机阿莎打卡机啊双打卡花洒打卡机啊哈四大会计说德哈卡叫啥阿克苏记得哈可接受的哈科技三打哈卡莎打卡机阿莎打卡机阿莎打卡机啊双打卡花洒打卡机啊哈四大会计说德哈卡叫啥阿克苏记得哈可接受的哈科技三打哈卡莎打卡机阿莎打卡机阿莎打卡机啊双打卡花洒打卡机啊哈四大会计说德哈卡叫啥阿克苏记得哈可接受的哈科技三打哈卡莎打卡机阿莎打卡机阿莎打卡机啊双打卡花洒打卡机啊哈四大会计说德哈卡叫啥
+                      </div>
+                      <div className="pp">
+                        <Progress
+                          type="dashboard"
+                          percent={75}
+                          format={(percent) => `${percent}`}
+                        />
+                      </div>
+                    </div>
+                    <div className="commit-error">
+                      <div className="fir-line">
+                        <div className="title">纠错</div>
+                        <div className="count">29</div>
+                      </div>
+                      <div className="error-content"></div>
+                    </div>
                   </Tabs.TabPane>
                   <Tabs.TabPane tab="写作要求" key="2">
                     <div className="content-demand">

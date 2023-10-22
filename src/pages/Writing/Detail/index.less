@@ -115,6 +115,52 @@
               height: 90px;
             }
           }
+          .content-demand-commit {
+            display: flex;
+            background: #f8f9fb;
+            padding: 16px;
+            align-items: center;
+            .commit-left {
+              flex: 1;
+              height: 150px;
+              overflow: scroll;
+              padding: 16px;
+              background-color: #fff;
+              border-radius: 8px;
+            }
+            .pp {
+              margin-left: 24px;
+              width: 120px;
+              height: 120px;
+            }
+          }
+          .commit-error {
+            padding: 12px 16px;
+            height: 412px;
+            margin-top: 16px;
+            background: #f8f9fb;
+            border-radius: 4px;
+            .fir-line {
+              display: flex;
+              .title {
+                font-size: 16px;
+                color: #000;
+                font-weight: 500;
+              }
+              .count {
+                display: flex;
+                align-items: center;
+                background: rgb(0, 118, 255, 0.2);
+                border-radius: 12px;
+                padding: 0 12px;
+                height: 24px;
+                color: #fff;
+                margin-left: 8px;
+              }
+            }
+            .error-content {
+            }
+          }
           .content-error {
             height: 444px;
             margin-top: 16px;
@@ -129,6 +175,20 @@
       display: flex;
       justify-content: flex-end;
       margin-top: 18px;
+    }
+  }
+}
+
+.ant-progress-circle {
+  .ant-progress-text {
+    color: #1890ff;
+    font-size: 42px;
+    &::after {
+      content: "总评";
+      position: absolute;
+      font-size: 18px;
+      left: 43px;
+      bottom: -35px;
     }
   }
 }
