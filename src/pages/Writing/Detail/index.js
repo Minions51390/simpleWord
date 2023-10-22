@@ -63,6 +63,7 @@ export default class WritingDetail extends React.Component {
       content: event.target.value,
     });
   }
+
   // 获取作文内容
   getWritingDetail() {
     const { paperId } = this.state;
@@ -95,6 +96,25 @@ export default class WritingDetail extends React.Component {
       });
   }
 
+  computedTextCount(str) {
+    let value = str;
+    // 替换中文字符为空格
+    value = value.replace(/[\u4e00-\u9fa5]+/g, " ");
+    // 将换行符，前后空格不计算为单词数
+    value = value.replace(/\n|\r|^\s+|\s+$/gi, "");
+    // 多个空格替换成一个空格
+    value = value.replace(/\s+/gi, " ");
+    // 更新计数
+    let length = 0;
+    let match = value.match(/\s/g);
+    if (match) {
+      length = match.length + 1;
+    } else if (value) {
+      length = 1;
+    }
+    return length;
+  }
+
   render() {
     const { paperId, title, content, writing } = this.state;
     return (
@@ -119,7 +139,9 @@ export default class WritingDetail extends React.Component {
           <div className="detail-content">
             <div className="content-left">
               <div className="left-fir">
-                <div className="fir-word-num">词数统计：0词</div>
+                <div className="fir-word-num">
+                  词数统计：{this.computedTextCount(content)}词
+                </div>
                 <div className="fir-save">2023-09-09 12:13:32</div>
               </div>
               <div className="left-sec">
