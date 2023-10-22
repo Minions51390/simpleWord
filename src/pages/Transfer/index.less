@@ -2,6 +2,7 @@
   position: absolute;
   top: 0;
   bottom: 0;
+  left: 0;
   width: 100%;
   min-width: 1225px;
   user-select: none;
@@ -157,6 +158,19 @@
         flex-direction: column;
         flex: 1;
         margin-right: 30px;
+        .flex-row {
+          display: flex;
+          justify-content: space-between;
+        }
+        .his {
+          display: flex;
+          color: #102f5c;
+          line-height: 15px;
+          z-index: 1;
+          align-items: flex-end;
+          cursor: pointer;
+          font-weight: 500;
+        }
         .left-title {
           position: relative;
           height: 24px;
@@ -355,8 +369,8 @@
           margin-top: 48px;
         }
         .left-thr {
-            margin-top: 48px;
-          }
+          margin-top: 48px;
+        }
         .left-sec-area {
           position: relative;
           display: flex;
@@ -375,37 +389,37 @@
             bottom: 0;
             right: 0;
           }
-          .writing-box{
+          .writing-box {
             font-family: PingFangSC-Medium, PingFang SC;
             font-size: 16px;
             text-align: center;
             line-height: 22px;
-            .writing-title{
-                font-weight: 500;
-                color: #252934;
-                margin-top: 32px;
+            .writing-title {
+              font-weight: 500;
+              color: #252934;
+              margin-top: 32px;
             }
-            .writing-time{
-                font-weight: 400;
-                color: #102F5C;
-                line-height: 24px;
-                margin-top: 16px;
-                opacity: 0.4;
+            .writing-time {
+              font-weight: 400;
+              color: #102f5c;
+              line-height: 24px;
+              margin-top: 16px;
+              opacity: 0.4;
             }
-            .writing-btn{
+            .writing-btn {
+              display: flex;
+              justify-content: center;
+              margin-top: 25px;
+              .btn-text {
+                width: 160px;
+                height: 48px;
+                background: #032352;
+                border-radius: 4px;
                 display: flex;
                 justify-content: center;
-                margin-top: 25px;
-                .btn-text{
-                    width: 160px;
-                    height: 48px;
-                    background: #032352;
-                    border-radius: 4px;
-                    display: flex;
-                    justify-content: center;
-                    color: #FFFFFF;
-                    align-items: center;
-                }
+                color: #ffffff;
+                align-items: center;
+              }
             }
           }
           .slick-dots {
