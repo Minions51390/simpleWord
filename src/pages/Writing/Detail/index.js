@@ -194,11 +194,11 @@ export default class WritingDetail extends React.Component {
                         {writing.desc}
                       </div>
                     </div>
+                    <div className="content-error">
+                      <div>纠错</div>
+                    </div>
                   </Tabs.TabPane>
                 </Tabs>
-              </div>
-              <div className="content-error">
-                <div>纠错</div>
               </div>
             </div>
           </div>
