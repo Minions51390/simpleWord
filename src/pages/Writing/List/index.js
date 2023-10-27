@@ -5,6 +5,19 @@ import { Table, Pagination, message } from "antd";
 import baseUrl from "../../../utils/config.js";
 import Header from "../../../components/Header/index.js";
 
+function getStatus(status){
+    switch(status){
+        case 1: 
+            return '进行中';
+            break;
+        case 2:
+            return '已结束';
+            break;
+        default: 
+            return '进行中'
+    }
+}
+
 export default class WritingDetail extends React.Component {
   constructor(props) {
     super(props);
@@ -41,12 +54,16 @@ export default class WritingDetail extends React.Component {
         {
           title: "任务状态",
           key: "status",
-          dataIndex: "status",
+          render: (text, record, index) => (
+            <div>{getStatus(text.status)}</div>
+          ),
         },
         {
           title: "完成情况",
           dataIndex: "completeState",
-          key: "completeState",
+          render: (text, record, index) => (
+            <div>{text.completeState === "0" ? "未提交" : "已完成"}</div>
+          ),
         },
         {
           title: "最终成绩",

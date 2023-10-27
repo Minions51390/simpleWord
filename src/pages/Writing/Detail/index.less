@@ -18,6 +18,7 @@
     .header-back {
       display: flex;
       align-items: center;
+      cursor: pointer;
       .back-text {
         color: #032352;
         line-height: 22px;
@@ -83,9 +84,16 @@
         margin-left: 24px;
         display: flex;
         flex-direction: column;
+        position: relative;
+        .ai-review{
+            position: absolute;
+            z-index: 2;
+            right: 16px;
+            top: 7px;
+        }
         .content-tab {
-          height: 672px;
-          background: #fff;
+          height: 219px;
+          background: #f8f9fb;
           border-radius: 4px;
           .content-demand {
             height: 150px;
@@ -118,11 +126,11 @@
           .content-demand-commit {
             display: flex;
             background: #f8f9fb;
-            padding: 16px;
+            padding: 0 16px;
             align-items: center;
             .commit-left {
               flex: 1;
-              height: 150px;
+              height: 145px;
               overflow: scroll;
               padding: 16px;
               background-color: #fff;
@@ -134,9 +142,10 @@
               height: 120px;
             }
           }
-          .commit-error {
+        }
+        .commit-error {
             padding: 12px 16px;
-            height: 412px;
+            height: 436px;
             margin-top: 16px;
             background: #f8f9fb;
             border-radius: 4px;
@@ -175,6 +184,7 @@
                   background: #e10000;
                   border-radius: 50%;
                   margin-right: 8px;
+                  margin-top: 8px;
                 }
                 .errorItemContent {
                   flex: 1;
@@ -192,7 +202,6 @@
             border-radius: 4px;
             padding: 16px;
           }
-        }
       }
     }
     .content-control {
@@ -215,4 +224,7 @@
       bottom: -35px;
     }
   }
+}
+.ant-tabs-nav-wrap{
+    margin-left: 16px;
 }
