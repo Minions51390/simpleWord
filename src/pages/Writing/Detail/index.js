@@ -13,6 +13,8 @@ import {
   Radio,
   message,
   Progress,
+  Popconfirm,
+  Tooltip,
 } from "antd";
 import { LeftCircleOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import baseUrl from "../../../utils/config.js";
@@ -21,6 +23,13 @@ import Header from "../../../components/Header/index.js";
 
 const { TextArea } = Input;
 const dateFormat = 'YYYY-MM-DD HH:mm:ss';
+const content1 = (
+    <div className="popColor">
+        <div>①每个练习类型的作文任务有三次智能批改次数，请合理运用。</div>
+        <div>②作文任务到达截止时间将会自动提交，记得及时完成作文任务。</div>
+        <div>③作文提交后，将无法再进行编辑和修改，包括智能批改功能。如需保存当前作文进度，并在以后继续修改，请选择“保存并退出”。</div>
+    </div>
+);
 let autoSaveTimer = {};
 
 export default class WritingDetail extends React.Component {
@@ -144,7 +153,12 @@ export default class WritingDetail extends React.Component {
       isSubmit: true
     })
       .then((res) => {
-        this.getWritingDetail();
+        if(res.data.state !== 0){
+            message.error(`提交失败:${res.data.msg}`);
+        }else{
+            message.success(`提交成功!`);
+            this.getWritingDetail();
+        }
       })
       .catch((err) => {
         message.error("提交失败!");
@@ -246,7 +260,15 @@ export default class WritingDetail extends React.Component {
             </div>
           </div>
           <div className="header-tips">
-            <InfoCircleOutlined />
+            <Tooltip
+                title={content1}
+                trigger="hover"
+                placement="top"
+                color="rgba(0, 0, 0, 0.7)"
+                overlayStyle={{ minWidth: '440px' }}
+            >
+                <InfoCircleOutlined />
+            </Tooltip>
             <div className="tips-text">温馨提示</div>
           </div>
         </div>
@@ -295,7 +317,7 @@ export default class WritingDetail extends React.Component {
                       onClick={this.getAiReview.bind(this)}
                       disabled={aiDetectionTimes === 0}
                     >
-                      智能批改({aiDetectionTimes}/3)
+                      AI智能批改({aiDetectionTimes}/3)
                     </Button>
                   </div> : ''
               }
@@ -353,14 +375,22 @@ export default class WritingDetail extends React.Component {
             </div>
           </div>
           <div className="content-control">
-            <Button
-              className="btn"
-              type="primary"
-              disabled={isSubmit}
-              onClick={this.handleWritingSubmit.bind(this)}
+            <div className="control-text">（提交后无法再修改和编辑作文内容）</div>
+            <Popconfirm
+                placement="top"
+                title={aiDetectionTimes === 0 ? "是否确认提交？提交后无法再修改和编辑作文内容。": `是否确认提交？您还有${aiDetectionTimes}次智能批改未用，且提交后提交后无法再修改和编辑作文内容`}
+                onConfirm={this.handleWritingSubmit.bind(this)}
+                okText="确认"
+                cancelText="取消"
             >
-              提交
-            </Button>
+              <Button
+                  className="btn"
+                  type="primary"
+                  disabled={isSubmit}
+              >
+                提交
+              </Button>
+            </Popconfirm>
           </div>
         </div>
       </div>

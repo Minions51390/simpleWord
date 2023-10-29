@@ -36,38 +36,68 @@ export default class WritingDetail extends React.Component {
         },
         {
           title: "作文任务名称",
-          dataIndex: "writingExamName",
           key: "writingExamName",
+          render: (text, record, index) => (
+            <div style={{
+                color: text.status === 2  && 'rgba(3,35,82, 0.4)',
+              }}
+            >{text.writingExamName}</div>
+          ),
         },
         {
           title: "任务类型",
           key: "examType",
           render: (text, record, index) => (
-            <div>{text.examType === "practice" ? "练习" : "测验"}</div>
+            <div style={{
+                color: text.status === 2 ? 'rgba(3,35,82, 0.4)' : text.examType === "test" && "#171C4B",
+                fontWeight: text.examType === "test" && "600"
+              }}
+            >{text.examType === "practice" ? "练习" : "测验"}</div>
           ),
         },
         {
           title: "截止时间",
           key: "endTime",
-          dataIndex: "endTime",
+          render: (text, record, index) => (
+            <div style={{
+                color: text.status === 2  && 'rgba(3,35,82, 0.4)',
+              }}
+            >{text.endTime}</div>
+          ),
         },
         {
           title: "任务状态",
           key: "status",
           render: (text, record, index) => (
-            <div>{getStatus(text.status)}</div>
+            <div style={{
+                color: text.status === 2  && 'rgba(3,35,82, 0.4)',
+              }}
+            >{getStatus(text.status)}</div>
           ),
         },
         {
           title: "完成情况",
-          dataIndex: "completeState",
+          key: "completeState",
           render: (text, record, index) => (
-            <div>{text.completeState === "0" ? "未提交" : "已完成"}</div>
+            <div style={{
+                color: text.status === 2 ? 'rgba(3,35,82, 0.4)' : text.completeState === "0" && '#FF2525',
+              }}
+            >{text.completeState === "0" ? "未提交" : "已完成"}</div>
           ),
         },
         {
-          title: "最终成绩",
-          key: "score",
+            title: "最终成绩",
+            dataIndex: "paperId",
+            render: (text, record, index) => (
+              <div style={{
+                color: text.status === 2  && 'rgba(3,35,82, 0.4)',
+              }}
+              >{text.paperId === -1 ? "未考试" : text.paperId}</div>
+            ),
+          },
+        {
+          title: "操作",
+          key: "edit",
           render: (text) => (
             <div className="edit">
               <div
