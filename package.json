@@ -5,7 +5,7 @@
     "main": "./build/index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "devBuild": "webpack --config webpack/webpack.dev.js",
+        "devBuild": "NODE_OPTIONS=--openssl-legacy-provider webpack --config webpack/webpack.dev.js",
         "dev": "NODE_OPTIONS=--openssl-legacy-provider webpack-dev-server --config webpack/webpack.dev.js",
         "build": "NODE_OPTIONS=--openssl-legacy-provider webpack --config webpack/webpack.prod.js"
     },
