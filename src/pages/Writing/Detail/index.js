@@ -51,6 +51,7 @@ export default class WritingDetail extends React.Component {
         maximum: 160,
         minimum: 120,
       },
+      activeKey: '2',
       aiDetectionTimes: 1, // 可使用的ai检测次数，为0时禁止使用
       isSubmit: false, // 是否已提交
       aiReview: {
@@ -188,6 +189,11 @@ export default class WritingDetail extends React.Component {
         message.error("保存失败!");
       });
   }
+  handleTabChange(val){
+    this.setState({
+        activeKey: val
+    })
+  }
   // ai阅卷
   getAiReview(){
     const { paperId, title, content } = this.state;
@@ -199,7 +205,8 @@ export default class WritingDetail extends React.Component {
       .then((res) => {
         this.setState({
           aiReview: res?.data?.data,
-          aiDetectionTimes: res?.data?.data?.aiDetectionTimes
+          aiDetectionTimes: res?.data?.data?.aiDetectionTimes,
+          activeKey: '1',
         });
       })
       .catch((err) => {
@@ -248,7 +255,7 @@ export default class WritingDetail extends React.Component {
   }
 
   render() {
-    const { paperId, title, content, writing, examType, aiDetectionTimes,isSubmit, aiReview, autoSaveTime } = this.state;
+    const { paperId, title, content, writing, examType, aiDetectionTimes,isSubmit, aiReview, autoSaveTime, activeKey } = this.state;
     return (
       <div className="writing-detail-container">
         <Header />
@@ -322,7 +329,7 @@ export default class WritingDetail extends React.Component {
                   </div> : ''
               }
               <div className="content-tab">
-                <Tabs defaultActiveKey="1">
+                <Tabs activeKey={activeKey} defaultActiveKey="2" onChange={this.handleTabChange.bind(this)}>
                   {
                     aiReview.aiComment?(
                     <Tabs.TabPane tab="评语" key="1">

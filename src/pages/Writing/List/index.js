@@ -5,7 +5,7 @@ import { Table, Pagination, message } from "antd";
 import baseUrl from "../../../utils/config.js";
 import Header from "../../../components/Header/index.js";
 
-function getStatus(status){
+function getTaskStatus(status){
     switch(status){
         case 1: 
             return '进行中';
@@ -15,6 +15,19 @@ function getStatus(status){
             break;
         default: 
             return '进行中'
+    }
+}
+
+function getScoreStatus(score){
+    switch(score){
+        case -1: 
+            return '未提交';
+            break;
+        case -2:
+            return '未发布';
+            break;
+        default: 
+            return score
     }
 }
 
@@ -72,7 +85,7 @@ export default class WritingDetail extends React.Component {
             <div style={{
                 color: text.status === 2  && 'rgba(3,35,82, 0.4)',
               }}
-            >{getStatus(text.status)}</div>
+            >{getTaskStatus(text.status)}</div>
           ),
         },
         {
@@ -80,19 +93,19 @@ export default class WritingDetail extends React.Component {
           key: "completeState",
           render: (text, record, index) => (
             <div style={{
-                color: text.status === 2 ? 'rgba(3,35,82, 0.4)' : text.completeState === "0" && '#FF2525',
+                color: text.status === 2 ? 'rgba(3,35,82, 0.4)' : text.completeState === 0 && '#FF2525',
               }}
-            >{text.completeState === "0" ? "未提交" : "已完成"}</div>
+            >{text.completeState === 0 ? "未提交" : "已完成"}</div>
           ),
         },
         {
             title: "最终成绩",
-            dataIndex: "paperId",
+            key: 'score',
             render: (text, record, index) => (
               <div style={{
                 color: text.status === 2  && 'rgba(3,35,82, 0.4)',
               }}
-              >{text.paperId === -1 ? "未考试" : text.paperId}</div>
+              >{getScoreStatus(text.score)}</div>
             ),
           },
         {
