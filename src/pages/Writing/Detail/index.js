@@ -306,7 +306,7 @@ export default class WritingDetail extends React.Component {
                   bordered={false}
                   disabled={isSubmit}
                   onPaste={(e) => {
-                    // e.preventDefault();
+                    e.preventDefault();
                     return false;
                   }}
                   onChange={this.handleContentChange.bind(this)}
