@@ -379,7 +379,7 @@ export default class Login extends React.Component {
   }
 
   getWritingExamList() {
-    HTTP.get(`/stu-writing-exam/list?status=1&pageNo=1&pageSize=100`)
+    HTTP.get(`/stu-writing-exam/list?status=1&submit=2&pageNo=1&pageSize=100`)
       .then((res) => {
         this.setState({
           writingList: res?.data?.data?.data,

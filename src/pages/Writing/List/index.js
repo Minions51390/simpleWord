@@ -138,7 +138,7 @@ export default class WritingDetail extends React.Component {
                 color: text.status === 2 && "rgba(3,35,82, 0.4)",
               }}
             >
-              {getScoreStatus(text.score)}
+              {text.status === 2 ? text.score : "未公布" }
             </div>
           ),
         },
