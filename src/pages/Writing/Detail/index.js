@@ -346,7 +346,7 @@ export default class WritingDetail extends React.Component {
                     type="primary"
                     shape="round"
                     onClick={this.getAiReview.bind(this)}
-                    disabled={aiDetectionTimes === 0}
+                    disabled={aiDetectionTimes === 0 || getQueryString("isSubmit") === "true"}
                   >
                     AI智能批改({aiDetectionTimes}/3)
                   </Button>

@@ -5,30 +5,30 @@ import { Table, Pagination, message } from "antd";
 import baseUrl from "../../../utils/config.js";
 import Header from "../../../components/Header/index.js";
 
-function getTaskStatus(status){
-    switch(status){
-        case 1: 
-            return '进行中';
-            break;
-        case 2:
-            return '已结束';
-            break;
-        default: 
-            return '进行中'
-    }
+function getTaskStatus(status) {
+  switch (status) {
+    case 1:
+      return "进行中";
+      break;
+    case 2:
+      return "已结束";
+      break;
+    default:
+      return "进行中";
+  }
 }
 
-function getScoreStatus(score){
-    switch(score){
-        case -1: 
-            return '未提交';
-            break;
-        case -2:
-            return '未发布';
-            break;
-        default: 
-            return score
-    }
+function getScoreStatus(score) {
+  switch (score) {
+    case -1:
+      return "未提交";
+      break;
+    case -2:
+      return "未发布";
+      break;
+    default:
+      return score;
+  }
 }
 
 export default class WritingDetail extends React.Component {
@@ -51,63 +51,97 @@ export default class WritingDetail extends React.Component {
           title: "作文任务名称",
           key: "writingExamName",
           render: (text, record, index) => (
-            <div style={{
-                color: text.status === 2  && 'rgba(3,35,82, 0.4)',
+            <div
+              style={{
+                color: text.status === 2 && "rgba(3,35,82, 0.4)",
               }}
-            >{text.writingExamName}</div>
+            >
+              {text.writingExamName}
+            </div>
           ),
         },
         {
           title: "任务类型",
           key: "examType",
           render: (text, record, index) => (
-            <div style={{
-                color: text.status === 2 ? 'rgba(3,35,82, 0.4)' : text.examType === "test" && "#171C4B",
-                fontWeight: text.examType === "test" && "600"
+            <div
+              style={{
+                color:
+                  text.status === 2
+                    ? "rgba(3,35,82, 0.4)"
+                    : text.examType === "test" && "#171C4B",
+                fontWeight: text.examType === "test" && "600",
               }}
-            >{text.examType === "practice" ? "练习" : "测验"}</div>
+            >
+              {text.examType === "practice" ? "练习" : "测验"}
+            </div>
           ),
         },
         {
           title: "截止时间",
           key: "endTime",
           render: (text, record, index) => (
-            <div style={{
-                color: text.status === 2  && 'rgba(3,35,82, 0.4)',
+            <div
+              style={{
+                color: text.status === 2 && "rgba(3,35,82, 0.4)",
               }}
-            >{text.endTime}</div>
+            >
+              {text.endTime}
+            </div>
           ),
         },
         {
           title: "任务状态",
           key: "status",
           render: (text, record, index) => (
-            <div style={{
-                color: text.status === 2  && 'rgba(3,35,82, 0.4)',
+            <div
+              style={{
+                color: text.status === 2 && "rgba(3,35,82, 0.4)",
               }}
-            >{getTaskStatus(text.status)}</div>
+            >
+              {getTaskStatus(text.status)}
+            </div>
           ),
         },
         {
           title: "完成情况",
           key: "completeState",
           render: (text, record, index) => (
-            <div style={{
-                color: text.status === 2 ? 'rgba(3,35,82, 0.4)' : text.completeState === 0 && '#FF2525',
+            <div
+              style={{
+                color:
+                  text.status === 2
+                    ? text.isSubmit
+                      ? "rgba(3,35,82, 0.4)"
+                      : "#FF2525"
+                    : text.isSubmit
+                    ? "#032352"
+                    : "#FF2525",
               }}
-            >{text.completeState === 0 ? "未提交" : "已完成"}</div>
+            >
+              {text.status === 2
+                ? text.isSubmit
+                  ? "已完成"
+                  : "未提交"
+                : text.isSubmit
+                ? "已提交"
+                : "未提交"}
+            </div>
           ),
         },
         {
-            title: "最终成绩",
-            key: 'score',
-            render: (text, record, index) => (
-              <div style={{
-                color: text.status === 2  && 'rgba(3,35,82, 0.4)',
+          title: "最终成绩",
+          key: "score",
+          render: (text, record, index) => (
+            <div
+              style={{
+                color: text.status === 2 && "rgba(3,35,82, 0.4)",
               }}
-              >{getScoreStatus(text.score)}</div>
-            ),
-          },
+            >
+              {getScoreStatus(text.score)}
+            </div>
+          ),
+        },
         {
           title: "操作",
           key: "edit",
@@ -115,7 +149,11 @@ export default class WritingDetail extends React.Component {
             <div className="edit">
               <div
                 className="detail"
-                onClick={this.handleScoreClick.bind(this, text.paperId)}
+                onClick={this.handleScoreClick.bind(
+                  this,
+                  text.paperId,
+                  text.isSubmit
+                )}
               >
                 查看卷面
               </div>
@@ -152,9 +190,9 @@ export default class WritingDetail extends React.Component {
         message.error("个人信息获取失败!");
       });
   }
-  handleScoreClick(val) {
+  handleScoreClick(val, isSubmit) {
     console.log(val);
-    window.location.href = `${baseUrl}/#/writingDetail?paperId=${val}`;
+    window.location.href = `${baseUrl}/#/writingDetail?paperId=${val}&isSubmit=${isSubmit}`;
   }
   // 翻页
   handleNowPagChange(val) {
@@ -187,6 +225,7 @@ export default class WritingDetail extends React.Component {
               defaultCurrent={1}
               pageSize={pageSize}
               current={pageNo}
+              showSizeChanger={false}
               total={totalCount}
               onChange={this.handleNowPagChange.bind(this)}
             />
