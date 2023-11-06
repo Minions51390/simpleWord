@@ -400,12 +400,11 @@ export default class WritingDetail extends React.Component {
             </div>
             <Popconfirm
               placement="top"
-            //   title={
-            //     aiDetectionTimes === 0
-            //       ? "是否确认提交？提交后无法再修改和编辑作文内容。"
-            //       : `是否确认提交？您还有${aiDetectionTimes}次智能批改未用，且提交后无法再修改和编辑作文内容`
-            //   }
-              title={"是否确认提交？提交后无法再修改和编辑作文内容。"}
+              title={
+                aiDetectionTimes === 0
+                  ? "是否确认提交？提交后无法再修改和编辑作文内容。"
+                  : `是否确认提交？您还有${aiDetectionTimes}次智能批改未用，且提交后无法再修改和编辑作文内容`
+              }
               onConfirm={this.handleWritingSubmit.bind(this)}
               okText="确认"
               cancelText="取消"
