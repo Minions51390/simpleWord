@@ -57,41 +57,16 @@ export default class WritingDetail extends React.Component {
       aiDetectionTimes: 1, // 可使用的ai检测次数，为0时禁止使用
       isSubmit: false, // 是否已提交
       aiReview: {
-        aiComment:
-          "作者词汇量稍有不足，请注意高级词汇积累；复杂句使用不错，句法规范；文章衔接不够流畅内容逻辑顺畅；作文内容点跟作文要求相去甚远，请注意内容覆盖作文要求。请注意方法，勤加练习。",
-        aiContentScore: 74.85,
-        aiDetectionTimes: 1,
-        aiScore: 59.53,
-        aiSentenceScore: 73.91,
-        aiStructureScore: 38.46,
-        aiVocabularyScore: 58.93,
-        sentenceComments: [
-          {
-            sentence:
-              "That is my grandfather's traditional Chinese medicine pharmacy, affectionately referred to by patients as the 'apricot forest'.",
-            suggestions: [
-              "请检查the 'apricot，可能存在大小写拼写建议或空格错误，建议替换为the'apricot。",
-            ],
-          },
-          {
-            sentence:
-              "I can feel as if there is an apricot forest behind this pharmacy, shining brightly under the sunlight.",
-            suggestions: ["请检查under，可能存在介词错误，建议替换为in。"],
-          },
-          {
-            sentence:
-              'Grandfather said, "This is saving people, and it\'s also saving oneself".',
-            suggestions: [
-              '请检查, "This，可能存在大小写拼写建议或空格错误，建议替换为," This。',
-            ],
-          },
-          {
-            sentence:
-              "I think this medicine juice, which is boiled into three mouthfuls with three bowls of water, is exactly where the precious essence of Chinese medicine lies: redemption and self redemption",
-            suggestions: ["请检查是否有标点错误，建议新增.。"],
-          },
-        ],
+        aiComment:"",
+        aiContentScore: 0,
+        aiDetectionTimes: 3,
+        aiScore: 0,
+        aiSentenceScore: 0,
+        aiStructureScore: 0,
+        aiVocabularyScore: 0,
+        sentenceComments: [],
       },
+      teacherComment: "",
       score: 12, // -1 为未考试
       examType: "", // practice
       submitTimes: 1, // 提交次数
@@ -135,6 +110,7 @@ export default class WritingDetail extends React.Component {
           title: res?.data?.data?.writingAnswer?.title,
           content: res?.data?.data?.writingAnswer?.content,
           aiReview: res?.data?.data?.aiReview,
+          teacherComment: res?.data?.data?.teacherComment,
           examType: res?.data?.data?.examType,
           aiDetectionTimes: res?.data?.data?.aiDetectionTimes, // 可使用的ai检测次数，为0时禁止使用
           isSubmit: res?.data?.data?.isSubmit, // 是否已提交
@@ -144,6 +120,11 @@ export default class WritingDetail extends React.Component {
             this.handleWritingSave.bind(this),
             1000 * 60
           );
+        }
+        if(res?.data?.data?.teacherComment){
+            this.handleTabChange('1')
+        }else{
+            this.handleTabChange('2')
         }
       })
       .catch((err) => {
@@ -275,6 +256,7 @@ export default class WritingDetail extends React.Component {
       aiDetectionTimes,
       isSubmit,
       aiReview,
+      teacherComment,
       autoSaveTime,
       activeKey,
     } = this.state;
@@ -330,10 +312,10 @@ export default class WritingDetail extends React.Component {
                   value={content}
                   bordered={false}
                   disabled={isSubmit}
-                //   onPaste={(e) => {
-                //     e.preventDefault();
-                //     return false;
-                //   }}
+                  onPaste={(e) => {
+                    e.preventDefault();
+                    return false;
+                  }}
                   onChange={this.handleContentChange.bind(this)}
                 />
               </div>
@@ -360,10 +342,10 @@ export default class WritingDetail extends React.Component {
                   defaultActiveKey="2"
                   onChange={this.handleTabChange.bind(this)}
                 >
-                  {aiReview.aiComment ? (
+                  { (isSubmit && teacherComment) || (!isSubmit && aiReview.aiComment) ? (
                     <Tabs.TabPane tab="评语" key="1">
                       <div className="content-demand-commit">
-                        <div className="commit-left">{aiReview.aiComment}</div>
+                        <div className="commit-left">{teacherComment || aiReview.aiComment}</div>
                         <div className="pp">
                           <Progress
                             type="dashboard"
@@ -404,10 +386,11 @@ export default class WritingDetail extends React.Component {
                 <div className="fir-line">
                   <div className="title">纠错</div>
                   <div className="count">
-                    {aiReview.sentenceComments.length}
+                    { (isSubmit && teacherComment) || (!isSubmit && aiReview.aiComment) ? aiReview.sentenceComments.length : 0}
                   </div>
                 </div>
-                <div className="error-content">{this.errorItem()}</div>
+                {(isSubmit && teacherComment) || (!isSubmit && aiReview.aiComment) ? <div className="error-content">{this.errorItem()}</div> : ''}
+                
               </div>
             </div>
           </div>
@@ -417,14 +400,16 @@ export default class WritingDetail extends React.Component {
             </div>
             <Popconfirm
               placement="top"
-              title={
-                aiDetectionTimes === 0
-                  ? "是否确认提交？提交后无法再修改和编辑作文内容。"
-                  : `是否确认提交？您还有${aiDetectionTimes}次智能批改未用，且提交后提交后无法再修改和编辑作文内容`
-              }
+            //   title={
+            //     aiDetectionTimes === 0
+            //       ? "是否确认提交？提交后无法再修改和编辑作文内容。"
+            //       : `是否确认提交？您还有${aiDetectionTimes}次智能批改未用，且提交后无法再修改和编辑作文内容`
+            //   }
+              title={"是否确认提交？提交后无法再修改和编辑作文内容。"}
               onConfirm={this.handleWritingSubmit.bind(this)}
               okText="确认"
               cancelText="取消"
+              disabled={isSubmit}
             >
               <Button className="btn" type="primary" disabled={isSubmit}>
                 提交

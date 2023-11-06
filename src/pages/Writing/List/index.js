@@ -44,7 +44,7 @@ export default class WritingDetail extends React.Component {
           title: "序号",
           dataIndex: "key",
           render: (text, record, index) => (
-            <div>{index + 1 + (this.state.pageNo - 1) * 20}</div>
+            <div>{index + 1 + (this.state.pageNo - 1) * this.state.pageSize}</div>
           ),
         },
         {
@@ -138,7 +138,7 @@ export default class WritingDetail extends React.Component {
                 color: text.status === 2 && "rgba(3,35,82, 0.4)",
               }}
             >
-              {text.status === 2 ? text.score : "未公布" }
+              {text.isPublicScore ? text.score : "未公布" }
             </div>
           ),
         },
@@ -196,6 +196,7 @@ export default class WritingDetail extends React.Component {
   }
   // 翻页
   handleNowPagChange(val) {
+    console.log('val', val)
     this.setState(
       {
         pageNo: val,
