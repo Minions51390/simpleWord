@@ -114,6 +114,7 @@ export default class WritingDetail extends React.Component {
           examType: res?.data?.data?.examType,
           aiDetectionTimes: res?.data?.data?.aiDetectionTimes, // 可使用的ai检测次数，为0时禁止使用
           isSubmit: res?.data?.data?.isSubmit, // 是否已提交
+          isPublicScore: res?.data?.data?.isPublicScore, // 是否已提交
         });
         if (!res?.data?.data?.isSubmit) {
           autoSaveTimer = setInterval(
@@ -278,6 +279,7 @@ export default class WritingDetail extends React.Component {
       examType,
       aiDetectionTimes,
       isSubmit,
+      isPublicScore,
       aiReview,
       comment,
       autoSaveTime,
@@ -351,7 +353,7 @@ export default class WritingDetail extends React.Component {
                     type="primary"
                     shape="round"
                     onClick={this.getAiReview.bind(this)}
-                    disabled={aiDetectionTimes === 0 || getQueryString("isSubmit") === "true"}
+                    disabled={aiDetectionTimes === 0 || isSubmit}
                   >
                     AI智能批改({aiDetectionTimes}/3)
                   </Button>
@@ -365,7 +367,7 @@ export default class WritingDetail extends React.Component {
                   defaultActiveKey="2"
                   onChange={this.handleTabChange.bind(this)}
                 >
-                  { (isSubmit && comment) || (!isSubmit && aiReview.aiComment) ? (
+                  { isPublicScore || (!isSubmit && aiReview.aiComment) ? (
                     <Tabs.TabPane tab="评语" key="1">
                       <div className="content-demand-commit">
                         <div className="commit-left">{comment || aiReview.aiComment}</div>
@@ -409,11 +411,10 @@ export default class WritingDetail extends React.Component {
                 <div className="fir-line">
                   <div className="title">纠错</div>
                   <div className="count">
-                    { (isSubmit && comment) || (!isSubmit && aiReview.aiComment) ? aiReview.sentenceComments.length : 0}
+                    {isPublicScore || (!isSubmit && aiReview.aiComment) ? aiReview.sentenceComments.length : 0}
                   </div>
                 </div>
-                {(isSubmit && comment) || (!isSubmit && aiReview.aiComment) ? <div className="error-content">{this.errorItem()}</div> : ''}
-                
+                {isPublicScore || (!isSubmit && aiReview.aiComment) ? <div className="error-content">{this.errorItem()}</div> : ''}
               </div>
             </div>
           </div>

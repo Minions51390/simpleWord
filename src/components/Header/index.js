@@ -311,7 +311,7 @@ export default class Root extends Component {
               userId: responseData.userId || 0,
             },
             isSelectDisable: responseData.reciteVersion === 0 ? false : true,
-            showOver: responseData.reciteVersion > 0 ? false : true,
+            // showOver: responseData.reciteVersion > 0 ? false : true,
           });
         }
       })

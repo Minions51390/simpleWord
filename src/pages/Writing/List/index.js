@@ -139,7 +139,6 @@ export default class WritingDetail extends React.Component {
                 onClick={this.handleScoreClick.bind(
                   this,
                   text.paperId,
-                  text.isSubmit
                 )}
               >
                 查看卷面
@@ -177,9 +176,8 @@ export default class WritingDetail extends React.Component {
         message.error("个人信息获取失败!");
       });
   }
-  handleScoreClick(val, isSubmit) {
-    console.log(val);
-    window.location.href = `${baseUrl}/#/writingDetail?paperId=${val}&isSubmit=${isSubmit}`;
+  handleScoreClick(val) {
+    window.location.href = `${baseUrl}/#/writingDetail?paperId=${val}`;
   }
   // 翻页
   handleNowPagChange(val) {
