@@ -66,8 +66,8 @@ export default class WritingDetail extends React.Component {
         aiVocabularyScore: 0,
         sentenceComments: [],
       },
-      teacherComment: "",
-      score: 12, // -1 为未考试
+      comment: "",
+      score: 0, // -1 为未考试
       examType: "", // practice
       submitTimes: 1, // 提交次数
       autoSaveTime: "",
@@ -110,7 +110,7 @@ export default class WritingDetail extends React.Component {
           title: res?.data?.data?.writingAnswer?.title,
           content: res?.data?.data?.writingAnswer?.content,
           aiReview: res?.data?.data?.aiReview,
-          teacherComment: res?.data?.data?.teacherComment,
+          comment: res?.data?.data?.comment,
           examType: res?.data?.data?.examType,
           aiDetectionTimes: res?.data?.data?.aiDetectionTimes, // 可使用的ai检测次数，为0时禁止使用
           isSubmit: res?.data?.data?.isSubmit, // 是否已提交
@@ -121,7 +121,7 @@ export default class WritingDetail extends React.Component {
             1000 * 60
           );
         }
-        if(res?.data?.data?.teacherComment){
+        if(res?.data?.data?.comment){
             this.handleTabChange('1')
         }else{
             this.handleTabChange('2')
@@ -224,6 +224,29 @@ export default class WritingDetail extends React.Component {
     }
     return length;
   }
+  // 获取确认提示词
+  getPopConfirmText(){
+    const { content,aiDetectionTimes, writing} = this.state;
+    const text1 = "是否确认提交？";
+    const text3 = `您还有${aiDetectionTimes}次智能批改未用，且`
+    const text4 = "提交后无法再修改和编辑作文内容。"
+    const wordCount = this.computedTextCount(content);
+    console.log('wordCount', wordCount);
+    let text2 = "";
+    let returnText = "";
+    if(wordCount < writing.minimum){
+        text2 = `当前词数${wordCount}，不足${writing.minimum}个，`
+    }
+    if(wordCount > writing.maximum){
+        text2 = `当前词数${wordCount}，超过${writing.maximum}个，`
+    }
+    if(aiDetectionTimes === 0){
+        returnText = `${text1}${text2}${text4}`
+    }else{
+        returnText = `${text1}${text2}${text3}${text4}`
+    }
+    return returnText
+  }
 
   errorItem() {
     const { aiReview } = this.state;
@@ -256,7 +279,7 @@ export default class WritingDetail extends React.Component {
       aiDetectionTimes,
       isSubmit,
       aiReview,
-      teacherComment,
+      comment,
       autoSaveTime,
       activeKey,
     } = this.state;
@@ -342,10 +365,10 @@ export default class WritingDetail extends React.Component {
                   defaultActiveKey="2"
                   onChange={this.handleTabChange.bind(this)}
                 >
-                  { (isSubmit && teacherComment) || (!isSubmit && aiReview.aiComment) ? (
+                  { (isSubmit && comment) || (!isSubmit && aiReview.aiComment) ? (
                     <Tabs.TabPane tab="评语" key="1">
                       <div className="content-demand-commit">
-                        <div className="commit-left">{teacherComment || aiReview.aiComment}</div>
+                        <div className="commit-left">{comment || aiReview.aiComment}</div>
                         <div className="pp">
                           <Progress
                             type="dashboard"
@@ -386,10 +409,10 @@ export default class WritingDetail extends React.Component {
                 <div className="fir-line">
                   <div className="title">纠错</div>
                   <div className="count">
-                    { (isSubmit && teacherComment) || (!isSubmit && aiReview.aiComment) ? aiReview.sentenceComments.length : 0}
+                    { (isSubmit && comment) || (!isSubmit && aiReview.aiComment) ? aiReview.sentenceComments.length : 0}
                   </div>
                 </div>
-                {(isSubmit && teacherComment) || (!isSubmit && aiReview.aiComment) ? <div className="error-content">{this.errorItem()}</div> : ''}
+                {(isSubmit && comment) || (!isSubmit && aiReview.aiComment) ? <div className="error-content">{this.errorItem()}</div> : ''}
                 
               </div>
             </div>
@@ -400,11 +423,7 @@ export default class WritingDetail extends React.Component {
             </div>
             <Popconfirm
               placement="top"
-              title={
-                aiDetectionTimes === 0
-                  ? "是否确认提交？提交后无法再修改和编辑作文内容。"
-                  : `是否确认提交？您还有${aiDetectionTimes}次智能批改未用，且提交后无法再修改和编辑作文内容`
-              }
+              title={this.getPopConfirmText.bind(this)}
               onConfirm={this.handleWritingSubmit.bind(this)}
               okText="确认"
               cancelText="取消"

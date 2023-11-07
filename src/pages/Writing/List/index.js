@@ -18,19 +18,6 @@ function getTaskStatus(status) {
   }
 }
 
-function getScoreStatus(score) {
-  switch (score) {
-    case -1:
-      return "未提交";
-      break;
-    case -2:
-      return "未发布";
-      break;
-    default:
-      return score;
-  }
-}
-
 export default class WritingDetail extends React.Component {
   constructor(props) {
     super(props);
@@ -177,7 +164,7 @@ export default class WritingDetail extends React.Component {
   getWritingList() {
     const { pageNo, pageSize } = this.state;
     HTTP.get(
-      `/stu-writing-exam/list?status=0&pageNo=${pageNo}&pageSize=${pageSize}`
+      `/stu-writing-exam/list?status=0&submit=0&pageNo=${pageNo}&pageSize=${pageSize}`
     )
       .then((res) => {
         console.log(res);
