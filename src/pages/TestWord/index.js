@@ -322,7 +322,7 @@ export default class TestWords extends React.Component {
               <br />
               <span
                 className={`word_text ${
-                  questionList[currentWordIndex].stem.length > 70
+                  questionList[currentWordIndex].stem.length > 71
                     ? "word_long_text"
                     : ""
                 }`}

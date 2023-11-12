@@ -351,7 +351,7 @@ export default class Root extends Component {
   }
 
   getWritingExamList() {
-    HTTP.get(`/stu-writing-exam/list?status=1&submit=0&pageNo=1&pageSize=10`)
+    HTTP.get(`/stu-writing-exam/list2?status=1&submit=0&pageNo=1&pageSize=10`)
       .then((res) => {
         this.setState({
           writingList: res?.data?.data?.data,

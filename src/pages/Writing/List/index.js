@@ -163,7 +163,7 @@ export default class WritingDetail extends React.Component {
   getWritingList() {
     const { pageNo, pageSize } = this.state;
     HTTP.get(
-      `/stu-writing-exam/list?status=0&submit=0&pageNo=${pageNo}&pageSize=${pageSize}`
+      `/stu-writing-exam/list2?status=0&submit=0&pageNo=${pageNo}&pageSize=${pageSize}`
     )
       .then((res) => {
         console.log(res);

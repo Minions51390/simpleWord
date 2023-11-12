@@ -379,7 +379,7 @@ export default class Login extends React.Component {
   }
 
   getWritingExamList() {
-    HTTP.get(`/stu-writing-exam/list?status=1&submit=2&pageNo=1&pageSize=100`)
+    HTTP.get(`/stu-writing-exam/list2?status=1&submit=2&pageNo=1&pageSize=100`)
       .then((res) => {
         this.setState({
           writingList: res?.data?.data?.data,
@@ -1049,7 +1049,7 @@ export default class Login extends React.Component {
                         style={{ left: 26 }}
                         onClick={() => {
                           // 通过获取走马灯dom，调用Carousel的prev()方法
-                          this.card.prev();
+                          this.card1.prev();
                         }}
                       >
                         <LeftOutlined />
@@ -1059,7 +1059,7 @@ export default class Login extends React.Component {
                         style={{ right: 26 }}
                         onClick={() => {
                           // 通过获取走马灯dom，调用Carousel的next()方法
-                          this.card.next();
+                          this.card1.next();
                         }}
                       >
                         <RightOutlined />
@@ -1068,7 +1068,7 @@ export default class Login extends React.Component {
                       <Carousel
                         ref={(e) => {
                           // 走马灯dom名card
-                          this.card = e;
+                          this.card1 = e;
                         }}
                         infinite={false}
                         className="test-slider-box"

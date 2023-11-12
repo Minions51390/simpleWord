@@ -115,6 +115,7 @@ export default class WritingDetail extends React.Component {
           aiDetectionTimes: res?.data?.data?.aiDetectionTimes, // 可使用的ai检测次数，为0时禁止使用
           isSubmit: res?.data?.data?.isSubmit, // 是否已提交
           isPublicScore: res?.data?.data?.isPublicScore, // 是否已提交
+          score: res?.data?.data?.score,
         });
         if (!res?.data?.data?.isSubmit) {
           autoSaveTimer = setInterval(
@@ -195,6 +196,7 @@ export default class WritingDetail extends React.Component {
         if (res.data.state === 0) {
           this.setState({
             aiReview: res?.data?.data,
+            score: res?.data?.data?.aiScore,
             aiDetectionTimes: res?.data?.data?.aiDetectionTimes,
             activeKey: "1",
           });
@@ -280,6 +282,7 @@ export default class WritingDetail extends React.Component {
       aiDetectionTimes,
       isSubmit,
       isPublicScore,
+      score,
       aiReview,
       comment,
       autoSaveTime,
@@ -374,7 +377,7 @@ export default class WritingDetail extends React.Component {
                         <div className="pp">
                           <Progress
                             type="dashboard"
-                            percent={aiReview.aiScore}
+                            percent={score}
                             format={(percent) => `${percent}`}
                           />
                         </div>
