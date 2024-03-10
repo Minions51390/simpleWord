@@ -5,9 +5,9 @@
     "main": "./build/index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "devBuild": "NODE_OPTIONS=--openssl-legacy-provider webpack --config webpack/webpack.dev.js",
-        "dev": "NODE_OPTIONS=--openssl-legacy-provider webpack-dev-server --config webpack/webpack.dev.js",
-        "build": "NODE_OPTIONS=--openssl-legacy-provider webpack --config webpack/webpack.prod.js"
+        "devBuild": "webpack --config webpack/webpack.dev.js",
+        "dev": "webpack-dev-server --config webpack/webpack.dev.js",
+        "build": "webpack --config webpack/webpack.prod.js"
     },
     "publishConfig": {
         "registry": "https://registry.npmjs.org/"
