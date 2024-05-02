@@ -69,35 +69,35 @@ export default class Login extends React.Component {
   notLogin() {
     message.info("请登录后使用");
   }
-  // 获取用户身份及是否登录
-  getMes() {
-    HTTP.get("/profile/role")
-      .then((res) => {
-        if (!res && !res.data && res.data.state == null) {
-          return;
-        }
-        if (res.data.state == 401) {
-          this.notLogin();
-          return;
-        } else if (res.data.state !== 0) {
-          message.error("服务器开小差了");
-          return;
-        }
-        if (res && res.data && res.data.data) {
-          if (res.data.data.redirectUrl) {
-            message.success("登录成功");
-            if (process.env.NODE_ENV === "development") {
-              window.location.href = `${baseUrl}/#/Transfer`;
-            } else {
-              window.location.href = res.data.data.redirectUrl;
-            }
-          }
-        }
-      })
-      .catch((err) => {
-        message.info("请先登录");
-      });
-  }
+  // // 获取用户身份及是否登录
+  // getMes() {
+  //   HTTP.get("/profile/role")
+  //     .then((res) => {
+  //       if (!res && !res.data && res.data.state == null) {
+  //         return;
+  //       }
+  //       if (res.data.state == 401) {
+  //         this.notLogin();
+  //         return;
+  //       } else if (res.data.state !== 0) {
+  //         message.error("服务器开小差了");
+  //         return;
+  //       }
+  //       if (res && res.data && res.data.data) {
+  //         if (res.data.data.redirectUrl) {
+  //           message.success("登录成功");
+  //           if (process.env.NODE_ENV === "development") {
+  //             window.location.href = `${baseUrl}/#/transfer`;
+  //           } else {
+  //             window.location.href = res.data.data.redirectUrl;
+  //           }
+  //         }
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       message.info("请先登录");
+  //     });
+  // }
   // 切换登录注册
   handleModeChange(mode, e) {
     e.stopPropagation();
@@ -191,7 +191,7 @@ export default class Login extends React.Component {
         }
         message.success("注册成功!");
         if (viceInviteCode != null) {
-          window.location.href = `${baseUrl}/#/Transfer`;
+          window.location.href = `${baseUrl}/#/transfer`;
         } else {
           window.location.href = `${baseUrl}/admin/#/app/class/main`;
         }
@@ -230,14 +230,15 @@ export default class Login extends React.Component {
         }
         message.success("登录成功!");
         if (process.env.NODE_ENV === "development") {
-          window.location.href = `${baseUrl}/#/Transfer`;
+          window.location.href = `${baseUrl}/#/transfer`;
+          location.reload();
         } else {
           window.location.href = res.data.data;
         }
       })
-      .catch((err) => {
-        message.error("登录失败!");
-      });
+      // .catch((err) => {
+      //   message.error("登录失败!");
+      // });
   }
   // 验证码接口
   sendEmail() {
@@ -344,7 +345,7 @@ export default class Login extends React.Component {
     console.log(event);
   }
   componentWillMount() {
-    this.getMes();
+    // this.getMes();
   }
   componentDidMount() {
     // console.log('cookie', document.cookie);
@@ -369,7 +370,7 @@ export default class Login extends React.Component {
     } = this.state;
     return (
       <div className="main_container">
-        <div className="fix_header">
+        {/* <div className="fix_header">
           <div className="header_left">
             <img className="main-img" src={promise}></img>
             <div className="home-page check">首页</div>
@@ -391,7 +392,7 @@ export default class Login extends React.Component {
               登录
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="mid-floor">
           <img className="right-img" src={rightBg}></img>
           <div className="icon-list">
@@ -434,27 +435,12 @@ export default class Login extends React.Component {
             <img className="top-img" src={cirBg}></img>
             <div className="info-list-wrapper">
               <div className="info-list">
-                <div className="info-title">倾心所选 成你所愿</div>
+                <div className="info-title">英语学习大杀器</div>
                 <div className="info-sub">
                   We give our word, you have your words.
                 </div>
-                {/* <div className="info-msg">Through our word recitation program, you can master at least 2000 words in 30 days. It is reasonable and scientific to ensure that you will not forget after reciting, and complete the learning plan efficiently and step by step.</div>
-                    <div className="info-chi">通过我们的背词计划，您可以在30天内掌握至少2000个单词，合理而且科学，保证您不会背完即忘，高效完成学习计划，循序渐进，水滴石穿。</div> */}
               </div>
             </div>
-          </div>
-          <div
-            className="register-btn"
-            onClick={this.handleModeChange.bind(this, "register")}
-          >
-            立即注册体验
-          </div>
-          <div
-            className="login-area"
-            onClick={this.handleModeChange.bind(this, "login")}
-          >
-            <img className="login-img" src={loginpng}></img>
-            <div className="login-text">已有账号立即登录</div>
           </div>
           <img className="bottom-img" src={btBg}></img>
         </div>

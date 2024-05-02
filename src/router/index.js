@@ -1,6 +1,7 @@
 import loadable from '@loadable/component'
 import React, {Component} from 'react';
 import {HashRouter, Route, Switch} from "react-router-dom";
+import { Layout } from '../components/Layout/index.jsx';
 
 
 // 页面异步chunk优化
@@ -17,15 +18,20 @@ const WritingList = loadable(() => import('../pages/Writing/List'))
 const Home = loadable(() => import('../pages/Home'))
 const Transfer = loadable(() => import('../pages/Transfer'))
 const AboutUS = loadable(() => import('../pages/AboutUs'))
+const Download = loadable(() => import('../pages/Download'))
+const Dashboard = loadable(() => import('../pages/Dashboard/index.jsx'))
 export default class Root extends Component {
   render() {
     return (
-        <HashRouter basename="/">
+      <HashRouter basename="/">
+        <Layout>
           <Switch>
             <Route path="/" exact component={Home}/>
             <Route path="/transfer" component={Transfer}></Route>
             <Route path="/home" component={Home}></Route>
+            <Route path="/dashboard" component={Dashboard}></Route>
             <Route path="/about" component={AboutUS}></Route>
+            <Route path="/download" component={Download}></Route>
             <Route path="/index"  component={Index}/>
             <Route path="/login" component={Login}/>
             <Route path="/chooseWord" component={ChooseWord}/>
@@ -36,7 +42,8 @@ export default class Root extends Component {
             <Route path="/writingList" component={WritingList}/>
             <Route path="/writingDetail" component={WritingDetail}/>
           </Switch>
-        </HashRouter>
+        </Layout>
+      </HashRouter>
     )
   }
 }

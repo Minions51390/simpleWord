@@ -196,7 +196,7 @@ export default class WritingDetail extends React.Component {
     const { pageNo, pageSize, totalCount, columns1, writingList } = this.state;
     return (
       <div className="writing-list-container">
-        <Header />
+        {/* <Header /> */}
         <div className="writing-header">作文任务</div>
         <div className="writing-list">
           <Table

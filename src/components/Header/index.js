@@ -3,10 +3,20 @@ import React, { Component } from "react";
 import promise from "../../pages/Transfer/assets/promise.png";
 import userIcon from "../../pages/Transfer/assets/userIcon.png";
 import wechat from "../../pages/Transfer/assets/qiyewechat.png";
-import "../../pages/Transfer/index.less";
+import "./index.less";
 import HTTP from "../../utils/api.js";
-import { Input, Select, message } from "antd";
+import { Input, Select, message, Popover, Divider } from "antd";
 import baseUrl from "../../utils/config.js";
+import FeedbackModal from "../FeedbackModal/index.js";
+import { UserInfoModal } from "../UserInfoModal/index.jsx";
+import { Link } from "react-router-dom";
+import { withRouter } from "react-router";
+import { LoginModal } from "../LoginModal/index.jsx";
+import Login from "../../pages/Home/index.js";
+import { RegisterModal } from "../RegisterModal/index.jsx";
+import { StudentRegisterModal } from "../StudentRegisterModal/index.jsx";
+
+
 
 const wordCountArr = [6, 9, 12, 15, 18, 21, 24, 27, 30];
 const emailReg = new RegExp(
@@ -16,7 +26,7 @@ const qqReg = /^[1-9][0-9]{4,14}$/;
 const phoneReg = /^[1][1,2,3,4,5,7,8,9][0-9]{9}$/;
 const { TextArea } = Input;
 
-export default class Root extends Component {
+class Root extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -62,7 +72,6 @@ export default class Root extends Component {
       showOver: false,
       storeArr: [],
       isSelectDisable: false,
-      checkedTab: location.hash.indexOf("Transfer") != -1 ? "home" : "",
       actTab: 1,
       stale: false,
       errorStale: false,
@@ -73,6 +82,10 @@ export default class Root extends Component {
       qus: "",
       fileList: [],
       writingList: [],
+      showLogin: false,
+      showRegister: false,
+      showStudentRegister: false,
+      loginType: 'student',
     };
   }
 
@@ -125,7 +138,7 @@ export default class Root extends Component {
     // message.info('请登录后使用');
   }
   onTabClick(tabName) {
-    window.location.href = `${baseUrl}/#/Transfer`;
+    window.location.href = `${baseUrl}/#/transfer`;
   }
   // 开始背词
   handleStart(type) {
@@ -488,11 +501,6 @@ export default class Root extends Component {
   jumpAbout() {
     window.location.href = `${baseUrl}/#/about`;
   }
-  // 选词库
-  onChangeStore(value) {
-    console.log(value);
-    this.getHomeMes(value);
-  }
   // realName
   onInputRealName(event) {
     this.setState({
@@ -657,23 +665,78 @@ export default class Root extends Component {
   }
 
   async componentDidMount() {
-    await this.getHomeMes();
-    setTimeout(() => {
-      this.getWordList();
-    //   this.getWritingExamList();
+    // await this.getHomeMes();
+    // setTimeout(() => {
+    //   this.getWordList();
+    // });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.isLogin !== prevProps.isLogin && this.props.isLogin) {
+      this.getHomeMes();
+    }
+  }
+
+  updateUserInfo = (info) => {
+    this.setState({
+      userInfo: info
+    })
+  }
+
+  showLogin = (type) => {
+    this.setState({
+      showLogin: true,
+      loginType: type,
+      showRegister: false,
+    });
+  }
+
+  closeLogin = () => {
+    this.setState({
+      showLogin: false,
+    });
+  }
+
+  showRegister = () => {
+    this.setState({
+      showLogin: false,
+      showRegister: true,
+    });
+  }
+
+  closeRegister = () => {
+    this.setState({
+      showRegister: false,
+    });
+  }
+
+  closeStudentRegister = () => {
+    this.setState({
+      showStudentRegister: false,
+    });
+  }
+
+  showStudentRegister = () => {
+    this.setState({
+      showStudentRegister: true,
     });
   }
 
   render() {
+    const { location, isLogin } = this.props;
     const {
       showOver,
       isSelectDisable,
-      checkedTab,
       showTips,
       feedbackModal,
       upDataModal,
       weixin,
       qus,
+      activeTab,
+      showLogin,
+      showRegister,
+      showStudentRegister,
+      loginType,
     } = this.state;
 
     const {
@@ -689,22 +752,68 @@ export default class Root extends Component {
       grade,
     } = this.state.userInfo;
     return (
-      <div className="main_container">
-        <div className="fix_header_main">
+      <div className="layout_header">
+        <div className={`fix_header_main ${ isLogin && 'login' }`}>
           <div className="header_left">
             <img className="main-img" src={promise}></img>
-            <div
-              className={`home-page  ${checkedTab == "home" ? "check" : null}`}
-              onClick={this.onTabClick.bind(this, "home")}
-            >
-              首页
-            </div>
-            <div className="about-us" onClick={this.jumpAbout.bind(this)}>
+            {isLogin ? (
+              <>
+                <Link className={`home-page ${location.pathname === '/transfer' && 'check'}`} to="/transfer">
+                  首页
+                </Link>
+                <Link className={`dashboard-page ${location.pathname === '/dashboard' && 'check'}`} to="/dashboard">
+                  数据中心
+                </Link>
+              </>
+            ) : (
+              <Link className={`home-page ${location.pathname === '/home' || location.pathname === '/' && 'check'}`} to="/">
+                首页
+              </Link>
+            )}
+            <Link className={`about-us ${location.pathname === '/about' && 'check'}`} to="/about">
               关于我们
-            </div>
+            </Link>
+            <Link className={`app-download ${location.pathname === '/download' && 'check'}`} to="/download">
+              App下载
+            </Link>
           </div>
-          <div
-            className="header_right"
+          {!isLogin ? (
+            <div className={`header_right unLogin ${location.pathname === '/download' && 'download'}`}>
+              <Popover
+                content={(
+                  <div className="login-popover">
+                    <div className="login-item" onClick={this.showRegister}>教师注册</div>
+                    <Divider style={{ margin: 0 }} />
+                    <div className="login-item" onClick={this.showStudentRegister}>学生注册</div>
+                  </div>
+                )}
+              >
+                <div
+                  className="register"
+                >
+                  注册
+                </div>
+              </Popover>
+              <Popover
+                content={(
+                  <div className="login-popover">
+                    <div className="login-item" onClick={() => this.showLogin('teacher')}>教师登录</div>
+                    <Divider style={{ margin: 0 }} />
+                    <div className="login-item" onClick={() => this.showLogin('student')}>学生登录</div>
+                  </div>
+                )}
+              >
+                <div
+                  className="login"
+                >
+                  登录
+                </div>
+              </Popover>
+              
+            </div>
+          ): (
+            <div
+            className="header_right isLogin"
             onMouseEnter={this.hoverHeader.bind(this)}
             onMouseLeave={this.blurHeader.bind(this)}
           >
@@ -724,184 +833,16 @@ export default class Root extends Component {
               </div>
             </div>
           </div>
+          )}
         </div>
-        {showOver ? (
-          <div
-            className="user-bg"
-            onClick={this.handleModeChange.bind(this, false)}
-          >
-            <div
-              className="user-area-top"
-              onClick={this.handleModeChange.bind(this, true)}
-            >
-              <div className="title">个人信息</div>
-              <div className="main-row">
-                <div className="main-left">
-                  <Input
-                    className="pass-mar"
-                    size="large"
-                    placeholder="请输入您的姓名"
-                    prefix={<div className="my-icon">姓名</div>}
-                    onChange={this.onInputRealName.bind(this)}
-                    value={realName}
-                  />
-                  <Input
-                    className="pass-mar phone-icon"
-                    size="large"
-                    placeholder="请输入您的手机号"
-                    prefix={<div className="my-icon">手机号</div>}
-                    onChange={this.onInputPhone.bind(this)}
-                    value={phone}
-                  />
-                  <Input
-                    className="pass-mar"
-                    size="large"
-                    disabled
-                    placeholder="请输入您的邮箱"
-                    prefix={<div className="my-icon">邮箱</div>}
-                    onChange={this.onInputEmail.bind(this)}
-                    value={email}
-                  />
-                  <Input
-                    className="pass-mar qq-icon"
-                    size="large"
-                    placeholder="请输入您的QQ号"
-                    prefix={<div className="my-icon">QQ号</div>}
-                    onChange={this.onInputQQNumber.bind(this)}
-                    value={qqNumber}
-                  />
-                  <span className="pass-mar ant-input-affix-wrapper word-ant-input-affix-wrapper">
-                    <div className="word-icon">
-                      <span className="ant-input-prefix">
-                        <div className="my-icon">每日背词数</div>
-                      </span>
-                    </div>
-                    <Select
-                      defaultValue={`${newWord}个`}
-                      // maxTagCount="3"
-                      disabled={isSelectDisable}
-                      listHeight={100}
-                      size="large"
-                      style={{ width: 220 }}
-                      onChange={this.onInputNewWord.bind(this)}
-                    >
-                      {wordCountArr.map((val, i) => (
-                        <Select.Option
-                          value={val}
-                          key={i + "select"}
-                        >{`${val}个`}</Select.Option>
-                      ))}
-                    </Select>
-                  </span>
-                </div>
-                <div className="main-right">
-                  <Input
-                    className="pass-mar"
-                    size="large"
-                    placeholder="请输入您的省份"
-                    prefix={<div className="my-icon">省份</div>}
-                    onChange={this.onInputProvince.bind(this)}
-                    value={province}
-                  />
-                  <Input
-                    className="pass-mar"
-                    size="large"
-                    placeholder="请输入您的市份"
-                    prefix={<div className="my-icon">市份</div>}
-                    onChange={this.onInputCity.bind(this)}
-                    value={city}
-                  />
-                  <Input
-                    className="pass-mar"
-                    size="large"
-                    placeholder="请输入您的区县"
-                    prefix={<div className="my-icon">区县</div>}
-                    onChange={this.onInputArea.bind(this)}
-                    value={area}
-                  />
-                  <Input
-                    className="pass-mar"
-                    size="large"
-                    placeholder="请输入您的学校"
-                    prefix={<div className="my-icon">学校</div>}
-                    onChange={this.onInputSchool.bind(this)}
-                    value={school}
-                  />
-                  <Input
-                    className="pass-mar"
-                    size="large"
-                    placeholder="请输入您的年级"
-                    prefix={<div className="my-icon">年级</div>}
-                    onChange={this.onInputGrade.bind(this)}
-                    value={grade}
-                  />
-                </div>
-              </div>
-              <div className="save-btn" onClick={this.saveMes.bind(this)}>
-                保存信息
-              </div>
-              <div className="log-out" onClick={this.logOut.bind(this)}>
-                退出登录
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div></div>
-        )}
-        {feedbackModal ? (
-          <div className="feed-bg" onClick={this.hideFeedbackModal.bind(this)}>
-            <div
-              className="feed-area-top"
-              onClick={(e) => this.canStopPropagation(e)}
-            >
-              <div className="title">建议&反馈</div>
-              {upDataModal ? (
-                <div className="warp">
-                  <div className="text">您的微信：</div>
-                  <Input
-                    style={{ width: 400 }}
-                    value={weixin}
-                    onChange={this.onWeixinChange.bind(this)}
-                  />
-                  <div className="text">描述您的问题:</div>
-                  <TextArea
-                    value={qus}
-                    showCount
-                    maxLength={400}
-                    style={{ height: 80, width: 400, resize: "none" }}
-                    onChange={this.onQusChange.bind(this)}
-                  />
-                  <div className="tools">
-                    <div
-                      className="close"
-                      onClick={this.doUpDataModal.bind(this)}
-                    >
-                      关闭
-                    </div>
-                    <div className="btn" onClick={this.moduleUpdate.bind(this)}>
-                      提交
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="warp">
-                  <div className="content">
-                    如果您在使用本软件的过程中，遇到了什么问如果您在使用本软件的过程中，遇到了什么问题，请添加下方官方客服微信，并向客服描述您所遇到的问题，我们将积极为您解决。感谢您对支持！
-                  </div>
-                  <img className="wechat-icon" src={wechat}></img>
-                  <div className="tips">微信扫一扫</div>
-                  <div
-                    className="btn"
-                    onClick={(e) => this.hideFeedbackModal(e)}
-                  >
-                    确定
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        ) : null}
+        {showOver && <UserInfoModal isSelectDisable={isSelectDisable} visible={showOver} close={() => this.setState({showOver: false })} defaultUserInfo={this.state.userInfo} updateUserInfo={this.updateUserInfo} />}
+        <FeedbackModal visible={feedbackModal} close={this.hideFeedbackModal.bind(this)} />
+        <LoginModal loginType={loginType} visible={showLogin} close={this.closeLogin} showRegister={this.showRegister} />
+        <RegisterModal visible={showRegister} close={this.closeRegister} showLogin={this.showLogin} />
+        <StudentRegisterModal visible={showStudentRegister} close={this.closeStudentRegister} showLogin={this.showLogin} />
       </div>
     );
   }
 }
+
+export default withRouter(Root);

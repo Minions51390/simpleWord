@@ -104,7 +104,7 @@ export default class ReciteWords extends React.Component {
   componentWillMount() {
     var url = window.location.href.split("#")[0];
     if (url != document.referrer) {
-      window.location.href = `${baseUrl}/#/Transfer`;
+      window.location.href = `${baseUrl}/#/transfer`;
       window.location.reload();
     }
     this.wordLibName = getQueryString("lib_name");
@@ -162,7 +162,7 @@ export default class ReciteWords extends React.Component {
     });
     if (this.postStrangeWordListLock) {
 		if (!status) {
-			window.location.href = `${baseUrl}/#/Transfer`;
+			window.location.href = `${baseUrl}/#/transfer`;
 		}
       message.success("无需重复提交");
       return;
@@ -318,7 +318,7 @@ export default class ReciteWords extends React.Component {
     this.postStrangeWordList(false, () => {
         message.info("当前进度已保存");
         setTimeout(() => {
-            window.location.href = `${baseUrl}/#/Transfer`;
+            window.location.href = `${baseUrl}/#/transfer`;
         }, 500);
     });
   }
@@ -515,16 +515,6 @@ export default class ReciteWords extends React.Component {
     return (
       <div className="recite_wrapper">
         <img className="background-img" src={whiteBookBg}></img>
-        <div className="fix_header">
-          <div className="header_left">
-            <img className="main-img" src={promise}></img>
-            <div className="home-page">
-              {/* <Link to="/home">首页</Link> */}
-            </div>
-            <div className="about-us">关于我们</div>
-            <div className="use-msg">使用说明</div>
-          </div>
-        </div>
         <div className="choose_header">
           <div className="header_left">
             <div className="decoration"></div>
