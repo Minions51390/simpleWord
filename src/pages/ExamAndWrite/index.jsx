@@ -39,7 +39,9 @@ const ExamAndWrite = () => {
     history.push(`/writingDetail?paperId=${currentWriting.paperId}`);
 
   };
-  const jumpAllWrite = () => {};
+  const jumpAllWrite = () => {
+    history.push('/writingList');
+  };
 
   const planSelectConfirm = async planId => {
     await HTTPV2.post('/entity/select', {
