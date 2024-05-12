@@ -1,0 +1,116 @@
+.login-bg {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(3, 13, 60, 0.5);
+    overflow: hidden;
+    z-index: 30;
+    .login-area-top {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 540px;
+        height: 503px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0px 0px 100px 0px rgba(255, 255, 255, 1) inset,0px 40px 100px 0px rgba(11, 31, 65, 0.8);
+        border: 2px solid rgba(255, 255, 255, 0.58);
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.5);
+        z-index: 1;
+        .title {
+            height: 33px;
+            font-size: 24px;
+            font-family: PingFangSC-Medium, PingFang SC;
+            font-weight: 500;
+            color: #102F5C;
+            line-height: 33px;
+            margin-top: 40px;
+            width: 100%;
+            text-align: center;
+        }
+        .form-area {
+            margin-top: 72px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+                .ant-input-prefix {
+                    width: 42px;
+                    margin-right: 10px;
+                }
+                .ant-input-affix-wrapper {
+                    width: 350px;
+                    height: 48px;
+                    background: #EDEEF1;
+                    border-radius: 4px;
+                    border: none;
+                    input {
+                        background: #EDEEF1;
+                    }
+                }
+                .pass-mar {
+                    margin-top: 32px;
+                }
+                .rem-box {
+                    width: 350px;
+                    display: flex;
+                    justify-content: flex-end;
+                    margin-top: 24px;
+                    label {
+                        span {
+                            padding-right: 0px;
+                            font-size: 16px;
+                            font-family: PingFangSC-Regular, PingFang SC;
+                            font-weight: 400;
+                            color: #102F5C;
+                            .ant-checkbox-inner {
+                                background-color: rgba(255, 255, 255, 0.5);
+                            }
+                        }
+                        .ant-checkbox-checked {
+                            .ant-checkbox-inner {
+                                background-color: #1890ff;
+                            }
+                        }
+                    }
+                }
+                .btn-box {
+                    display: flex;
+                    margin-top: 72px;
+                    height: 40px;
+                    width: 350px;
+                    .register-box {
+                        width: 158px;
+                        height: 40px;
+                        border-radius: 20px;
+                        border: 1px solid #102F5C;
+                        font-size: 16px;
+                        font-family: PingFangSC-Regular, PingFang SC;
+                        font-weight: 400;
+                        color: #102F5C;
+                        line-height: 40px;
+                        margin-right: 30px;
+                        text-align: center;
+                        cursor: pointer;
+                    }
+                    .login-box {
+                        width: 160px;
+                        height: 40px;
+                        background: #102F5C;
+                        border-radius: 20px;
+                        border: 1px solid #102F5C;
+                        font-size: 16px;
+                        font-family: PingFangSC-Regular, PingFang SC;
+                        font-weight: 400;
+                        color: #FFF;
+                        line-height: 40px;
+                        text-align: center;
+                        cursor: pointer;
+                    }
+                }
+            
+        }
+    }
+}

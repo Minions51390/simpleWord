@@ -50,7 +50,7 @@ export default class TestWords extends React.Component {
   componentWillMount() {
     var url = window.location.href.split("#")[0];
     if (url != document.referrer) {
-      window.location.href = `${baseUrl}/#/Transfer`;
+      window.location.href = `${baseUrl}/#/transfer`;
       window.location.reload();
     }
     this.testType = getQueryString("testType");
@@ -239,7 +239,7 @@ export default class TestWords extends React.Component {
     this.postStrangeWordList(() => {
       message.info("当前进度已保存");
       setTimeout(() => {
-        window.location.href = `${baseUrl}/#/Transfer`;
+        window.location.href = `${baseUrl}/#/transfer`;
         window.location.reload();
       }, 500);
     });
@@ -299,16 +299,6 @@ export default class TestWords extends React.Component {
     return (
       <div className="test_wrapper">
         <img className="background-img" src={whiteBookBg}></img>
-        <div className="fix_header">
-          <div className="header_left">
-            <img className="main-img" src={promise}></img>
-            <div className="home-page">
-              {/* <Link to="/home">首页</Link> */}
-            </div>
-            <div className="about-us">关于我们</div>
-            <div className="use-msg">使用说明</div>
-          </div>
-        </div>
         <div className="choose_header">
           <div className="decoration"></div>
           <div className="choose_left">{"倾橙小考"}</div>

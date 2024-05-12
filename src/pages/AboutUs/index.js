@@ -87,7 +87,7 @@ export default class About extends React.Component {
   
 
   componentWillMount() {
-    this.getMes();
+    // this.getMes();
   }
 
   componentDidMount() {
@@ -97,7 +97,7 @@ export default class About extends React.Component {
     const { mode, loginAd, loginPa, registerAd, registerPa, email, captcha, invitCode, isLogin } = this.state;
     return (
       <div className="main_container">
-          <div className="fix_header">
+          {/* <div className="fix_header">
               <div className="header_left">
                     <img className="main-img" src={promise}></img>
                     {isLogin ? 
@@ -107,7 +107,7 @@ export default class About extends React.Component {
                     }
                     <div className="about-us check">关于我们</div>
               </div>
-          </div>
+          </div> */}
           <div className="mid-floor">
             <img className="right-img" src={rightBg}></img>
             <div className="icon-list">
@@ -128,7 +128,7 @@ export default class About extends React.Component {
                 <img className="top-img" src={cirBg}></img>
                 <div className="info-list-wrapper">
                   <div className="info-list">
-                    <div className="info-title">倾心所选 成你所愿</div>
+                    <div className="info-title">英语学习大杀器</div>
                     <div className="info-sub">We give our word, you have your words.</div>
                     {/* <div className="info-msg">Through our word recitation program, you can master at least 2000 words in 30 days. It is reasonable and scientific to ensure that you will not forget after reciting, and complete the learning plan efficiently and step by step.</div>
                     <div className="info-chi">我们致力于给莘莘学子更好的背单词体验！！！</div> */}

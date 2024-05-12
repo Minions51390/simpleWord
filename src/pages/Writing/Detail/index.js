@@ -290,7 +290,7 @@ export default class WritingDetail extends React.Component {
     } = this.state;
     return (
       <div className="writing-detail-container">
-        <Header />
+        {/* <Header /> */}
         <div className="writing-header">
           <div
             className="header-back"
