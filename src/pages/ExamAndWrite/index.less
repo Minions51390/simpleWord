@@ -5,6 +5,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: bottom;
 
   .header {
     width: 1120px;
@@ -40,6 +43,8 @@
       align-items: center;
       padding: 0 40px;
       color: #102F5C;
+      background-repeat: no-repeat;
+      background-size: contain;
 
       .card-header {
         display: flex;
@@ -50,10 +55,27 @@
         .card-name {
           font-weight: 500;
           font-size: 24px;
+          line-height: 24px;
+          position: relative;
+          z-index: 10;
+
+          &:before {
+            display: block;
+            width: 24px;
+            height: 24px;
+            background-color: yellow;
+            content: '';
+            position: absolute;
+            z-index: -1;
+            top: -8px;
+            left: -8px;
+            border-radius: 50%;
+          }
         }
 
         .all {
           font-size: 16px;
+          cursor: pointer;
         }
       }
 

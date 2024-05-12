@@ -5,6 +5,11 @@ import { PlanSelectModal } from '../../components/PlanSelectModal/index.jsx';
 import HTTP, { HTTPV2 } from '../../utils/api.js';
 import { message } from 'antd';
 import { LayoutContext } from '../../components/Layout/index.jsx';
+import writeBg from './assets/writebg.png';
+import examBg from './assets/exambg.png';
+import bg from './assets/bg.png';
+import { useHistory } from "react-router-dom";
+
 
 const ExamAndWrite = () => {
   const [examList, setExamList] = useState([]);
@@ -12,6 +17,8 @@ const ExamAndWrite = () => {
   const [hasOrg, setHasOrg] = useState(false);
   const [planModalVisible, setPlanModalVisible] = useState(false);
   const [selectedSchool, setSelectedSchool] = useState();
+
+  let history = useHistory();
 
   const { schoolList, getSchoolList } = useContext(LayoutContext)
 
@@ -66,6 +73,7 @@ const ExamAndWrite = () => {
   useEffect(() => {
     if (!schoolList.length) {
       // 没有可绑定机构 toc用户
+      history.push("/reciteWordsFallback");
       return;
     }
     setHasOrg(true);
@@ -79,7 +87,7 @@ const ExamAndWrite = () => {
   }, [schoolList])
 
   return (
-    <div className='exam-write-wrapper'>
+    <div className='exam-write-wrapper' style={{ backgroundImage: `url(${bg})` }}>
       {hasOrg && selectedSchool && (
         <div className='header'>
           <div className='plan-name'>{selectedSchool.schoolName}{selectedSchool.className}</div>
@@ -87,9 +95,11 @@ const ExamAndWrite = () => {
         </div>
       )}
       <div className='cards'>
-        <div className='card-item'>
+        <div className='card-item' style={{ backgroundImage: `url(${examBg})` }}>
           <div className='card-header'>
-            <div className='card-name'>考核测试</div>
+            <div className='card-name'>
+              考核测试
+            </div>
             {hasOrg && <div className='all' onClick={jumpAllExam}>全部</div>}
           </div>
           <div className='card-content'>
@@ -115,7 +125,7 @@ const ExamAndWrite = () => {
             开始考试
           </div>
         </div>
-        <div className='card-item'>
+        <div className='card-item' style={{ backgroundImage: `url(${writeBg})` }}>
           <div className='card-header'>
             <div className='card-name'>作文任务</div>
             {hasOrg && <div className='all' onClick={jumpAllWrite}>全部</div>}
