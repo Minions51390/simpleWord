@@ -390,18 +390,6 @@ export default class Login extends React.Component {
       });
   }
 
-  //退出登录
-  logOut() {
-    HTTP.get("/auth/logout")
-      .then((res) => {
-        window.location.href = `${baseUrl}/#/home`;
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
   rowLength(val) {
     val.length >= 254 ? true : false;
   }

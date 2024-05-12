@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Input, Select, message } from "antd";
-import HTTP from "../../utils/api.js";
+import HTTP, { HTTPV2 } from "../../utils/api.js";
 import './index.less';
 import baseUrl from "../../utils/config.js";
 
@@ -137,7 +137,7 @@ export const UserInfoModal = ({ visible, close, defaultUserInfo, updateUserInfo,
   }
 
   const logOut = () => {
-    HTTP.get("/auth/logout")
+    HTTPV2.get("/auth/logout")
       .then((res) => {
         close();
         location.reload();

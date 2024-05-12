@@ -11,7 +11,7 @@ import {
 
 
 
-export const LoginModal = ({ visible, close, showRegister, loginType }) => {
+export const TeacherLoginModal = ({ visible, close, showRegister }) => {
   const [loginAd, setLoginAd] = useState('');
   const [loginPa, setLoginPa] = useState('');
 
@@ -76,7 +76,7 @@ export const LoginModal = ({ visible, close, showRegister, loginType }) => {
         className="login-area-top"
         onClick={e => e.stopPropagation()}
       >
-        <div className="title">{loginType === 'student' ? '学生' : '教师'}登录</div>
+        <div className="title">教师登录</div>
         <div className="form-area">
           <Input
             size="large"

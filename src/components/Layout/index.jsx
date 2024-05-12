@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-// import './index.less';
+import React, { useState, useEffect, createContext } from 'react';
+import './index.less';
 import Header from "../Header/index.js";
 import { useLocation } from 'react-router-dom';
 import { message } from 'antd';
-import HTTP from "../../utils/api.js";
+import HTTP, { HTTPV2 } from "../../utils/api.js";
 import baseUrl from '../../utils/config.js';
 
 const showHeaderList = [
@@ -14,18 +14,31 @@ const showHeaderList = [
   '/about',
   '/download',
   '/writingList',
-  '/writingDetail'
+  '/writingDetail',
+  '/reciteWordsFallback',
+  '/examAndWrite',
 ];
+
+export const LayoutContext = createContext({});
 
 
 export const Layout = ({ children }) => {
   const [isLogin, setIsLogin] = useState(false);
+  const [schoolList, setSchoolList] = useState([]);
   const { pathname } = useLocation();
   console.log('pathname', pathname);
   const showHeader = showHeaderList.some(item => item.toLowerCase() === pathname.toLowerCase());
 
   const notLogin = () => {
-    message.info("请登录后使用");
+    // message.info("请登录后使用");
+    window.location.href = `${baseUrl}/#/home`;
+  }
+
+  const getSchoolList = async () => {
+    const res = await HTTPV2.get('/entity/list');
+    const { schoolList = [] } = res?.data?.data;
+    const filteredSchoolLost = schoolList.filter(item => item.classStatus !== 0);
+    setSchoolList(filteredSchoolLost);
   }
 
   const getMes = () => {
@@ -44,9 +57,9 @@ export const Layout = ({ children }) => {
         if (res && res.data && res.data.data) {
           if (res.data.data.redirectUrl) {
             setIsLogin(true);
-            // message.success("登录成功");
+            getSchoolList();
             if (process.env.NODE_ENV === "development") {
-              window.location.href = `${baseUrl}/#/transfer`;
+              window.location.href = `${baseUrl}/#/examAndWrite`;
             } else {
               window.location.href = res.data.data.redirectUrl;
             }
@@ -63,9 +76,13 @@ export const Layout = ({ children }) => {
   }, []);
 
   return (
-    <div>
-      {showHeader && <Header isLogin={isLogin} />}
-      {children}
-    </div>
+    <LayoutContext.Provider value={{ schoolList, getSchoolList }}>
+      <div className='app-layout'>
+        {showHeader && <Header isLogin={isLogin} />}
+        <div className={`app-content ${showHeader && 'with-header'}`}>
+          {children}
+        </div>
+      </div>
+    </LayoutContext.Provider>
   );
 };

@@ -308,7 +308,10 @@ export const RegisterModal = ({ visible, close, showLogin }) => {
             <span className="join-fir">已有账号，</span>
             <span
               className="join-sec"
-              onClick={showLogin}
+              onClick={() => {
+                close();
+                showLogin();
+              }}
             >
               马上登录
             </span>
