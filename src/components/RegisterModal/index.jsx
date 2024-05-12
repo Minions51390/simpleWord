@@ -159,7 +159,7 @@ export const RegisterModal = ({ visible, close, showLogin }) => {
         }
         message.success("注册成功!");
         if (viceInviteCode != null) {
-          window.location.href = `${baseUrl}/#/transfer`;
+          window.location.href = `${baseUrl}/#/examAndWrite`;
         } else {
           window.location.href = `${baseUrl}/admin/#/app/class/main`;
         }

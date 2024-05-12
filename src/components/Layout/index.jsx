@@ -5,6 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { message } from 'antd';
 import HTTP, { HTTPV2 } from "../../utils/api.js";
 import baseUrl from '../../utils/config.js';
+import { useHistory } from "react-router-dom";
 
 const showHeaderList = [
   '/',
@@ -29,6 +30,8 @@ export const Layout = ({ children }) => {
   console.log('pathname', pathname);
   const showHeader = showHeaderList.some(item => item.toLowerCase() === pathname.toLowerCase());
 
+  let history = useHistory();
+
   const notLogin = () => {
     // message.info("请登录后使用");
     window.location.href = `${baseUrl}/#/home`;
@@ -37,6 +40,10 @@ export const Layout = ({ children }) => {
   const getSchoolList = async () => {
     const res = await HTTPV2.get('/entity/list');
     const { schoolList = [] } = res?.data?.data;
+    if (!schoolList.length) {
+      history.push("/reciteWordsFallback");
+      return;
+    }
     const filteredSchoolLost = schoolList.filter(item => item.classStatus !== 0);
     setSchoolList(filteredSchoolLost);
   }
@@ -58,11 +65,7 @@ export const Layout = ({ children }) => {
           if (res.data.data.redirectUrl) {
             setIsLogin(true);
             getSchoolList();
-            if (process.env.NODE_ENV === "development") {
-              window.location.href = `${baseUrl}/#/examAndWrite`;
-            } else {
-              window.location.href = res.data.data.redirectUrl;
-            }
+            window.location.href = res.data.data.redirectUrl;
           }
         }
       })

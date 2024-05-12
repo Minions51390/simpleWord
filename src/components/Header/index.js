@@ -355,8 +355,8 @@ const Root = ({location, isLogin}) => {
         </div>
         {showOver && <UserInfoModal isSelectDisable={isSelectDisable} visible={showOver} close={() => setShowOver(false)} defaultUserInfo={userInfo} updateUserInfo={updateUserInfo} />}
         <FeedbackModal visible={feedbackModalVisible} close={hideFeedbackModal.bind(this)} />
-        <TeacherLoginModal visible={showTeacherLoginModal} close={closeTeacherLogin} showRegister={showRegister} />
-        <StudentLoginModal visible={showStudentLoginModal} close={closeStudentLogin} showRegister={showRegister} />
+        <TeacherLoginModal visible={showTeacherLoginModal} close={closeTeacherLogin} showRegister={() => setShowRegister(true)} />
+        <StudentLoginModal visible={showStudentLoginModal} close={closeStudentLogin} showRegister={() => setStudentRegisterModalVisible(true)} />
         <RegisterModal visible={showRegister} close={closeRegister} showLogin={showTeacherLogin} />
         <StudentRegisterModal visible={studentRegisterModalVisible} close={closeStudentRegister} showLogin={showStudentLogin} />
         <PlanSelectModal visible={planSelectModalVisible} close={() => setPlanSelectModalVisible(false)} confirm={planSelectConfirm} schoolList={schoolList} />

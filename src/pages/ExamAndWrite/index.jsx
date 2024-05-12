@@ -23,16 +23,21 @@ const ExamAndWrite = () => {
   const { schoolList, getSchoolList } = useContext(LayoutContext)
 
   const jumpExam = () => {
-    if (!hasOrg) {
+    if (!hasOrg || !examList?.length) {
       return;
     }
+    const currentExam = examList?.[0];
+    history.push(`/testWord?testType=${currentExam.testType}&paperId=${currentExam.paperId}`);
   };
   const jumpAllExam = () => {};
 
   const jumpWrite = () => {
-    if (!hasOrg) {
+    if (!hasOrg || !writingList?.length) {
       return;
     }
+    const currentWriting = writingList?.[0];
+    history.push(`/writingDetail?paperId=${currentWriting.paperId}`);
+
   };
   const jumpAllWrite = () => {};
 
@@ -51,7 +56,7 @@ const ExamAndWrite = () => {
 
   const getWritingList = async () => {
     const res = await HTTP.get(`/stu-writing-exam/list2?status=1&submit=2&pageNo=1&pageSize=100`);
-    const writingList = res?.data?.data;
+    const writingList = res?.data?.data?.data;
     return writingList;
   }
 
@@ -62,18 +67,18 @@ const ExamAndWrite = () => {
   }
 
   useEffect(() => {
-    (async () => {
-      const [examList, writingList] = await Promise.all([getExamList(), getWritingList()]);
-      setExamList(examList);
-      setWritingList(writingList);
-    })();
-    getWritingList();
+    if (selectedSchool) {
+      (async () => {
+        const [examList, writingList] = await Promise.all([getExamList(), getWritingList()]);
+        setExamList(examList);
+        setWritingList(writingList);
+      })();
+    }
   }, [selectedSchool]);
 
   useEffect(() => {
     if (!schoolList.length) {
       // 没有可绑定机构 toc用户
-      history.push("/reciteWordsFallback");
       return;
     }
     setHasOrg(true);
@@ -108,13 +113,13 @@ const ExamAndWrite = () => {
                 <div className='name'>敬请期待</div>
               </>
             ) : (<></>)}
-            {hasOrg && examList && (
+            {hasOrg && examList?.length && (
               <>
-                <div className='name'>xxxxx</div>
-                <div className='time'>1234</div>
+                <div className='name'>{examList?.[0]?.testName}</div>
+                <div className='time'>{examList?.[0]?.endTime}</div>
               </>
             )}
-            {hasOrg && !examList && (
+            {hasOrg && !examList.length && (
               <>
                 <EmptySvg className="empty-icon" />
                 <div className='empty-tip'>暂无考核测试</div>
@@ -136,13 +141,13 @@ const ExamAndWrite = () => {
                 <div className='name'>敬请期待</div>
               </>
             ) : (<></>)}
-            {hasOrg && writingList && (
+            {hasOrg && writingList?.length && (
               <>
-                <div className='name'>xxxxx</div>
-                <div className='time'>1234</div>
+                <div className='name'>{writingList?.[0]?.writingExamName}</div>
+                <div className='time'>{writingList?.[0]?.endTime}</div>
               </>
             )}
-            {hasOrg && !writingList && (
+            {hasOrg && !writingList.length && (
               <>
                 <EmptySvg className="empty-icon" />
                 <div className='empty-tip'>暂无作文任务</div>

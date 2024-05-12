@@ -50,12 +50,6 @@ export const StudentLoginModal = ({ visible, close, showRegister }) => {
         }
         message.success("登录成功!");
         location.reload();
-        close();
-        if (process.env.NODE_ENV === "development") {
-          window.location.href = `${baseUrl}/#/transfer`;
-        } else {
-          window.location.href = res.data.data;
-        }
       })
       .catch((err) => {
         message.error("登录失败!");
@@ -90,12 +84,6 @@ export const StudentLoginModal = ({ visible, close, showRegister }) => {
         }
         message.success("登录成功!");
         location.reload();
-        close();
-        if (process.env.NODE_ENV === "development") {
-          window.location.href = `${baseUrl}/#/transfer`;
-        } else {
-          window.location.href = res.data.data;
-        }
       })
       .catch((err) => {
         message.error("登录失败!");
