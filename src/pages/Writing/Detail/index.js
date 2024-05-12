@@ -64,7 +64,7 @@ export default class WritingDetail extends React.Component {
         aiSentenceScore: 0,
         aiStructureScore: 0,
         aiVocabularyScore: 0,
-        sentenceComments: [],
+        aiSentenceComments: [],
       },
       comment: "",
       score: 0, // -1 为未考试
@@ -255,14 +255,14 @@ export default class WritingDetail extends React.Component {
     const { aiReview } = this.state;
     return (
       <div>
-        {aiReview.sentenceComments.map((item) => {
+        {aiReview.aiSentenceComments.map((item) => {
           return (
             <div className="errorItem">
               <span className="errorItemCount"></span>
               <div className="errorItemContent">
                 <div className="errorItemContent">{item.sentence}</div>
                 {item.suggestions.map((suggestion) => {
-                  return <div className="errorItemContent">{suggestion}</div>;
+                  return <div className="errorItemContent">{suggestion.errBaseInfo}</div>;
                 })}
               </div>
             </div>
@@ -340,10 +340,10 @@ export default class WritingDetail extends React.Component {
                   value={content}
                   bordered={false}
                   disabled={isSubmit}
-                  onPaste={(e) => {
-                    e.preventDefault();
-                    return false;
-                  }}
+                //   onPaste={(e) => {
+                //     e.preventDefault();
+                //     return false;
+                //   }}
                   onChange={this.handleContentChange.bind(this)}
                 />
               </div>
@@ -414,7 +414,7 @@ export default class WritingDetail extends React.Component {
                 <div className="fir-line">
                   <div className="title">纠错</div>
                   <div className="count">
-                    {isPublicScore || (!isSubmit && aiReview.aiComment) ? aiReview.sentenceComments.length : 0}
+                    {isPublicScore || (!isSubmit && aiReview.aiComment) ? aiReview.aiSentenceComments.length : 0}
                   </div>
                 </div>
                 {isPublicScore || (!isSubmit && aiReview.aiComment) ? <div className="error-content">{this.errorItem()}</div> : ''}
