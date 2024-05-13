@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Modal, message } from 'antd';
 import './index.less';
+import CheckSvg from '../../assets/check.svg';
 
 export const PlanSelectModal = ({ visible, close, confirm, schoolList }) => {
   const [finalSelectedPlanId, setfinalSelectedPlanId] = useState();
@@ -28,11 +29,14 @@ export const PlanSelectModal = ({ visible, close, confirm, schoolList }) => {
         <div className='plan-list'>
           {schoolList.map(item => (
             <div className={`plan-item ${selectedPlanId === item.planId && 'checked'}`} onClick={e => handleClick(item.planId)} key={item.planId}>
-              <div className='plan-name'>{item.schoolName}{item.className}</div>
-              <div className='tags'>
-                <span className='org'>{item.schoolName}</span>
-                <span className='name'>{item.realName}</span>
+              <div className='plan-item-left'>
+                <div className='plan-name'>{item.schoolName}{item.className}</div>
+                <div className='tags'>
+                  <span className='org'>{item.schoolName}</span>
+                  <span className='name'>{item.realName}</span>
+                </div>
               </div>
+              {selectedPlanId === item.planId && <CheckSvg />}
             </div>
           ))}
         </div>

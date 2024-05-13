@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import './index.less';
 import EmptySvg from './assets/empty.svg';
+import ArrowSvg from './assets/arrow.svg';
 import { PlanSelectModal } from '../../components/PlanSelectModal/index.jsx';
 import HTTP, { HTTPV2 } from '../../utils/api.js';
 import { message } from 'antd';
@@ -107,7 +108,12 @@ const ExamAndWrite = () => {
             <div className='card-name'>
               考核测试
             </div>
-            {hasOrg && <div className='all' onClick={jumpAllExam}>全部</div>}
+            {hasOrg && (
+              <div className='all' onClick={jumpAllExam}>
+                <div>全部</div>
+                <ArrowSvg style={{ marginLeft: '4px' }} />
+              </div>
+            )}
           </div>
           <div className='card-content'>
             {!hasOrg ? (
@@ -135,7 +141,12 @@ const ExamAndWrite = () => {
         <div className='card-item' style={{ backgroundImage: `url(${writeBg})` }}>
           <div className='card-header'>
             <div className='card-name'>作文任务</div>
-            {hasOrg && <div className='all' onClick={jumpAllWrite}>全部</div>}
+            {hasOrg && (
+              <div className='all' onClick={jumpAllWrite}>
+                <div>全部</div>
+                <ArrowSvg style={{ marginLeft: '4px' }} />
+              </div>
+            )}
           </div>
           <div className='card-content'>
             {!hasOrg ? (
