@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import useri from "./assets/useri.png";
 import passi from "./assets/passi.png";
-import HTTP, { HTTPV2 } from "../../utils/api.js";
-import baseUrl from '../../utils/config.js';
+import { HTTPV2 } from "../../utils/api.js";
 import './index.less';
 import {
   Input,
@@ -32,7 +31,7 @@ export const StudentLoginModal = ({ visible, close, showRegister }) => {
       message.error("密码不能为空！");
       return;
     }
-    HTTP.post("/auth/login-sign", {
+    HTTPV2.post("/auth/login-sign", {
       accountSign: loginAd,
       password: loginPa,
     })
