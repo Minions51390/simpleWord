@@ -197,7 +197,7 @@ export const RegisterModal = ({ visible, close, showLogin }) => {
                     <img className="input-icon" src={useri} />
                   </div>
                 }
-                onChange={e => handleInfoChange('loginAd', e.target.value)}
+                onChange={e => handleInfoChange('registerAd', e.target.value)}
                 value={registerInfo.registerAd}
               />
               <Input.Password

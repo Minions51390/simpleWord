@@ -202,7 +202,7 @@ const Root = ({location, isLogin}) => {
 
   useEffect(() => {
     if (isLogin) {
-      getHomeMes();
+      getMes();
     }
   }, [isLogin])
 
@@ -267,25 +267,25 @@ const Root = ({location, isLogin}) => {
                 {/* <Link className={`home-page ${location.pathname === '/transfer' && 'check'}`} to="/transfer">
                   首页
                 </Link> */}
-                <Link className={`exam ${location.pathname === '/examAndWrite' && 'check'}`} to="/examAndWrite">
+                <Link className={`header-tab-item exam ${location.pathname === '/examAndWrite' && 'check'}`} to="/examAndWrite">
                   考试&作文
                 </Link>
-                <Link className={`recite-words ${location.pathname === '/reciteWordsFallback' && 'check'}`} to="/reciteWordsFallback">
+                <Link className={`header-tab-item recite-words ${location.pathname === '/reciteWordsFallback' && 'check'}`} to="/reciteWordsFallback">
                   背词
                 </Link>
-                <Link className={`dashboard-page ${location.pathname === '/dashboard' && 'check'}`} to="/dashboard">
+                <Link className={`header-tab-item dashboard-page ${location.pathname === '/dashboard' && 'check'}`} to="/dashboard">
                   数据中心
                 </Link>
               </>
             ) : (
-              <Link className={`home-page ${location.pathname === '/home' || location.pathname === '/' && 'check'}`} to="/">
+              <Link className={`header-tab-item home-page ${location.pathname === '/home' || location.pathname === '/' && 'check'}`} to="/">
                 首页
               </Link>
             )}
-            <Link className={`about-us ${location.pathname === '/about' && 'check'}`} to="/about">
+            <Link className={`header-tab-item about-us ${location.pathname === '/about' && 'check'}`} to="/about">
               关于我们
             </Link>
-            <Link className={`app-download ${location.pathname === '/download' && 'check'}`} to="/download">
+            <Link className={`header-tab-item app-download ${location.pathname === '/download' && 'check'}`} to="/download">
               App下载
             </Link>
           </div>

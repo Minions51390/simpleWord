@@ -191,6 +191,7 @@ export const StudentLoginModal = ({ visible, close, showRegister }) => {
               onChange={e => setLoginPa(e.target.value)}
               value={loginPa}
             />
+            <div className='type-change' onClick={() => changeLoginType('captcha')}>使用验证码密码登录</div>
             <div className="btn-box">
               <div
                 className="register-box"

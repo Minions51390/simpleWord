@@ -121,13 +121,13 @@ const ExamAndWrite = () => {
                 <div className='name'>敬请期待</div>
               </>
             ) : (<></>)}
-            {hasOrg && examList?.length && (
+            {Boolean(hasOrg && examList?.length) && (
               <>
                 <div className='name'>{examList?.[0]?.testName}</div>
                 <div className='time'>{examList?.[0]?.endTime}</div>
               </>
             )}
-            {hasOrg && !examList.length && (
+            {Boolean(hasOrg && !examList.length) && (
               <>
                 <EmptySvg className="empty-icon" />
                 <div className='empty-tip'>暂无考核测试</div>
@@ -154,13 +154,13 @@ const ExamAndWrite = () => {
                 <div className='name'>敬请期待</div>
               </>
             ) : (<></>)}
-            {hasOrg && writingList?.length && (
+            {Boolean(hasOrg && writingList?.length) && (
               <>
                 <div className='name'>{writingList?.[0]?.writingExamName}</div>
                 <div className='time'>{writingList?.[0]?.endTime}</div>
               </>
             )}
-            {hasOrg && !writingList.length && (
+            {Boolean(hasOrg && !writingList.length) && (
               <>
                 <EmptySvg className="empty-icon" />
                 <div className='empty-tip'>暂无作文任务</div>
