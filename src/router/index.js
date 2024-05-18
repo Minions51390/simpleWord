@@ -20,6 +20,7 @@ const Transfer = loadable(() => import('../pages/Transfer'))
 const AboutUS = loadable(() => import('../pages/AboutUs'))
 const Download = loadable(() => import('../pages/Download'))
 const Dashboard = loadable(() => import('../pages/Dashboard/index.jsx'))
+const ExamAndWrite = loadable(() => import('../pages/ExamAndWrite/index.jsx'))
 export default class Root extends Component {
   render() {
     return (
@@ -32,6 +33,7 @@ export default class Root extends Component {
             <Route path="/dashboard" component={Dashboard}></Route>
             <Route path="/about" component={AboutUS}></Route>
             <Route path="/download" component={Download}></Route>
+            <Route path="/reciteWordsFallback" component={Download}></Route>
             <Route path="/index"  component={Index}/>
             <Route path="/login" component={Login}/>
             <Route path="/chooseWord" component={ChooseWord}/>
@@ -41,6 +43,7 @@ export default class Root extends Component {
             <Route path="/testWord" component={TestWord}/>
             <Route path="/writingList" component={WritingList}/>
             <Route path="/writingDetail" component={WritingDetail}/>
+            <Route path="/examAndWrite" component={ExamAndWrite}/>
           </Switch>
         </Layout>
       </HashRouter>

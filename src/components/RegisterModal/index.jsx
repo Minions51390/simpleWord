@@ -159,7 +159,7 @@ export const RegisterModal = ({ visible, close, showLogin }) => {
         }
         message.success("注册成功!");
         if (viceInviteCode != null) {
-          window.location.href = `${baseUrl}/#/transfer`;
+          window.location.href = `${baseUrl}/#/examAndWrite`;
         } else {
           window.location.href = `${baseUrl}/admin/#/app/class/main`;
         }
@@ -197,7 +197,7 @@ export const RegisterModal = ({ visible, close, showLogin }) => {
                     <img className="input-icon" src={useri} />
                   </div>
                 }
-                onChange={e => handleInfoChange('loginAd', e.target.value)}
+                onChange={e => handleInfoChange('registerAd', e.target.value)}
                 value={registerInfo.registerAd}
               />
               <Input.Password
@@ -308,7 +308,10 @@ export const RegisterModal = ({ visible, close, showLogin }) => {
             <span className="join-fir">已有账号，</span>
             <span
               className="join-sec"
-              onClick={showLogin}
+              onClick={() => {
+                close();
+                showLogin();
+              }}
             >
               马上登录
             </span>

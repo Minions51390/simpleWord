@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useContext } from 'react';
 import { Input, Select, message } from "antd";
-import HTTP from "../../utils/api.js";
+import HTTP, { HTTPV2 } from "../../utils/api.js";
 import './index.less';
 import baseUrl from "../../utils/config.js";
+import { LayoutContext } from '../Layout/index.jsx';
 
 
 const wordCountArr = [6, 9, 12, 15, 18, 21, 24, 27, 30];
@@ -12,8 +13,10 @@ const emailReg = new RegExp(
   "^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$"
 );
 
-export const UserInfoModal = ({ visible, close, defaultUserInfo, updateUserInfo, isSelectDisable }) => {
+export const UserInfoModal = ({ visible, close, defaultUserInfo, logOut }) => {
   const [userInfo, setUserInfo] = useState(defaultUserInfo);
+  const { getUserInfo } = useContext(LayoutContext);
+
   const {
     realName,
     city,
@@ -127,7 +130,7 @@ export const UserInfoModal = ({ visible, close, defaultUserInfo, updateUserInfo,
           return;
         }
         message.success("设置成功!");
-        updateUserInfo(userInfo);
+        getUserInfo();
         close();
       })
       .catch((err) => {
@@ -136,18 +139,11 @@ export const UserInfoModal = ({ visible, close, defaultUserInfo, updateUserInfo,
       });
   }
 
-  const logOut = () => {
-    HTTP.get("/auth/logout")
-      .then((res) => {
-        close();
-        location.reload();
-        window.location.href = `${baseUrl}/#/home`;
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
+  const isSelectDisable = useMemo(() => {
+    return userInfo.newWord === 0 ? false : true
+  }, [userInfo]);
+
+
 
 
   if (!visible) {
@@ -172,7 +168,7 @@ export const UserInfoModal = ({ visible, close, defaultUserInfo, updateUserInfo,
               className="pass-mar"
               size="large"
               placeholder="请输入您的姓名"
-              prefix={<div className="my-icon">姓名</div>}
+              prefix={<div className="my-icon">学员名称</div>}
               onChange={e => handleChange('realName', e.target.value)}
               value={realName}
             />

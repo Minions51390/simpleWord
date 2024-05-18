@@ -11,7 +11,7 @@ import {
 
 
 
-export const LoginModal = ({ visible, close, showRegister, loginType }) => {
+export const TeacherLoginModal = ({ visible, close, showRegister }) => {
   const [loginAd, setLoginAd] = useState('');
   const [loginPa, setLoginPa] = useState('');
 
@@ -48,11 +48,6 @@ export const LoginModal = ({ visible, close, showRegister, loginType }) => {
         message.success("登录成功!");
         location.reload()();
         close();
-        if (process.env.NODE_ENV === "development") {
-          window.location.href = `${baseUrl}/#/transfer`;
-        } else {
-          window.location.href = res.data.data;
-        }
       })
       .catch((err) => {
         message.error("登录失败!");
@@ -76,7 +71,7 @@ export const LoginModal = ({ visible, close, showRegister, loginType }) => {
         className="login-area-top"
         onClick={e => e.stopPropagation()}
       >
-        <div className="title">{loginType === 'student' ? '学生' : '教师'}登录</div>
+        <div className="title">教师登录</div>
         <div className="form-area">
           <Input
             size="large"
