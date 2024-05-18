@@ -21,7 +21,7 @@ const ExamAndWrite = () => {
 
   let history = useHistory();
 
-  const { schoolList, getSchoolList } = useContext(LayoutContext)
+  const { schoolList, getSchoolList, getUserInfo } = useContext(LayoutContext)
 
   const jumpExam = () => {
     if (!hasOrg || !examList?.length) {
@@ -51,6 +51,7 @@ const ExamAndWrite = () => {
     message.success('绑定成功');
     setPlanModalVisible(false);
     getSchoolList();
+    getUserInfo();
   };
 
   const getSelectedSchool = list => {
@@ -87,7 +88,10 @@ const ExamAndWrite = () => {
     setHasOrg(true);
     // 未选择任何计划，让用户选择
     const selectedSchool = getSelectedSchool(schoolList);
-    if (!selectedSchool) {
+    // 如果只有1个可选择的，自动选择该机构
+    if (!selectedSchool && schoolList.length === 1) {
+      planSelectConfirm(schoolList[0].planId);
+    } else if (!selectedSchool) {
       setPlanModalVisible(true);
     } else {
       setSelectedSchool(selectedSchool);

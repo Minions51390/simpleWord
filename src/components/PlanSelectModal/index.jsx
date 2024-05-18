@@ -23,7 +23,7 @@ export const PlanSelectModal = ({ visible, close, confirm, schoolList }) => {
     confirm(selectedPlanId);
   };
   return (
-    <Modal width={680} style={{ borderRadius: '4px' }} visible={visible} footer={null} closable={false} onCancel={close}>
+    <Modal width={464} style={{ borderRadius: '4px' }} visible={visible} footer={null} closable={false} onCancel={close}>
       <div className='plan-select-modal'>
         <div className='title'>请选择你的计划</div>
         <div className='plan-list'>

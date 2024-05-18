@@ -1,6 +1,6 @@
 import loadable from "@loadable/component";
 import React, { useContext, useEffect, useState } from "react";
-import promise from "../../pages/Transfer/assets/promise.png";
+import Logo from "../../assets/appLogo.png";
 import userIcon from "../../pages/Transfer/assets/userIcon.png";
 import "./index.less";
 import HTTP, { HTTPV2 } from "../../utils/api.js";
@@ -16,10 +16,10 @@ import { StudentRegisterModal } from "../StudentRegisterModal/index.jsx";
 import { StudentLoginModal } from "../StudentLoginModal/index.jsx";
 import { PlanSelectModal } from "../PlanSelectModal/index.jsx";
 import { LayoutContext } from "../Layout/index.jsx";
+import { ToCUserInfoModal } from "../toCUserInfoModal/index.jsx";
 
 
 const Root = ({location, isLogin}) => {
-  const [userInfo, setUserInfo] = useState();
   const [currentDic, setCurrentDic] = useState();
   const [reciteWordInfo, setReciteWordInfo] = useState({
     recitedWordsNumber: 0,
@@ -43,25 +43,29 @@ const Root = ({location, isLogin}) => {
   });
 
   const [testInfo, setTestInfo] = useState([]);
-  const [showOver, setShowOver] = useState(false);
+  const [tobUserInfoModalVisible, setTobUserInfoModalVisible] = useState(false);
   const [storeArr, setStoreArr] = useState([]);
-  const [isSelectDisable, setIsSelectDisable] = useState(false);
   const [showTips, setShowTips] = useState(false);
   const [feedbackModalVisible, setFeedbackModalVisible] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [studentRegisterModalVisible, setStudentRegisterModalVisible] = useState(false);
   const [showTeacherLoginModal, setShowTeacherLoginModal] = useState(false);
   const [showStudentLoginModal, setShowStudentLoginModal] = useState(false);
-  const [planSelectModalVisible, setPlanSelectModalVisible] = useState()
+  const [planSelectModalVisible, setPlanSelectModalVisible] = useState();
+  const [toCUserInfoModalVisible, setToCUserInfoModalVisible] = useState(false);
 
-  const { schoolList, getSchoolList } = useContext(LayoutContext);
+  const { schoolList, getSchoolList, isToB, userInfo, getUserInfo } = useContext(LayoutContext);
 
 
 
-  // 蒙层s
-  const handleModeChange = (showOver) => {
-    setShowOver(showOver);
+  const showUserInfoModal = () => {
+    if (isToB) {
+      setTobUserInfoModalVisible(true);
+    } else {
+      setToCUserInfoModalVisible(true);
+    }
   }
+
   const notLogin = () => {
     window.location.href = `${baseUrl}/#/home`;
     // message.info('请登录后使用');
@@ -151,38 +155,7 @@ const Root = ({location, isLogin}) => {
         console.log(err);
       });
   }
-  // 获取用户信息
-  const getMes = () => {
-    console.log("getMes");
-    HTTP.get("/profile/user")
-      .then((res) => {
-        if (!res && !res.data && res.data.state == null) {
-          message.error("服务器开小差了");
-          return;
-        }
-        let responseData = res.data.data;
-        if (responseData) {
-          const info = {
-            area: responseData.area || "",
-            city: responseData.city || "",
-            email: responseData.email || "",
-            realName: responseData.realName || "",
-            school: responseData.school || "",
-            phone: responseData.phone || "",
-            province: responseData.province || "",
-            qqNumber: responseData.qqNumber || "",
-            newWord: responseData.reciteVersion || 0,
-            grade: responseData.grade || "",
-            userId: responseData.userId || 0,
-          };
-          setUserInfo(info);
-          setIsSelectDisable(responseData.reciteVersion === 0 ? false : true);
-        }
-      })
-      .catch((err) => {
-        message.error("个人信息获取失败!");
-      });
-  }
+
 
   const hoverHeader = () => {
     setShowTips(true);
@@ -198,16 +171,6 @@ const Root = ({location, isLogin}) => {
 
   const hideFeedbackModal = () => {
     setFeedbackModalVisible(false);
-  }
-
-  useEffect(() => {
-    if (isLogin) {
-      getMes();
-    }
-  }, [isLogin])
-
-  const updateUserInfo = (info) => {
-    setUserInfo(info);
   }
 
   const showTeacherLogin = () => {
@@ -252,6 +215,17 @@ const Root = ({location, isLogin}) => {
     message.success('切换成功');
     setPlanSelectModalVisible(false);
     getSchoolList();
+    getUserInfo();
+  }
+
+  const logOut = () => {
+    HTTPV2.get("/auth/logout")
+      .then((res) => {
+        location.reload();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
 
@@ -261,7 +235,7 @@ const Root = ({location, isLogin}) => {
       <div className="layout_header">
         <div className={`fix_header_main ${ isLogin && 'login' }`}>
           <div className="header_left">
-            <img className="main-img" src={promise}></img>
+            <img className="main-img" src={Logo}></img>
             {isLogin ? (
               <>
                 {/* <Link className={`home-page ${location.pathname === '/transfer' && 'check'}`} to="/transfer">
@@ -273,9 +247,11 @@ const Root = ({location, isLogin}) => {
                 <Link className={`header-tab-item recite-words ${location.pathname === '/reciteWordsFallback' && 'check'}`} to="/reciteWordsFallback">
                   背词
                 </Link>
-                <Link className={`header-tab-item dashboard-page ${location.pathname === '/dashboard' && 'check'}`} to="/dashboard">
-                  数据中心
-                </Link>
+                {isToB && (
+                  <Link className={`header-tab-item dashboard-page ${location.pathname === '/dashboard' && 'check'}`} to="/dashboard">
+                    数据中心
+                  </Link>
+                )}
               </>
             ) : (
               <Link className={`header-tab-item home-page ${location.pathname === '/home' || location.pathname === '/' && 'check'}`} to="/">
@@ -342,7 +318,7 @@ const Root = ({location, isLogin}) => {
                 </div>
                 <div
                   className="item"
-                  onClick={() => handleModeChange(true)}
+                  onClick={showUserInfoModal}
                 >
                   个人信息
                 </div>
@@ -353,13 +329,14 @@ const Root = ({location, isLogin}) => {
             </div>
           )}
         </div>
-        {showOver && <UserInfoModal isSelectDisable={isSelectDisable} visible={showOver} close={() => setShowOver(false)} defaultUserInfo={userInfo} updateUserInfo={updateUserInfo} />}
+        {tobUserInfoModalVisible && <UserInfoModal logOut={logOut} visible={tobUserInfoModalVisible} close={() => setTobUserInfoModalVisible(false)} defaultUserInfo={userInfo} />}
         <FeedbackModal visible={feedbackModalVisible} close={hideFeedbackModal.bind(this)} />
         <TeacherLoginModal visible={showTeacherLoginModal} close={closeTeacherLogin} showRegister={() => setShowRegister(true)} />
         <StudentLoginModal visible={showStudentLoginModal} close={closeStudentLogin} showRegister={() => setStudentRegisterModalVisible(true)} />
         <RegisterModal visible={showRegister} close={closeRegister} showLogin={showTeacherLogin} />
         <StudentRegisterModal visible={studentRegisterModalVisible} close={closeStudentRegister} showLogin={showStudentLogin} />
         <PlanSelectModal visible={planSelectModalVisible} close={() => setPlanSelectModalVisible(false)} confirm={planSelectConfirm} schoolList={schoolList} />
+        <ToCUserInfoModal visible={toCUserInfoModalVisible} close={() => setToCUserInfoModalVisible(false)} userInfo={userInfo} logOut={logOut} />
       </div>
     );
 };

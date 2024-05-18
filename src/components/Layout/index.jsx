@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext } from 'react';
+import React, { useState, useEffect, createContext, useMemo } from 'react';
 import './index.less';
 import Header from "../Header/index.js";
 import { useLocation } from 'react-router-dom';
@@ -24,6 +24,7 @@ export const LayoutContext = createContext({});
 
 
 export const Layout = ({ children }) => {
+  const [userInfo, setUserInfo] = useState({});
   const [isLogin, setIsLogin] = useState(false);
   const [schoolList, setSchoolList] = useState([]);
   const { pathname } = useLocation();
@@ -47,6 +48,10 @@ export const Layout = ({ children }) => {
     const filteredSchoolLost = schoolList.filter(item => item.classStatus !== 0);
     setSchoolList(filteredSchoolLost);
   }
+
+  const isToB = useMemo(() => {
+    return schoolList.find(item => item.selected);
+  }, [schoolList]);
 
   const getMes = () => {
     HTTP.get("/profile/role")
@@ -74,12 +79,50 @@ export const Layout = ({ children }) => {
       });
   }
 
+    // 获取用户信息
+    const getUserInfo = () => {
+      console.log("getMes");
+      HTTP.get("/profile/user")
+        .then((res) => {
+          if (!res && !res.data && res.data.state == null) {
+            message.error("服务器开小差了");
+            return;
+          }
+          let responseData = res.data.data;
+          if (responseData) {
+            const info = {
+              area: responseData.area || "",
+              city: responseData.city || "",
+              email: responseData.email || "",
+              realName: responseData.realName || "",
+              school: responseData.school || "",
+              phone: responseData.phone || "",
+              province: responseData.province || "",
+              qqNumber: responseData.qqNumber || "",
+              newWord: responseData.reciteVersion || 0,
+              grade: responseData.grade || "",
+              userId: responseData.userId || 0,
+            };
+            setUserInfo(info);
+          }
+        })
+        .catch((err) => {
+          message.error("个人信息获取失败!");
+        });
+    }
+
+  useEffect(() => {
+    if (isLogin) {
+      getUserInfo();
+    }
+  }, [isLogin])
+
   useEffect(() => {
     getMes();
   }, []);
 
   return (
-    <LayoutContext.Provider value={{ schoolList, getSchoolList }}>
+    <LayoutContext.Provider value={{ schoolList, getSchoolList, isToB, getUserInfo, userInfo }}>
       <div className='app-layout'>
         {showHeader && <Header isLogin={isLogin} />}
         <div className={`app-content ${showHeader && 'with-header'}`}>
