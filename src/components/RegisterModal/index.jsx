@@ -157,12 +157,8 @@ export const RegisterModal = ({ visible, close, showLogin }) => {
           message.error(res.data.msg);
           return;
         }
-        message.success("注册成功!");
-        if (viceInviteCode != null) {
-          window.location.href = `${baseUrl}/#/examAndWrite`;
-        } else {
-          window.location.href = `${baseUrl}/admin/#/app/class/main`;
-        }
+        close();
+        message.success("注册成功! 请登录");
       })
       .catch((err) => {
         message.error("服务器开小差了");
