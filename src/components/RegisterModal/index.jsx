@@ -82,7 +82,6 @@ export const RegisterModal = ({ visible, close, showLogin }) => {
       email,
       captcha,
       invitCode,
-      emailReg,
       isShowViceInviteCode,
       viceInviteCode,
       realName,
