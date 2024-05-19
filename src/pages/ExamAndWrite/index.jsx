@@ -21,7 +21,7 @@ const ExamAndWrite = () => {
 
   let history = useHistory();
 
-  const { schoolList, getSchoolList, getUserInfo } = useContext(LayoutContext)
+  const { schoolList, getSchoolList, getUserInfo, userInfo } = useContext(LayoutContext)
 
   const jumpExam = () => {
     if (!hasOrg || !examList?.length) {
@@ -103,7 +103,10 @@ const ExamAndWrite = () => {
       {hasOrg && selectedSchool && (
         <div className='header'>
           <div className='plan-name'>{selectedSchool.schoolName}{selectedSchool.className}</div>
-          <div className='org-name'>{selectedSchool.schoolName}</div>
+          <div className='sub-info'>
+            <div className='org-name'>{selectedSchool.schoolName}</div>
+            <div className='student-info'>{userInfo?.realName} | {selectedSchool.studentNum}</div>
+          </div>
         </div>
       )}
       <div className='cards'>
@@ -138,7 +141,7 @@ const ExamAndWrite = () => {
               </>
             )}
           </div>
-          <div className={`card-button ${!hasOrg && 'disable'}`} onClick={jumpExam}>
+          <div className={`card-button ${!examList.length && 'disable'}`} onClick={jumpExam}>
             开始考试
           </div>
         </div>
@@ -171,7 +174,7 @@ const ExamAndWrite = () => {
               </>
             )}
           </div>
-          <div className={`card-button ${!hasOrg && 'disable'}`} onClick={jumpWrite}>
+          <div className={`card-button ${!writingList?.length && 'disable'}`} onClick={jumpWrite}>
             开始写作
           </div>
         </div>
