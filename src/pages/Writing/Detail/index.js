@@ -74,6 +74,7 @@ export default class WritingDetail extends React.Component {
       errorKey: 0,
       errorKeywords:['|'],
       errorSuggestions: [],
+      submitContent: '',
     };
   }
   writingEditRef;
@@ -84,7 +85,7 @@ export default class WritingDetail extends React.Component {
   componentDidMount() {
     let _this = this
     this.writingEditRef.addEventListener('blur', function(e){
-        console.log(e.target.textContent)
+        console.log('e.target.textContent', e.target.textContent)
         _this.handleContentChange(e.target.textContent)
     })
   }
@@ -107,9 +108,8 @@ export default class WritingDetail extends React.Component {
   // 作文正文修改
   handleContentChange(value) {
     this.setState({
-      content: value,
+        submitContent: value,
     });
-    console.log(value)
   }
 
   // 获取作文内容
@@ -131,6 +131,7 @@ export default class WritingDetail extends React.Component {
           writing: res?.data?.data?.writingBaseInfo,
           title: res?.data?.data?.writingAnswer?.title,
           content: res?.data?.data?.writingAnswer?.content,
+          submitContent: res?.data?.data?.writingAnswer?.content,
           aiReview: res?.data?.data?.aiReview,
           comment: res?.data?.data?.comment,
           examType: res?.data?.data?.examType,
@@ -160,11 +161,11 @@ export default class WritingDetail extends React.Component {
   }
   // 提交作文
   handleWritingSubmit() {
-    const { paperId, title, content } = this.state;
+    const { paperId, title, submitContent } = this.state;
     return HTTP.post("/stu-writing-exam/submit", {
       paperId,
       title,
-      content,
+      content: submitContent,
       isSubmit: true,
     })
       .then((res) => {
@@ -182,14 +183,14 @@ export default class WritingDetail extends React.Component {
   // 保存作文
   handleWritingSave() {
     console.log("handleWritingSave");
-    const { paperId, title, content } = this.state;
+    const { paperId, title, submitContent } = this.state;
     this.setState({
       autoSaveTime: moment().format(dateFormat),
     });
     return HTTP.post("/stu-writing-exam/submit", {
       paperId,
       title,
-      content,
+      content: submitContent,
       isSubmit: false,
     });
   }
@@ -211,22 +212,34 @@ export default class WritingDetail extends React.Component {
   }
   // ai阅卷
   getAiReview() {
-    const { paperId, title, content } = this.state;
+    const { paperId, title, submitContent } = this.state;
     HTTP.post(`/stu-writing-exam/ai-review`, {
       paperId,
       title,
-      content,
+      content:submitContent,
     })
       .then((res) => {
         if (res.data.state === 0) {
-          this.setState({
-            aiReview: res?.data?.data,
-            score: res?.data?.data?.aiScore,
-            aiDetectionTimes: res?.data?.data?.aiDetectionTimes,
-            activeKey: "1",
-          });
+            let aiReview = res?.data?.data;
+            let errorKeywords = [];
+            let errorSuggestions = [];
+            aiReview.aiSentenceComments && aiReview.aiSentenceComments.forEach((aiSentenceComment, index) => {
+                aiSentenceComment.suggestions.forEach((suggestion, index)=>{
+                    suggestion.relStartPos = suggestion.startPos + aiSentenceComment.sentStartPos;
+                    errorKeywords.push(`|${suggestion.orgChunk}`);
+                    errorSuggestions.push(suggestion);
+                })
+            });
+            this.setState({
+                aiReview: aiReview,
+                score: res?.data?.data?.aiScore,
+                aiDetectionTimes: res?.data?.data?.aiDetectionTimes,
+                activeKey: "1",
+                errorKeywords,
+                errorSuggestions,
+            });
         } else {
-          message.error(res.data.msg);
+            message.error(res.data.msg);
         }
       })
       .catch((err) => {
@@ -289,9 +302,11 @@ export default class WritingDetail extends React.Component {
 
     //错误项列表点击
     handleErrorListItemClick(event){
+        const {isSubmit} = this.state
         this.setState({
             errorKey: event?.key,
         });
+        if(!isSubmit) return
         this.writingEditRef.childNodes[event?.key].scrollIntoView({
             behavior: 'smooth',
             block: 'center',
@@ -303,6 +318,7 @@ export default class WritingDetail extends React.Component {
   getFinalContent(){
     const {errorKey, errorSuggestions, errorKeywords, content} = this.state
     let contentStr = content;
+    console.log('contentStr', contentStr, errorSuggestions.length)
     function splitByMultipleValues(str, separators) {
         if (separators.length === 0) {
             return [str];
