@@ -48,7 +48,7 @@ export const StudentLoginModal = ({ visible, close, showRegister }) => {
           return;
         }
         message.success("登录成功!");
-        location.reload();
+        window.location.reload();
       })
       .catch((err) => {
         message.error("登录失败!");
@@ -82,7 +82,7 @@ export const StudentLoginModal = ({ visible, close, showRegister }) => {
           return;
         }
         message.success("登录成功!");
-        location.reload();
+        window.location.reload();
       })
       .catch((err) => {
         message.error("登录失败!");
