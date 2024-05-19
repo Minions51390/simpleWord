@@ -6,6 +6,7 @@ import passi from "./assets/passi.png";
 import emaili from "./assets/email.png";
 import codei from "./assets/codei.png";
 import './index.less';
+import baseUrl from '../../utils/config.js';
 
 
 
