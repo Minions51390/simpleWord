@@ -221,7 +221,7 @@ const Root = ({location, isLogin}) => {
   const logOut = () => {
     HTTPV2.get("/auth/logout")
       .then((res) => {
-        location.reload();
+        window.location.reload();
       })
       .catch((err) => {
         console.log(err);

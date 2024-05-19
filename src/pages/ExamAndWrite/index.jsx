@@ -105,7 +105,7 @@ const ExamAndWrite = () => {
           <div className='plan-name'>{selectedSchool.schoolName}{selectedSchool.className}</div>
           <div className='sub-info'>
             <div className='org-name'>{selectedSchool.schoolName}</div>
-            <div className='student-info'>{userInfo?.realName} | {selectedSchool.studentNum}</div>
+            {userInfo?.realName && <div className='student-info'>{userInfo?.realName} | {selectedSchool.studentNum}</div>}
           </div>
         </div>
       )}

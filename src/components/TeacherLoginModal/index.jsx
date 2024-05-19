@@ -46,7 +46,7 @@ export const TeacherLoginModal = ({ visible, close, showRegister }) => {
           return;
         }
         message.success("登录成功!");
-        location.reload()();
+        window.location.reload()();
         close();
       })
       .catch((err) => {
