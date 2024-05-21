@@ -215,6 +215,7 @@ export default class Login extends React.Component {
     HTTP.post("/auth/login", {
       userName: loginAd,
       password: loginPa,
+      device: 'browser',
     })
       .then((res) => {
         if (!res && !res.data && res.data.state == null) {

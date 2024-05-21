@@ -32,6 +32,7 @@ export const TeacherLoginModal = ({ visible, close, showRegister }) => {
     HTTP.post("/auth/login", {
       userName: loginAd,
       password: loginPa,
+      device: 'browser',
     })
       .then((res) => {
         if (!res && !res.data && res.data.state == null) {
