@@ -71,6 +71,42 @@
         .left-thr {
           border-top: 1px solid rgba(23, 28, 75, 0.1);
           flex: 1;
+          .writing-text{
+            padding-left: 0;
+            padding-right: 0;
+            line-height: 27px;
+            height: 100%;
+            .content-error-suggestions{
+                cursor: pointer;
+            }
+            .content-error{
+                color: #e10000;
+                text-decoration: underline #e10000;
+            }
+            .content-error-mouseover{
+                color: #e10000;
+                text-decoration: underline #e10000;
+                background: rgba(225,0,0,0.2);
+            }
+            .content-suggestion{
+                color: #ffbe40;
+                text-decoration: underline #ffbe40;
+                
+            }
+            .content-suggestion-mouseover{
+                color: #ffbe40;
+                text-decoration: underline #ffbe40;
+                background: #fff2d9;
+            }
+          }
+          .writing-text:empty:before{
+            content: "请输入正文";
+            color:rgba(0, 0, 0, 0.85);
+            opacity: 0.4;
+          }
+          .writing-text:focus:before{
+            content: "";
+          }
           textarea {
             padding-left: 0;
             padding-right: 0;
@@ -101,6 +137,8 @@
             padding: 0 16px;
             background: #f8f9fb;
             color: rgba(0,0,0,0.65);
+            display: flex;
+            flex-direction: column;
             .demand-fir {
               display: flex;
               .demand-level {
@@ -115,8 +153,6 @@
             }
             .demand-desc {
               margin-top: 8px;
-              overflow: scroll;
-              height: 90px;
             }
             .demand-sec{
                 font-weight: 400;
@@ -168,31 +204,55 @@
               }
             }
             .error-content {
-              margin: 12px 16px;
-              height: 348px;
-              overflow: scroll;
-              .errorItem {
-                display: flex;
-                padding: 12px 16px;
-                background-color: #fff;
-                margin-bottom: 12px;
-                border-radius: 8px;
-                .errorItemCount {
-                  display: inline-block;
-                  width: 8px;
-                  height: 8px;
-                  background: #e10000;
-                  border-radius: 50%;
-                  margin-right: 8px;
-                  margin-top: 8px;
+                margin: 12px 0px;
+                height: 370px;
+                overflow: scroll;
+                .list-item {
+                    display: flex;
+                    padding: 12px 16px;
+                    background-color: #fff;
+                    margin-bottom: 12px;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    .error-text {
+                        flex: 1;
+                        font-size: 14px;
+                        line-height: 22px;
+                        color: rgba(0, 0, 0, 0.65);
+                    }
                 }
-                .errorItemContent {
-                  flex: 1;
-                  font-size: 14px;
-                  line-height: 22px;
-                  color: rgba(0, 0, 0, 0.65);
+                .error-item{
+                    .error-item-count {
+                        display: inline-block;
+                        width: 8px;
+                        height: 8px;
+                        background: #e10000;
+                        border-radius: 50%;
+                        margin-right: 8px;
+                        margin-top: 8px;
+                    }
                 }
-              }
+                .error-item-select{
+                    box-shadow: 0px 4px 10px 0px rgba(0,0,0,0.1);
+                    border-radius: 8px;
+                    border: 1px solid rgba(225,0,0,0.2);
+                }
+                .suggestion-item{
+                    .error-item-count {
+                        display: inline-block;
+                        width: 8px;
+                        height: 8px;
+                        background: #ffbe40;
+                        border-radius: 50%;
+                        margin-right: 8px;
+                        margin-top: 8px;
+                    }
+                }
+                .suggestion-item-select{
+                    box-shadow: 0px 4px 10px 0px rgba(0,0,0,0.1);
+                    border-radius: 8px;
+                    border: 1px solid #fff2d9;
+                }
             }
           }
           .content-error {

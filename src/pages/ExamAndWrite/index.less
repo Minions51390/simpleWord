@@ -1,0 +1,145 @@
+.exam-write-wrapper {
+  background: #F6F8FB;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: bottom;
+
+  .header {
+    width: 1120px;
+  }
+
+  .plan-name {
+    font-size: 24px;
+    color: #2D2E32;
+    line-height: 32px;
+  }
+
+  .sub-info {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+    margin-bottom: 32px;
+
+    .student-info {
+      font-size: 16px;
+      color: #2D2E32;
+      opacity: .8;
+    }
+  }
+
+  .org-name {
+    font-size: 16px;
+    color: #FFFFFF;
+    background: #4DBC99;
+    border-radius: 16px;
+    display: inline-block;
+    padding: 0 16px;
+    margin-right: 16px;
+  }
+
+  .cards {
+    display: flex;
+
+    .card-item {
+      width: 540px;
+      height: 543px;
+      border-radius: 4px;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 40px;
+      color: #102F5C;
+      background-repeat: no-repeat;
+      background-size: contain;
+
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 40px;
+        width: 100%;
+
+        .card-name {
+          font-weight: 500;
+          font-size: 24px;
+          line-height: 24px;
+          position: relative;
+          z-index: 10;
+
+          &:before {
+            display: block;
+            width: 24px;
+            height: 24px;
+            background-color: yellow;
+            content: '';
+            position: absolute;
+            z-index: -1;
+            top: -8px;
+            left: -8px;
+            border-radius: 50%;
+          }
+        }
+
+        .all {
+          font-size: 16px;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+        }
+      }
+
+      .card-content {
+        height: 360px;
+
+        .empty-icon {
+          margin-top: 34px;
+        }
+
+        .empty-tip {
+          font-size: 20px;
+          color: #252934;
+          opacity: .4;
+          text-align: center;
+          margin-top: 12px;
+        }
+
+        .name {
+          font-size: 32px;
+          margin-top: 64px;
+          text-align: center;
+        }
+
+        .time {
+          font-size: 16px;
+          opacity: .6;
+          text-align: center;
+        }
+      }
+
+      .card-button {
+        width: 160px;
+        height: 48px;
+        background: #032352;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        cursor: pointer;
+
+        &.disable {
+          background: #9AA7BA;
+        }
+      }
+
+      &:nth-child(1) {
+        margin-right: 40px;
+      }
+    }
+  }
+}

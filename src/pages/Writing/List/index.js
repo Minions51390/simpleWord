@@ -163,7 +163,7 @@ export default class WritingDetail extends React.Component {
   getWritingList() {
     const { pageNo, pageSize } = this.state;
     HTTP.get(
-      `/stu-writing-exam/list?status=0&submit=0&pageNo=${pageNo}&pageSize=${pageSize}`
+      `/stu-writing-exam/list2?status=0&submit=0&pageNo=${pageNo}&pageSize=${pageSize}`
     )
       .then((res) => {
         console.log(res);
@@ -196,7 +196,7 @@ export default class WritingDetail extends React.Component {
     const { pageNo, pageSize, totalCount, columns1, writingList } = this.state;
     return (
       <div className="writing-list-container">
-        <Header />
+        {/* <Header /> */}
         <div className="writing-header">作文任务</div>
         <div className="writing-list">
           <Table

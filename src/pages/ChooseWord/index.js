@@ -75,7 +75,7 @@ export default class Choose extends React.Component {
   componentWillMount() {
     var url = window.location.href.split('#')[0];
     if (url != document.referrer) {
-      window.location.href = `${baseUrl}/#/Transfer`;
+      window.location.href = `${baseUrl}/#/transfer`;
       window.location.reload()
     }
     this.wordLibName = getQueryString('lib_name')
@@ -88,7 +88,7 @@ export default class Choose extends React.Component {
       currentWordIndex: this.choiceIndex
     })
     if(!this.wordLibName || !this.wordLibId) {
-      window.location.href = `${baseUrl}/#/Transfer`;
+      window.location.href = `${baseUrl}/#/transfer`;
       window.location.reload()
       message.info("获取单词列表失败")
     } else {
@@ -265,7 +265,7 @@ export default class Choose extends React.Component {
   async backToTransfer() {
     await this.postStrangeWordList(true)
     await this.postKnownWordList(true)
-    window.location.href = `${baseUrl}/#/Transfer`;
+    window.location.href = `${baseUrl}/#/transfer`;
     window.location.reload()
   }
 
@@ -364,16 +364,6 @@ export default class Choose extends React.Component {
     return (
       <div className="choose_wrapper">
         <img className="background-img" src={whiteBookBg}></img>
-        <div className="fix_header">
-          <div className="header_left">
-              <img className="main-img" src={promise}></img>
-              <div className="home-page">
-                {/* <Link to="/home">首页</Link> */}
-              </div>
-              <div className="about-us">关于我们</div>
-              <div className="use-msg">使用说明</div>
-          </div>
-        </div>
         <div className="choose_header">
           <div className="decoration"></div>
           <div className="choose_left">选择单词</div>

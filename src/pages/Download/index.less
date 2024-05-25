@@ -1,0 +1,101 @@
+.download-wrapper {
+    position: relative;
+
+    .content {
+        display: flex;
+        justify-content: space-between;
+        padding: 129px 188px 0 149px;
+        height: 100vh;
+    }
+
+    .left {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        
+        .logo {
+            width: 508px;
+            height: 120px;
+            background-size: cover;
+            background-repeat: no-repeat;
+            flex-shrink: 0;
+        }
+
+        .app {
+            left: 150px;
+            width: 573px;
+            height: 490px;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+    }
+
+    .right {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        margin: 20px 0 128px 0;
+
+        .text {
+            font-size: 24px;
+            color: #252934;
+            line-height: 40px;
+        }
+
+        .middle-text {
+            font-size: 40px;
+            color: #252934;
+            line-height: 64px;
+            margin-bottom: 118px;
+        }
+
+        .download {
+
+            &-action {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 24px;
+            }
+
+            &-item {
+                width: 160px;
+                height: 40px;
+                border-radius: 19px;
+                border: 1px solid #032352;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+            }
+
+            .os {
+                margin-right: 8px;
+            }
+
+            &-hint {
+                font-size: 16px;
+                color: #252934;
+                line-height: 22px;
+                opacity: .6;
+            }
+        }
+    }
+    
+    .background {
+        position: absolute;
+        bottom: 0px;
+        height: 417px;
+        width: 100%;
+        background-size: cover;
+        background-repeat: no-repeat;
+        z-index: -1;
+    }
+
+    .qrcode {
+        width: 108px;
+        height: 108px;
+    }
+
+    
+}

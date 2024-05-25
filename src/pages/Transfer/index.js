@@ -379,7 +379,7 @@ export default class Login extends React.Component {
   }
 
   getWritingExamList() {
-    HTTP.get(`/stu-writing-exam/list?status=1&submit=2&pageNo=1&pageSize=100`)
+    HTTP.get(`/stu-writing-exam/list2?status=1&submit=2&pageNo=1&pageSize=100`)
       .then((res) => {
         this.setState({
           writingList: res?.data?.data?.data,
@@ -387,18 +387,6 @@ export default class Login extends React.Component {
       })
       .catch((err) => {
         console.log("请求失败:", err);
-      });
-  }
-
-  //退出登录
-  logOut() {
-    HTTP.get("/auth/logout")
-      .then((res) => {
-        window.location.href = `${baseUrl}/#/home`;
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
       });
   }
 
@@ -801,7 +789,7 @@ export default class Login extends React.Component {
             <img className="bottom-img" src={btBg}></img>
           </div> */}
         {/* 承接主Dom */}
-        <div className="fix_header_main">
+        {/* <div className="fix_header_main">
           <div className="header_left">
             <img className="main-img" src={promise}></img>
             <div
@@ -820,6 +808,9 @@ export default class Login extends React.Component {
             </div>
             <Link className="about-us" to="/about">
               关于我们
+            </Link>
+            <Link className="app-download" to="/download">
+              App下载
             </Link>
           </div>
           <div
@@ -843,567 +834,356 @@ export default class Login extends React.Component {
               </div>
             </div>
           </div>
-        </div>
-        {checkedTab == "home" ? (
-          <div className="main_dom">
-            <div className="content-dom">
-              <div className="content-left">
-                <div className="left-title">背单词</div>
-                <div className="left-top">
-                  <div className="left-top-shadow"></div>
-                  <div className="top-line">
-                    <div
-                      className={`left-s ${actTab === 1 ? "act" : ""}`}
-                      onClick={this.changeTab.bind(this, 1)}
-                    >
-                      学习计划
-                    </div>
-                    <div
-                      className={`left-s ${actTab === 2 ? "act" : ""}`}
-                      onClick={this.changeTab.bind(this, 2)}
-                    >
-                      消灭错词
-                    </div>
-                  </div>
-                  {actTab === 1 ? (
-                    <div className="sec-line">
-                      <div className="sec-item">
-                        <div className="day-count">
-                          {todayWordsPlan ? todayWordsPlan : "0"}
-                        </div>
-                        <div className="day-text">今日计划背词数</div>
-                      </div>
-                      <div className="sec-item">
-                        <div className="day-count">
-                          {recitedWordsNumber ? recitedWordsNumber : "0"}
-                        </div>
-                        <div className="day-text">全部已背词数</div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="sec-line">
-                      <div className="sec-item sec-err">
-                        <div className="err-i">
-                          <div>累计错词数：</div>
-                          <div className="wei">{allCount}</div>
-                        </div>
-                        <div className="err-i">
-                          <div>待背任务数：</div>
-                          <div className="wei">{noRecitedTaskCount}</div>
-                        </div>
-                        <div className="err-i">
-                          <div>已背错词数：</div>
-                          <div className="wei">{recitedCount}</div>
-                        </div>
-                      </div>
-                      <div className="sec-item err-text">
-                        <div className="tag">
-                          每累计错词20个，为您自动生成一份背词任务；错词任务不会影响日常背词计划，要自觉加油哦~
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {actTab === 1 ? (
-                    <div className="thr-line">
-                      <div
-                        className={canRecite ? "text-btn" : "text-btn-none"}
-                        onClick={this.handleStart.bind(this, "restart")}
-                      >
-                        开始背词
-                      </div>
-                      {stale ? (
-                        <div
-                          className={
-                            canRecite ? "text-btn ml24" : "text-btn-none ml24"
-                          }
-                          onClick={this.handleStart.bind(this, "continue")}
-                        >
-                          继续背词
-                        </div>
-                      ) : (
-                        <div></div>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="thr-line">
-                      <div
-                        className={ewCanRecite ? "text-btn" : "text-btn-none"}
-                        onClick={this.jumpRecitePage.bind(this, "restart")}
-                      >
-                        开始背词
-                      </div>
-                      {errorStale ? (
-                        <div
-                          className={
-                            ewCanRecite ? "text-btn ml24" : "text-btn-none ml24"
-                          }
-                          onClick={this.jumpRecitePage.bind(this, "continue")}
-                        >
-                          继续背词
-                        </div>
-                      ) : (
-                        <div></div>
-                      )}
-                      <div
-                        className={`checkit ${
-                          !this.canErrorJump(testInfo) ? "disable" : ""
-                        }`}
-                        onClick={this.jumpTextPage.bind(this)}
-                      >
-                        开始检测
-                      </div>
-                    </div>
-                  )}
-                </div>
-                <div className="left-title left-sec">考核测试</div>
-                <div className="left-sec-area">
-                  <div className="left-sec-shadow"></div>
-                  {/* 暂无检测 */}
-                  {testInfo.length == 0 ? (
-                    <div className="thr-line">
-                      <div className="test-btn-none">暂无检测</div>
-                    </div>
-                  ) : (
-                    <div>
-                      {testInfo.length >= 1 ? (
-                        <div>
-                          {/* 多个检测 */}
-
-                          <Button
-                            className="leftButton"
-                            style={{ left: 26 }}
-                            onClick={() => {
-                              // 通过获取走马灯dom，调用Carousel的prev()方法
-                              this.card.prev();
-                            }}
-                          >
-                            <LeftOutlined />
-                          </Button>
-                          <Button
-                            className="rightButton"
-                            style={{ right: 26 }}
-                            onClick={() => {
-                              // 通过获取走马灯dom，调用Carousel的next()方法
-                              this.card.next();
-                            }}
-                          >
-                            <RightOutlined />
-                          </Button>
-
-                          <Carousel
-                            ref={(e) => {
-                              // 走马灯dom名card
-                              this.card = e;
-                            }}
-                            infinite={false}
-                            className="test-slider-box"
-                            dots={"slider-dot"}
-                          >
-                            {this._renderItem(testInfo)}
-                          </Carousel>
-                        </div>
-                      ) : (
-                        <div>
-                          {/* 一个检测 */}
-                          <div className="test-title">当节小测</div>
-                          <div className="test-text">
-                            考核完成后方可继续背词
-                          </div>
-                          <div className="thr-line">
-                            <div
-                              className="test-btn"
-                              onClick={this.handleTest.bind(
-                                this,
-                                testInfo[0].testType,
-                                testInfo[0].paperId
-                              )}
-                            >
-                              开始测验
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-                <div className="flex-row">
-                  <div className="left-title left-thr">作文任务</div>
-                  <div className="his" onClick={this.jumpHis.bind(this)}>
-                    作文历史
-                    <RightOutlined />
-                  </div>
-                </div>
-                <div className="left-sec-area">
-                  <div className="left-sec-shadow"></div>
-                  {/* 暂无检测 */}
-                  {writingList.length == 0 ? (
-                    <div className="thr-line">
-                      <div className="test-btn-none">暂无检测</div>
-                    </div>
-                  ) : (
-                    <div>
-                      {/* 多个检测 */}
-                      <Button
-                        className="leftButton"
-                        style={{ left: 26 }}
-                        onClick={() => {
-                          // 通过获取走马灯dom，调用Carousel的prev()方法
-                          this.card.prev();
-                        }}
-                      >
-                        <LeftOutlined />
-                      </Button>
-                      <Button
-                        className="rightButton"
-                        style={{ right: 26 }}
-                        onClick={() => {
-                          // 通过获取走马灯dom，调用Carousel的next()方法
-                          this.card.next();
-                        }}
-                      >
-                        <RightOutlined />
-                      </Button>
-
-                      <Carousel
-                        ref={(e) => {
-                          // 走马灯dom名card
-                          this.card = e;
-                        }}
-                        infinite={false}
-                        className="test-slider-box"
-                        dots={"slider-dot"}
-                      >
-                        {writingList.map((item) => {
-                          return (
-                            <div className="writing-box">
-                              <div className="writing-title">
-                                {item.writingExamName}
-                              </div>
-                              <div className="writing-time">{item.endTime}</div>
-                              <div className="writing-btn">
-                                <div
-                                  className="btn-text"
-                                  onClick={this.handleWritingClick.bind(
-                                    this,
-                                    item
-                                  )}
-                                >
-                                  开始写作
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </Carousel>
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div className="content-right">
-                <div className="right-title">选词</div>
-                <div className="right-top">
-                  <div className="right-top-shadow"></div>
-                  <div className="now-store">
-                    当前词库
-                    <div className="choose-store">
-                      <span className="ant-input-affix-wrapper word-ant-input-affix-wrapper">
-                        <div className="word-icon">
-                          <span className="ant-input-prefix">
-                            <div className="my-icon">选择词库</div>
-                          </span>
-                        </div>
-                        {storeArr.length != 0 && storeArr[0] != null && (
-                          <Select
-                            defaultValue={dictionaryId}
-                            disabled={true}
-                            listHeight={100}
-                            size="large"
-                            style={{ width: 220 }}
-                            onChange={this.onChangeStore.bind(this)}
-                          >
-                            {storeArr.map((val, i) => (
-                              <Select.Option
-                                value={val.dictionaryId}
-                                key={i + "select"}
-                              >{`${val.dictionaryName}`}</Select.Option>
-                            ))}
-                          </Select>
-                        )}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="main-place">
-                    <img src={`${baseUrl}${picture}`}></img>
-                    <div>
-                      <div className="main-title">{dictionaryName}</div>
-                      <div className="main-info">
-                        <div className="main-t">总计：{count}词</div>
-                        <div className="main-s">适合：{describe}</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="choose-word">选择单词</div>
-                  <div className="choose-detail">
-                    <div className="de-row">
-                      <div className="detail-item">
-                        <div className="de-it-name">当前已选：</div>
-                        <div className="de-it-num de-it-color1">
-                          {currentAlreadyChoice ? currentAlreadyChoice : "0"}
-                        </div>
-                      </div>
-                      <div className="detail-item">
-                        <div className="de-it-name">剩余待背：</div>
-                        <div className="de-it-num de-it-color2">
-                          {currentRecite ? currentRecite : "0"}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="de-row">
-                      <div className="detail-item">
-                        <div className="de-it-name">剩余待选：</div>
-                        <div className="de-it-num">
-                          {surplusChoice ? surplusChoice : "0"}
-                        </div>
-                      </div>
-                      <div className="detail-item">
-                        <div className="de-it-name">总计词数：</div>
-                        <div className="de-it-num de-it-color3">
-                          {allChoice ? allChoice : "0"}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  {surplusChoice == 0 ? (
-                    <div className="choose-tip">
-                      {currentRecite !== 0 ? choiceText : "该词库已背完"}
-                    </div>
-                  ) : (
-                    <div>
-                      <div className="thr-line">
-                        <div
-                          className={"text-btn"}
-                          onClick={this.handleChoose.bind(this, choiceIndex)}
-                        >
-                          开始选词
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-            <img className="bottom-img" src={btBg}></img>
-          </div>
-        ) : (
-          <div className="dashboard-dom">
-            <iframe
-              className="dashboard-iframe"
-              src="/admin/#/stu"
-              // src="http://localhost:3006/admin/#/stu/"
-              frameborder="no"
-              border="0"
-              marginwidth="0"
-              marginheight="0"
-              allowtransparency="yes"
-            ></iframe>
-          </div>
-        )}
-        {showOver ? (
-          <div
-            className="user-bg"
-            onClick={this.handleModeChange.bind(this, false)}
-          >
-            <div
-              className="user-area-top"
-              onClick={this.handleModeChange.bind(this, true)}
-            >
-              <div className="title">个人信息</div>
-              <div className="main-row">
-                <div className="main-left">
-                  <Input
-                    className="pass-mar"
-                    size="large"
-                    placeholder="请输入您的姓名"
-                    prefix={<div className="my-icon">姓名</div>}
-                    onChange={this.onInputRealName.bind(this)}
-                    value={realName}
-                  />
-                  <Input
-                    className="pass-mar phone-icon"
-                    size="large"
-                    placeholder="请输入您的手机号"
-                    prefix={<div className="my-icon">手机号</div>}
-                    onChange={this.onInputPhone.bind(this)}
-                    value={phone}
-                  />
-                  <Input
-                    className="pass-mar"
-                    size="large"
-                    disabled
-                    placeholder="请输入您的邮箱"
-                    prefix={<div className="my-icon">邮箱</div>}
-                    onChange={this.onInputEmail.bind(this)}
-                    value={email}
-                  />
-                  <Input
-                    className="pass-mar qq-icon"
-                    size="large"
-                    placeholder="请输入您的QQ号"
-                    prefix={<div className="my-icon">QQ号</div>}
-                    onChange={this.onInputQQNumber.bind(this)}
-                    value={qqNumber}
-                  />
-                  {/* <Input 
-                        className="pass-mar word-icon"
-                        size="large" 
-                        placeholder="请输入每日背词数" 
-                        prefix={<div className="my-icon">每日背生词数</div>} 
-                        onChange={this.onInputNewWord.bind(this)} 
-                        value={newWord}/> */}
-                  <span className="pass-mar ant-input-affix-wrapper word-ant-input-affix-wrapper">
-                    <div className="word-icon">
-                      <span className="ant-input-prefix">
-                        <div className="my-icon">每日背词数</div>
-                      </span>
-                    </div>
-                    <Select
-                      defaultValue={`${newWord}个`}
-                      // maxTagCount="3"
-                      disabled={isSelectDisable}
-                      listHeight={100}
-                      size="large"
-                      style={{ width: 220 }}
-                      onChange={this.onInputNewWord.bind(this)}
-                    >
-                      {wordCountArr.map((val, i) => (
-                        <Select.Option
-                          value={val}
-                          key={i + "select"}
-                        >{`${val}个`}</Select.Option>
-                      ))}
-                    </Select>
-                  </span>
-                </div>
-                <div className="main-right">
-                  <Input
-                    className="pass-mar"
-                    size="large"
-                    placeholder="请输入您的省份"
-                    prefix={<div className="my-icon">省份</div>}
-                    onChange={this.onInputProvince.bind(this)}
-                    value={province}
-                  />
-                  <Input
-                    className="pass-mar"
-                    size="large"
-                    placeholder="请输入您的市份"
-                    prefix={<div className="my-icon">市份</div>}
-                    onChange={this.onInputCity.bind(this)}
-                    value={city}
-                  />
-                  <Input
-                    className="pass-mar"
-                    size="large"
-                    placeholder="请输入您的区县"
-                    prefix={<div className="my-icon">区县</div>}
-                    onChange={this.onInputArea.bind(this)}
-                    value={area}
-                  />
-                  <Input
-                    className="pass-mar"
-                    size="large"
-                    placeholder="请输入您的学校"
-                    prefix={<div className="my-icon">学校</div>}
-                    onChange={this.onInputSchool.bind(this)}
-                    value={school}
-                  />
-                  <Input
-                    className="pass-mar"
-                    size="large"
-                    placeholder="请输入您的年级"
-                    prefix={<div className="my-icon">年级</div>}
-                    onChange={this.onInputGrade.bind(this)}
-                    value={grade}
-                  />
-                </div>
-              </div>
-              <div className="save-btn" onClick={this.saveMes.bind(this)}>
-                保存信息
-              </div>
-              <div className="log-out" onClick={this.logOut.bind(this)}>
-                退出登录
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div></div>
-        )}
-        {feedbackModal ? (
-          <div className="feed-bg" onClick={this.hideFeedbackModal.bind(this)}>
-            <div
-              className="feed-area-top"
-              onClick={(e) => this.canStopPropagation(e)}
-            >
-              <div className="title">建议&反馈</div>
-              {upDataModal ? (
-                <div className="warp">
-                  <div className="text">您的微信：</div>
-                  <Input
-                    style={{ width: 400 }}
-                    value={weixin}
-                    onChange={this.onWeixinChange.bind(this)}
-                  />
-                  <div className="text">描述您的问题:</div>
-                  <TextArea
-                    value={qus}
-                    showCount
-                    maxLength={400}
-                    style={{ height: 80, width: 400, resize: "none" }}
-                    onChange={this.onQusChange.bind(this)}
-                  />
-                  {/* <div className="text">相关图片:</div>
-                  <Upload
-                      action=""
-                      listType="picture-card"
-                      fileList={fileList}
-                      method="post"
-                      onChange={this.onChange.bind(this)}
-                      onPreview={this.onPreview.bind(this)}
-                      customRequest={this.customRequest.bind(this)}
-                    >
-                      {fileList.length < 10 && "+ Upload"}
-                    </Upload> */}
-                  <div className="tools">
-                    <div
-                      className="close"
-                      onClick={this.doUpDataModal.bind(this)}
-                    >
-                      关闭
-                    </div>
-                    <div className="btn" onClick={this.moduleUpdate.bind(this)}>
-                      提交
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="warp">
-                  <div className="content">
-                    如果您在使用本软件的过程中，遇到了什么问如果您在使用本软件的过程中，遇到了什么问题，请添加下方官方客服微信，并向客服描述您所遇到的问题，我们将积极为您解决。感谢您对支持！
-                  </div>
-                  <img className="wechat-icon" src={wechat}></img>
-                  <div className="tips">微信扫一扫</div>
+        </div> */}
+        <div className="main_dom">
+          <div className="content-dom">
+            <div className="content-left">
+              <div className="left-title">背单词</div>
+              <div className="left-top">
+                <div className="left-top-shadow"></div>
+                <div className="top-line">
                   <div
-                    className="btn"
-                    onClick={(e) => this.hideFeedbackModal(e)}
+                    className={`left-s ${actTab === 1 ? "act" : ""}`}
+                    onClick={this.changeTab.bind(this, 1)}
                   >
-                    确定
+                    学习计划
+                  </div>
+                  <div
+                    className={`left-s ${actTab === 2 ? "act" : ""}`}
+                    onClick={this.changeTab.bind(this, 2)}
+                  >
+                    消灭错词
                   </div>
                 </div>
-              )}
+                {actTab === 1 ? (
+                  <div className="sec-line">
+                    <div className="sec-item">
+                      <div className="day-count">
+                        {todayWordsPlan ? todayWordsPlan : "0"}
+                      </div>
+                      <div className="day-text">今日计划背词数</div>
+                    </div>
+                    <div className="sec-item">
+                      <div className="day-count">
+                        {recitedWordsNumber ? recitedWordsNumber : "0"}
+                      </div>
+                      <div className="day-text">全部已背词数</div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="sec-line">
+                    <div className="sec-item sec-err">
+                      <div className="err-i">
+                        <div>累计错词数：</div>
+                        <div className="wei">{allCount}</div>
+                      </div>
+                      <div className="err-i">
+                        <div>待背任务数：</div>
+                        <div className="wei">{noRecitedTaskCount}</div>
+                      </div>
+                      <div className="err-i">
+                        <div>已背错词数：</div>
+                        <div className="wei">{recitedCount}</div>
+                      </div>
+                    </div>
+                    <div className="sec-item err-text">
+                      <div className="tag">
+                        每累计错词20个，为您自动生成一份背词任务；错词任务不会影响日常背词计划，要自觉加油哦~
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {actTab === 1 ? (
+                  <div className="thr-line">
+                    <div
+                      className={canRecite ? "text-btn" : "text-btn-none"}
+                      onClick={this.handleStart.bind(this, "restart")}
+                    >
+                      开始背词
+                    </div>
+                    {stale ? (
+                      <div
+                        className={
+                          canRecite ? "text-btn ml24" : "text-btn-none ml24"
+                        }
+                        onClick={this.handleStart.bind(this, "continue")}
+                      >
+                        继续背词
+                      </div>
+                    ) : (
+                      <div></div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="thr-line">
+                    <div
+                      className={ewCanRecite ? "text-btn" : "text-btn-none"}
+                      onClick={this.jumpRecitePage.bind(this, "restart")}
+                    >
+                      开始背词
+                    </div>
+                    {errorStale ? (
+                      <div
+                        className={
+                          ewCanRecite ? "text-btn ml24" : "text-btn-none ml24"
+                        }
+                        onClick={this.jumpRecitePage.bind(this, "continue")}
+                      >
+                        继续背词
+                      </div>
+                    ) : (
+                      <div></div>
+                    )}
+                    <div
+                      className={`checkit ${!this.canErrorJump(testInfo) ? "disable" : ""
+                        }`}
+                      onClick={this.jumpTextPage.bind(this)}
+                    >
+                      开始检测
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="left-title left-sec">考核测试</div>
+              <div className="left-sec-area">
+                <div className="left-sec-shadow"></div>
+                {/* 暂无检测 */}
+                {testInfo.length == 0 ? (
+                  <div className="thr-line">
+                    <div className="test-btn-none">暂无检测</div>
+                  </div>
+                ) : (
+                  <div>
+                    {testInfo.length >= 1 ? (
+                      <div>
+                        {/* 多个检测 */}
+
+                        <Button
+                          className="leftButton"
+                          style={{ left: 26 }}
+                          onClick={() => {
+                            // 通过获取走马灯dom，调用Carousel的prev()方法
+                            this.card.prev();
+                          }}
+                        >
+                          <LeftOutlined />
+                        </Button>
+                        <Button
+                          className="rightButton"
+                          style={{ right: 26 }}
+                          onClick={() => {
+                            // 通过获取走马灯dom，调用Carousel的next()方法
+                            this.card.next();
+                          }}
+                        >
+                          <RightOutlined />
+                        </Button>
+
+                        <Carousel
+                          ref={(e) => {
+                            // 走马灯dom名card
+                            this.card = e;
+                          }}
+                          infinite={false}
+                          className="test-slider-box"
+                          dots={"slider-dot"}
+                        >
+                          {this._renderItem(testInfo)}
+                        </Carousel>
+                      </div>
+                    ) : (
+                      <div>
+                        {/* 一个检测 */}
+                        <div className="test-title">当节小测</div>
+                        <div className="test-text">
+                          考核完成后方可继续背词
+                        </div>
+                        <div className="thr-line">
+                          <div
+                            className="test-btn"
+                            onClick={this.handleTest.bind(
+                              this,
+                              testInfo[0].testType,
+                              testInfo[0].paperId
+                            )}
+                          >
+                            开始测验
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+              <div className="flex-row">
+                <div className="left-title left-thr">作文任务</div>
+                <div className="his" onClick={this.jumpHis.bind(this)}>
+                  作文历史
+                  <RightOutlined />
+                </div>
+              </div>
+              <div className="left-sec-area">
+                <div className="left-sec-shadow"></div>
+                {/* 暂无检测 */}
+                {writingList.length == 0 ? (
+                  <div className="thr-line">
+                    <div className="test-btn-none">暂无检测</div>
+                  </div>
+                ) : (
+                  <div>
+                    {/* 多个检测 */}
+                    <Button
+                      className="leftButton"
+                      style={{ left: 26 }}
+                      onClick={() => {
+                        // 通过获取走马灯dom，调用Carousel的prev()方法
+                        this.card1.prev();
+                      }}
+                    >
+                      <LeftOutlined />
+                    </Button>
+                    <Button
+                      className="rightButton"
+                      style={{ right: 26 }}
+                      onClick={() => {
+                        // 通过获取走马灯dom，调用Carousel的next()方法
+                        this.card1.next();
+                      }}
+                    >
+                      <RightOutlined />
+                    </Button>
+
+                    <Carousel
+                      ref={(e) => {
+                        // 走马灯dom名card
+                        this.card1 = e;
+                      }}
+                      infinite={false}
+                      className="test-slider-box"
+                      dots={"slider-dot"}
+                    >
+                      {writingList.map((item) => {
+                        return (
+                          <div className="writing-box">
+                            <div className="writing-title">
+                              {item.writingExamName}
+                            </div>
+                            <div className="writing-time">{item.endTime}</div>
+                            <div className="writing-btn">
+                              <div
+                                className="btn-text"
+                                onClick={this.handleWritingClick.bind(
+                                  this,
+                                  item
+                                )}
+                              >
+                                开始写作
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </Carousel>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="content-right">
+              <div className="right-title">选词</div>
+              <div className="right-top">
+                <div className="right-top-shadow"></div>
+                <div className="now-store">
+                  当前词库
+                  <div className="choose-store">
+                    <span className="ant-input-affix-wrapper word-ant-input-affix-wrapper">
+                      <div className="word-icon">
+                        <span className="ant-input-prefix">
+                          <div className="my-icon">选择词库</div>
+                        </span>
+                      </div>
+                      {storeArr.length != 0 && storeArr[0] != null && (
+                        <Select
+                          defaultValue={dictionaryId}
+                          disabled={true}
+                          listHeight={100}
+                          size="large"
+                          style={{ width: 220 }}
+                          onChange={this.onChangeStore.bind(this)}
+                        >
+                          {storeArr.map((val, i) => (
+                            <Select.Option
+                              value={val.dictionaryId}
+                              key={i + "select"}
+                            >{`${val.dictionaryName}`}</Select.Option>
+                          ))}
+                        </Select>
+                      )}
+                    </span>
+                  </div>
+                </div>
+                <div className="main-place">
+                  <img src={`${baseUrl}${picture}`}></img>
+                  <div>
+                    <div className="main-title">{dictionaryName}</div>
+                    <div className="main-info">
+                      <div className="main-t">总计：{count}词</div>
+                      <div className="main-s">适合：{describe}</div>
+                    </div>
+                  </div>
+                </div>
+                <div className="choose-word">选择单词</div>
+                <div className="choose-detail">
+                  <div className="de-row">
+                    <div className="detail-item">
+                      <div className="de-it-name">当前已选：</div>
+                      <div className="de-it-num de-it-color1">
+                        {currentAlreadyChoice ? currentAlreadyChoice : "0"}
+                      </div>
+                    </div>
+                    <div className="detail-item">
+                      <div className="de-it-name">剩余待背：</div>
+                      <div className="de-it-num de-it-color2">
+                        {currentRecite ? currentRecite : "0"}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="de-row">
+                    <div className="detail-item">
+                      <div className="de-it-name">剩余待选：</div>
+                      <div className="de-it-num">
+                        {surplusChoice ? surplusChoice : "0"}
+                      </div>
+                    </div>
+                    <div className="detail-item">
+                      <div className="de-it-name">总计词数：</div>
+                      <div className="de-it-num de-it-color3">
+                        {allChoice ? allChoice : "0"}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {surplusChoice == 0 ? (
+                  <div className="choose-tip">
+                    {currentRecite !== 0 ? choiceText : "该词库已背完"}
+                  </div>
+                ) : (
+                  <div>
+                    <div className="thr-line">
+                      <div
+                        className={"text-btn"}
+                        onClick={this.handleChoose.bind(this, choiceIndex)}
+                      >
+                        开始选词
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        ) : null}
+          <img className="bottom-img" src={btBg}></img>
+        </div>
       </div>
     );
   }
