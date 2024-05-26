@@ -48,8 +48,10 @@
       display: flex;
       height: 672px;
       .content-left {
+        overflow: scroll;
         padding: 16px;
         flex: 1;
+        flex-shrink: 0;
         background: rgba(24, 144, 255, 0.06);
         border-radius: 4px;
         display: flex;
@@ -76,6 +78,10 @@
             padding-right: 0;
             line-height: 27px;
             height: 100%;
+            .writing-text-edit{
+                width: 100%;
+                height: 100%;
+            }
             .content-error-suggestions{
                 cursor: pointer;
             }
@@ -116,6 +122,7 @@
         }
       }
       .content-right {
+        max-width: 519px;
         flex: 1;
         margin-left: 24px;
         display: flex;

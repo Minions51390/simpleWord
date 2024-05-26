@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import CountDownTimer from "../CountDownTimer/index.jsx";
 import useri from "./assets/useri.png";
 import passi from "./assets/passi.png";
 import { HTTPV2 } from "../../utils/api.js";
@@ -16,6 +17,7 @@ export const StudentLoginModal = ({ visible, close, showRegister }) => {
   const [loginPhoneNumber, setLoginPhoneNumber] = useState('');
   const [loginCaptcha, setLoginCaptcha] = useState('');
   const [loginType, setLoginType] = useState('captcha');
+  const [timerLock, setTimerLock] = useState(true);
 
   const rowLength = (val) => {
     val.length >= 254 ? true : false;
@@ -68,6 +70,7 @@ export const StudentLoginModal = ({ visible, close, showRegister }) => {
     HTTPV2.post("/auth/login", {
       phone: loginPhoneNumber,
       code: loginCaptcha,
+      device: 'browser'
     })
       .then((res) => {
         if (!res && !res.data && res.data.state == null) {
@@ -90,6 +93,7 @@ export const StudentLoginModal = ({ visible, close, showRegister }) => {
   }
 
   const sendCaptcha = async () => {
+    setTimerLock(false)
     await HTTPV2.post("/auth/code", {
       phone: loginPhoneNumber.trim(),
     })
@@ -143,9 +147,16 @@ export const StudentLoginModal = ({ visible, close, showRegister }) => {
                 </div>
               }
               suffix={
-                <div className="send-captcha" onClick={sendCaptcha}>
-                  发送验证码
+                <div>
+                    {
+                        timerLock ? 
+                        <div className="send-captcha" onClick={sendCaptcha}>
+                            发送验证码
+                        </div> :
+                        <CountDownTimer seconds={60} onTimeUp={()=>{setTimerLock(true)}} />
+                    }
                 </div>
+                
               }
               onChange={e => setLoginCaptcha(e.target.value)}
               value={loginCaptcha}

@@ -20,6 +20,7 @@ const Download = loadable(() => import("../pages/Download"));
 const Dashboard = loadable(() => import("../pages/Dashboard/index.jsx"));
 const ExamAndWrite = loadable(() => import("../pages/ExamAndWrite/index.jsx"));
 const ReadingCom = loadable(() => import("../pages/ReadingCom"));
+const TestList = loadable(() => import("../pages/Test/List"));
 
 export default class Root extends Component {
   render() {
@@ -45,6 +46,7 @@ export default class Root extends Component {
             <Route path="/writingDetail" component={WritingDetail} />
             <Route path="/examAndWrite" component={ExamAndWrite} />
             <Route path="/readingCom" component={ReadingCom} />
+            <Route path="/TestList" component={TestList} />
           </Switch>
         </Layout>
       </HashRouter>

@@ -1,0 +1,55 @@
+.writing-list-container {
+  font-family: PingFangSC-Regular, PingFang SC;
+  width: 1110px;
+  margin: 0 auto;
+  margin-top: 114px;
+  .main_container {
+    height: 68px;
+  }
+  .writing-header {
+    position: relative;
+    height: 24px;
+    font-size: 24px;
+    font-weight: 400;
+    color: #102f5c;
+    line-height: 24px;
+    z-index: 1;
+  }
+  .writing-header:after {
+    content: "";
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    width: 24px;
+    height: 24px;
+    background: #ffcc43;
+    border-radius: 50%;
+    z-index: -1;
+  }
+  .writing-list {
+    margin-top: 24px;
+    background: #fff;
+    padding: 24px;
+    th {
+      text-align: center;
+      color: #032352 !important;
+    }
+    td {
+      text-align: center;
+      color: #032352 !important;
+    }
+    .edit {
+      display: flex;
+      justify-content: center;
+      .detail {
+        color: #1890ff;
+        cursor: pointer;
+      }
+    }
+  }
+  .writing-pag {
+    display: flex;
+    justify-content: center;
+    margin-top: 24px;
+  }
+}

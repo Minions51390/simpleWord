@@ -20,6 +20,7 @@ import { LeftCircleOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import baseUrl from "../../../utils/config.js";
 import { getQueryString } from "../../../utils/stringUtils";
 import Header from "../../../components/Header/index.js";
+import { useEffect } from "react";
 
 const { TextArea } = Input;
 const dateFormat = "YYYY-MM-DD HH:mm:ss";
@@ -74,6 +75,8 @@ export default class WritingDetail extends React.Component {
       errorKey: 0,
       errorKeywords:['|'],
       errorSuggestions: [],
+      submitContent: '',
+      errorHTML: '',
     };
   }
   writingEditRef;
@@ -84,9 +87,13 @@ export default class WritingDetail extends React.Component {
   componentDidMount() {
     let _this = this
     this.writingEditRef.addEventListener('blur', function(e){
-        console.log(e.target.textContent)
         _this.handleContentChange(e.target.textContent)
     })
+    // this.writingEditRef.addEventListener('DOMNodeRemoved', function(e){
+    //     let span = document.createElement('span');
+    //     console.log("_this.writingEditRef", _this.writingEditRef)
+    //     _this.writingEditRef.appendChild(span);
+    // })
   }
 
   componentWillUnmount() {
@@ -95,7 +102,6 @@ export default class WritingDetail extends React.Component {
   // 初始化
   inited() {
     this.getWritingDetail();
-    
   }
 
   // 作文标题修改
@@ -107,9 +113,8 @@ export default class WritingDetail extends React.Component {
   // 作文正文修改
   handleContentChange(value) {
     this.setState({
-      content: value,
+        submitContent: value,
     });
-    console.log(value)
   }
 
   // 获取作文内容
@@ -131,6 +136,7 @@ export default class WritingDetail extends React.Component {
           writing: res?.data?.data?.writingBaseInfo,
           title: res?.data?.data?.writingAnswer?.title,
           content: res?.data?.data?.writingAnswer?.content,
+          submitContent: res?.data?.data?.writingAnswer?.content,
           aiReview: res?.data?.data?.aiReview,
           comment: res?.data?.data?.comment,
           examType: res?.data?.data?.examType,
@@ -160,11 +166,11 @@ export default class WritingDetail extends React.Component {
   }
   // 提交作文
   handleWritingSubmit() {
-    const { paperId, title, content } = this.state;
+    const { paperId, title, submitContent } = this.state;
     return HTTP.post("/stu-writing-exam/submit", {
       paperId,
       title,
-      content,
+      content: submitContent,
       isSubmit: true,
     })
       .then((res) => {
@@ -182,14 +188,14 @@ export default class WritingDetail extends React.Component {
   // 保存作文
   handleWritingSave() {
     console.log("handleWritingSave");
-    const { paperId, title, content } = this.state;
+    const { paperId, title, submitContent } = this.state;
     this.setState({
       autoSaveTime: moment().format(dateFormat),
     });
     return HTTP.post("/stu-writing-exam/submit", {
       paperId,
       title,
-      content,
+      content: submitContent,
       isSubmit: false,
     });
   }
@@ -211,27 +217,47 @@ export default class WritingDetail extends React.Component {
   }
   // ai阅卷
   getAiReview() {
-    const { paperId, title, content } = this.state;
+    const { paperId, title, submitContent, errorSuggestions } = this.state
+    console.log('getAiReview', submitContent)
+    // if(errorSuggestions.length === 0){
+    console.log('this.writingEditRef.firstChild', this.writingEditRef.firstChild.textContent)
+    if(this.writingEditRef.firstChild && this.writingEditRef.firstChild.nodeName === "#text"){
+        this.writingEditRef.firstChild.textContent = ''
+    }
     HTTP.post(`/stu-writing-exam/ai-review`, {
-      paperId,
-      title,
-      content,
+        paperId,
+        title,
+        content:submitContent,
     })
-      .then((res) => {
+    .then((res) => {
         if (res.data.state === 0) {
-          this.setState({
-            aiReview: res?.data?.data,
-            score: res?.data?.data?.aiScore,
-            aiDetectionTimes: res?.data?.data?.aiDetectionTimes,
-            activeKey: "1",
-          });
+            let aiReview = res?.data?.data;
+            let errorKeywords = [];
+            let errorSuggestions = [];
+            aiReview.aiSentenceComments && aiReview.aiSentenceComments.forEach((aiSentenceComment, index) => {
+                aiSentenceComment.suggestions.forEach((suggestion, index)=>{
+                    suggestion.relStartPos = suggestion.startPos + aiSentenceComment.sentStartPos;
+                    errorKeywords.push(`|${suggestion.orgChunk}`);
+                    errorSuggestions.push(suggestion);
+                })
+            });
+            this.setState({
+                aiReview: aiReview,
+                score: res?.data?.data?.aiScore,
+                aiDetectionTimes: res?.data?.data?.aiDetectionTimes,
+                activeKey: "1",
+                errorKeywords,
+                errorSuggestions,
+                content:submitContent,
+            });
         } else {
-          message.error(res.data.msg);
+            message.error(res.data.msg);
         }
-      })
-      .catch((err) => {
+    })
+    .catch((err) => {
         message.error("ai阅卷失败!");
-      });
+    });
+    // }
   }
 
   computedTextCount(str) {
@@ -254,11 +280,11 @@ export default class WritingDetail extends React.Component {
   }
   // 获取确认提示词
   getPopConfirmText(){
-    const { content,aiDetectionTimes, writing} = this.state;
+    const { submitContent, aiDetectionTimes, writing} = this.state;
     const text1 = "是否确认提交？";
     const text3 = `您还有${aiDetectionTimes}次智能批改未用，且`
     const text4 = "提交后无法再修改和编辑作文内容。"
-    const wordCount = this.computedTextCount(content);
+    const wordCount = this.computedTextCount(submitContent);
     console.log('wordCount', wordCount);
     let text2 = "";
     let returnText = "";
@@ -289,9 +315,11 @@ export default class WritingDetail extends React.Component {
 
     //错误项列表点击
     handleErrorListItemClick(event){
+        const {isSubmit} = this.state
         this.setState({
             errorKey: event?.key,
         });
+        if(!isSubmit) return
         this.writingEditRef.childNodes[event?.key].scrollIntoView({
             behavior: 'smooth',
             block: 'center',
@@ -303,6 +331,8 @@ export default class WritingDetail extends React.Component {
   getFinalContent(){
     const {errorKey, errorSuggestions, errorKeywords, content} = this.state
     let contentStr = content;
+    console.log('contentStr', contentStr)
+    console.log('errorSuggestions', errorSuggestions)
     function splitByMultipleValues(str, separators) {
         if (separators.length === 0) {
             return [str];
@@ -312,41 +342,41 @@ export default class WritingDetail extends React.Component {
             return result.concat(splitByMultipleValues(part, separators.slice()));
         }, []);
     }
-    if(errorSuggestions.length > 0){
-        errorSuggestions.forEach((suggestion, index)=>{
-            suggestion.key = index;
-            const pos = suggestion.relStartPos + index;
-            contentStr = `${contentStr.slice(0, pos)}|${contentStr.slice(pos)}`;
-        })
-        const contentSplits = splitByMultipleValues(contentStr, [...errorKeywords]);
-        return (
-            errorSuggestions.map((suggestion, index)=>{
-                return (
-                    <span>
-                        <span>{contentSplits[index]}</span>
+    errorSuggestions.forEach((suggestion, index)=>{
+        suggestion.key = index;
+        const pos = suggestion.relStartPos + index;
+        contentStr = `${contentStr.slice(0, pos)}|${contentStr.slice(pos)}`;
+    })
+    const contentSplits = splitByMultipleValues(contentStr, [...errorKeywords]);
+    console.log('contentSplits', contentSplits)
+    console.log('errorKeywords', errorKeywords)
+    return (
+        contentSplits.map((contentSplit, index)=>{
+            return (
+                <>
+                    <span>{contentSplit}</span>
+                    {
+                        errorSuggestions.length > 0 ?
                         <span
                             className={[
                                 'content-error-suggestions',
-                                suggestion.showType === 2 ? 
-                                    errorKey === suggestion.key ? 
+                                errorSuggestions[index]?.showType === 2 ? 
+                                    errorKey === errorSuggestions[index]?.key ? 
                                         'content-suggestion-mouseover' : 'content-suggestion'
-                                : errorKey === suggestion.key ? 
+                                : errorKey === errorSuggestions[index]?.key ? 
                                         'content-error-mouseover' : 'content-error'
                             ].join(' ')}
-                            onClick={this.handleWritingErrorClick.bind(this, suggestion)}
-                        >{errorKeywords[index].replace('|', '')}</span>
-                        {
-                            index === errorSuggestions.length - 1 ? <span>{contentSplits[contentSplits.length - 1]}</span> :''
-                        }
-                    </span>
-                )
-            })
-        )
-    }else{
-        return (
-            <span>{content}</span>
-        )
-    }
+                            onClick={this.handleWritingErrorClick.bind(this, errorSuggestions[index])}
+                        >{errorKeywords[index] && errorKeywords[index].replace('|', '')}</span>
+                        : ''
+                    }
+                    {/* {
+                        index === errorSuggestions.length - 1 ? <span>{contentSplits[contentSplits.length - 1]}</span> :''
+                    } */}
+                </>
+            )
+        })
+    )
 }
 
   errorItem() {
@@ -381,6 +411,7 @@ export default class WritingDetail extends React.Component {
       paperId,
       title,
       content,
+      submitContent,
       writing,
       examType,
       aiDetectionTimes,
@@ -422,7 +453,7 @@ export default class WritingDetail extends React.Component {
             <div className="content-left">
               <div className="left-fir">
                 <div className="fir-word-num">
-                  词数统计：{this.computedTextCount(content)}词
+                  词数统计：{this.computedTextCount(submitContent)}词
                 </div>
                 <div className="fir-save">
                   {autoSaveTime ? `${autoSaveTime}已自动保存` : ""}{" "}
