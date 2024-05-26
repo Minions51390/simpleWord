@@ -30,7 +30,9 @@ const ExamAndWrite = () => {
     const currentExam = examList?.[0];
     history.push(`/testWord?testType=${currentExam.testType}&paperId=${currentExam.paperId}`);
   };
-  const jumpAllExam = () => {};
+  const jumpAllExam = () => {
+    history.push('/testList');
+  };
 
   const jumpWrite = () => {
     if (!hasOrg || !writingList?.length) {

@@ -20,6 +20,7 @@ import { LeftCircleOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import baseUrl from "../../../utils/config.js";
 import { getQueryString } from "../../../utils/stringUtils";
 import Header from "../../../components/Header/index.js";
+import { useEffect } from "react";
 
 const { TextArea } = Input;
 const dateFormat = "YYYY-MM-DD HH:mm:ss";
@@ -75,6 +76,7 @@ export default class WritingDetail extends React.Component {
       errorKeywords:['|'],
       errorSuggestions: [],
       submitContent: '',
+      errorHTML: '',
     };
   }
   writingEditRef;
@@ -87,6 +89,11 @@ export default class WritingDetail extends React.Component {
     this.writingEditRef.addEventListener('blur', function(e){
         _this.handleContentChange(e.target.textContent)
     })
+    // this.writingEditRef.addEventListener('DOMNodeRemoved', function(e){
+    //     let span = document.createElement('span');
+    //     console.log("_this.writingEditRef", _this.writingEditRef)
+    //     _this.writingEditRef.appendChild(span);
+    // })
   }
 
   componentWillUnmount() {
@@ -210,13 +217,13 @@ export default class WritingDetail extends React.Component {
   }
   // ai阅卷
   getAiReview() {
-    console.log('getAiReview')
     const { paperId, title, submitContent, errorSuggestions } = this.state
+    console.log('getAiReview', submitContent)
     // if(errorSuggestions.length === 0){
-    this.writingEditRef.innerHTML = "";
-    this.setState({
-        content: submitContent
-    })
+    console.log('this.writingEditRef.firstChild', this.writingEditRef.firstChild.textContent)
+    if(this.writingEditRef.firstChild && this.writingEditRef.firstChild.nodeName === "#text"){
+        this.writingEditRef.firstChild.textContent = ''
+    }
     HTTP.post(`/stu-writing-exam/ai-review`, {
         paperId,
         title,
@@ -241,6 +248,7 @@ export default class WritingDetail extends React.Component {
                 activeKey: "1",
                 errorKeywords,
                 errorSuggestions,
+                content:submitContent,
             });
         } else {
             message.error(res.data.msg);
@@ -325,7 +333,6 @@ export default class WritingDetail extends React.Component {
     let contentStr = content;
     console.log('contentStr', contentStr)
     console.log('errorSuggestions', errorSuggestions)
-
     function splitByMultipleValues(str, separators) {
         if (separators.length === 0) {
             return [str];
@@ -342,27 +349,31 @@ export default class WritingDetail extends React.Component {
     })
     const contentSplits = splitByMultipleValues(contentStr, [...errorKeywords]);
     console.log('contentSplits', contentSplits)
-    
+    console.log('errorKeywords', errorKeywords)
     return (
         contentSplits.map((contentSplit, index)=>{
             return (
-                <span>
-                    <span>{contentSplits[index]}</span>
-                    <span
-                        className={[
-                            'content-error-suggestions',
-                            errorSuggestions[index]?.showType === 2 ? 
-                                errorKey === errorSuggestions[index]?.key ? 
-                                    'content-suggestion-mouseover' : 'content-suggestion'
-                            : errorKey === errorSuggestions[index]?.key ? 
-                                    'content-error-mouseover' : 'content-error'
-                        ].join(' ')}
-                        onClick={this.handleWritingErrorClick.bind(this, errorSuggestions[index])}
-                    >{errorKeywords[index] && errorKeywords[index].replace('|', '')}</span>
+                <>
+                    <span>{contentSplit}</span>
+                    {
+                        errorSuggestions.length > 0 ?
+                        <span
+                            className={[
+                                'content-error-suggestions',
+                                errorSuggestions[index]?.showType === 2 ? 
+                                    errorKey === errorSuggestions[index]?.key ? 
+                                        'content-suggestion-mouseover' : 'content-suggestion'
+                                : errorKey === errorSuggestions[index]?.key ? 
+                                        'content-error-mouseover' : 'content-error'
+                            ].join(' ')}
+                            onClick={this.handleWritingErrorClick.bind(this, errorSuggestions[index])}
+                        >{errorKeywords[index] && errorKeywords[index].replace('|', '')}</span>
+                        : ''
+                    }
                     {/* {
                         index === errorSuggestions.length - 1 ? <span>{contentSplits[contentSplits.length - 1]}</span> :''
                     } */}
-                </span>
+                </>
             )
         })
     )

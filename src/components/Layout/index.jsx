@@ -14,6 +14,7 @@ const showHeaderList = [
   '/dashboard',
   '/about',
   '/download',
+  '/testList',
   '/writingList',
   '/writingDetail',
   '/reciteWordsFallback',

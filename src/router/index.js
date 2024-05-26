@@ -13,6 +13,7 @@ const userMes = loadable(() => import('../pages/userMes'))
 const chooseStore = loadable(() => import('../pages/chooseStore'))
 const reciteWords = loadable(() => import('../pages/ReciteWords'))
 const TestWord = loadable(() => import('../pages/TestWord'))
+const TestList = loadable(() => import('../pages/Test/List'))
 const WritingDetail = loadable(() => import('../pages/Writing/Detail'))
 const WritingList = loadable(() => import('../pages/Writing/List'))
 const Home = loadable(() => import('../pages/Home'))
@@ -42,6 +43,7 @@ export default class Root extends Component {
             <Route path="/reciteWords" component={reciteWords}/>
             <Route path="/testWord" component={TestWord}/>
             <Route path="/writingList" component={WritingList}/>
+            <Route path="/TestList" component={TestList}/>
             <Route path="/writingDetail" component={WritingDetail}/>
             <Route path="/examAndWrite" component={ExamAndWrite}/>
           </Switch>
