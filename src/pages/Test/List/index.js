@@ -161,7 +161,7 @@ export default class WritingDetail extends React.Component {
   }
   handleScoreClick(val) {
     console.log('跳转至详情页')
-    // window.location.href = `${baseUrl}/#/writingDetail?paperId=${val}`;
+    window.location.href = `${baseUrl}/#/readingCom?paperId=${val}`;
   }
   // 翻页
   handleNowPagChange(val) {
