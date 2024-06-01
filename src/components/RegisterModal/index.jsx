@@ -76,6 +76,11 @@ export const RegisterModal = ({ visible, close, showLogin }) => {
     val.length >= 254 ? true : false;
   }
 
+  const validateString = (str) => {
+    const regex = /^[0-9a-zA-Z_\u4e00-\u9fa5]{4,16}$/;
+    return regex.test(str);
+  }
+
   const registerFinish = () => {
     const {
       registerAd,
@@ -89,14 +94,11 @@ export const RegisterModal = ({ visible, close, showLogin }) => {
       phoneNum,
     } = registerInfo;
     // 用户名检验
-    if (
-      !registerAd ||
-      registerAd.indexOf("@") !== -1 ||
-      rowLength(registerAd)
-    ) {
-      message.error("用户名不可以带@且不能为空！");
+    if(!validateString(registerAd)){
+      message.error("用户名长度4-16位，仅支持数字、英文、中文、下划线，四种类型中的一种或多种组成");
       return;
     }
+
     // 密码检验
     if (!registerPa || rowLength(registerPa)) {
       message.error("密码不能为空！");

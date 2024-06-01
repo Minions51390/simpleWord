@@ -106,6 +106,10 @@ export default class Login extends React.Component {
   rowLength(val) {
     val.length >= 254 ? true : false;
   }
+  validateString (str) {
+    const regex = /^[0-9a-zA-Z_\u4e00-\u9fa5]{4,16}$/;
+    return regex.test(str);
+  }
   // 注册接口
   registerFinish() {
     const {
@@ -121,13 +125,9 @@ export default class Login extends React.Component {
       phoneNum,
     } = this.state;
     // 用户名检验
-    if (
-      !registerAd ||
-      registerAd.indexOf("@") !== -1 ||
-      this.rowLength(registerAd)
-    ) {
-      message.error("用户名不可以带@且不能为空！");
-      return;
+    if(!this.validateString(registerAd)){
+        message.error("用户名长度4-16位，仅支持数字、英文、中文、下划线，四种类型中的一种或多种组成");
+        return;
     }
     // 密码检验
     if (!registerPa || this.rowLength(registerPa)) {
