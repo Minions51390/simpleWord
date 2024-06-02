@@ -157,6 +157,28 @@ export default class ReadingCom extends React.Component {
     );
   }
 
+  /** 文章内容type=choice */
+  renderSectionChoice(data) {
+    return (
+      <div className="sectionChoice">
+        <div className="sectionMain">
+          <div className="directions">{data.directions}</div>
+          <div className="paper">( ) {data.article}</div>
+        </div>
+        <div className="sectionRes">
+          {data.answers.map((item) => {
+            return (
+              <div className="answer">
+                <span style={{marginRight: '8px'}}>{item.key})</span>
+                {item.value}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
   /** 文章内容type=pack */
   renderSectionTypeOne(data) {
     return (
@@ -274,7 +296,7 @@ export default class ReadingCom extends React.Component {
                   } else if (data.type === BankType["long_reading"]) {
                     return this.renderSectionTypeThree(data);
                   } else {
-                    return <div>单选待开发</div>;
+                    return this.renderSectionChoice(data);
                   }
                 })}
               </div>
