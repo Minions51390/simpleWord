@@ -75,25 +75,14 @@ export default class WritingDetail extends React.Component {
       errorKey: 0,
       errorKeywords:['|'],
       errorSuggestions: [],
-      submitContent: '',
       errorHTML: '',
+      editable: true,
     };
   }
   writingEditRef;
   errorItemRef;
   componentWillMount() {
     this.inited();
-  }
-  componentDidMount() {
-    let _this = this
-    this.writingEditRef.addEventListener('blur', function(e){
-        _this.handleContentChange(e.target.textContent)
-    })
-    // this.writingEditRef.addEventListener('DOMNodeRemoved', function(e){
-    //     let span = document.createElement('span');
-    //     console.log("_this.writingEditRef", _this.writingEditRef)
-    //     _this.writingEditRef.appendChild(span);
-    // })
   }
 
   componentWillUnmount() {
@@ -113,7 +102,7 @@ export default class WritingDetail extends React.Component {
   // 作文正文修改
   handleContentChange(value) {
     this.setState({
-        submitContent: value,
+        content: event.target.value,
     });
   }
 
@@ -136,7 +125,6 @@ export default class WritingDetail extends React.Component {
           writing: res?.data?.data?.writingBaseInfo,
           title: res?.data?.data?.writingAnswer?.title,
           content: res?.data?.data?.writingAnswer?.content,
-          submitContent: res?.data?.data?.writingAnswer?.content,
           aiReview: res?.data?.data?.aiReview,
           comment: res?.data?.data?.comment,
           examType: res?.data?.data?.examType,
@@ -152,6 +140,10 @@ export default class WritingDetail extends React.Component {
             this.handleWritingSave.bind(this),
             1000 * 60
           );
+        }else{
+            this.setState({
+                editable: false
+            })
         }
         if(res?.data?.data?.comment){
             this.handleTabChange('1')
@@ -166,11 +158,11 @@ export default class WritingDetail extends React.Component {
   }
   // 提交作文
   handleWritingSubmit() {
-    const { paperId, title, submitContent } = this.state;
+    const { paperId, title, content } = this.state;
     return HTTP.post("/stu-writing-exam/submit", {
       paperId,
       title,
-      content: submitContent,
+      content: content,
       isSubmit: true,
     })
       .then((res) => {
@@ -188,14 +180,14 @@ export default class WritingDetail extends React.Component {
   // 保存作文
   handleWritingSave() {
     console.log("handleWritingSave");
-    const { paperId, title, submitContent } = this.state;
+    const { paperId, title, content } = this.state;
     this.setState({
       autoSaveTime: moment().format(dateFormat),
     });
     return HTTP.post("/stu-writing-exam/submit", {
       paperId,
       title,
-      content: submitContent,
+      content: content,
       isSubmit: false,
     });
   }
@@ -217,17 +209,11 @@ export default class WritingDetail extends React.Component {
   }
   // ai阅卷
   getAiReview() {
-    const { paperId, title, submitContent, errorSuggestions } = this.state
-    console.log('getAiReview', submitContent)
-    // if(errorSuggestions.length === 0){
-    console.log('this.writingEditRef.firstChild', this.writingEditRef.firstChild.textContent)
-    if(this.writingEditRef.firstChild && this.writingEditRef.firstChild.nodeName === "#text"){
-        this.writingEditRef.firstChild.textContent = ''
-    }
+    const { paperId, title, content, errorSuggestions } = this.state
     HTTP.post(`/stu-writing-exam/ai-review`, {
         paperId,
         title,
-        content:submitContent,
+        content,
     })
     .then((res) => {
         if (res.data.state === 0) {
@@ -248,7 +234,8 @@ export default class WritingDetail extends React.Component {
                 activeKey: "1",
                 errorKeywords,
                 errorSuggestions,
-                content:submitContent,
+                content,
+                editable: false,
             });
         } else {
             message.error(res.data.msg);
@@ -280,11 +267,11 @@ export default class WritingDetail extends React.Component {
   }
   // 获取确认提示词
   getPopConfirmText(){
-    const { submitContent, aiDetectionTimes, writing} = this.state;
+    const { content, aiDetectionTimes, writing} = this.state;
     const text1 = "是否确认提交？";
     const text3 = `您还有${aiDetectionTimes}次智能批改未用，且`
     const text4 = "提交后无法再修改和编辑作文内容。"
-    const wordCount = this.computedTextCount(submitContent);
+    const wordCount = this.computedTextCount(content);
     console.log('wordCount', wordCount);
     let text2 = "";
     let returnText = "";
@@ -326,13 +313,16 @@ export default class WritingDetail extends React.Component {
             inline: 'center',
         });
     }
+    handleEditStateClick(){
+        this.setState({
+            editable: true,
+        })
+    }
 
   // 获取带错误格式的文章
   getFinalContent(){
     const {errorKey, errorSuggestions, errorKeywords, content} = this.state
     let contentStr = content;
-    console.log('contentStr', contentStr)
-    console.log('errorSuggestions', errorSuggestions)
     function splitByMultipleValues(str, separators) {
         if (separators.length === 0) {
             return [str];
@@ -370,9 +360,6 @@ export default class WritingDetail extends React.Component {
                         >{errorKeywords[index] && errorKeywords[index].replace('|', '')}</span>
                         : ''
                     }
-                    {/* {
-                        index === errorSuggestions.length - 1 ? <span>{contentSplits[contentSplits.length - 1]}</span> :''
-                    } */}
                 </>
             )
         })
@@ -411,7 +398,6 @@ export default class WritingDetail extends React.Component {
       paperId,
       title,
       content,
-      submitContent,
       writing,
       examType,
       aiDetectionTimes,
@@ -423,6 +409,7 @@ export default class WritingDetail extends React.Component {
       autoSaveTime,
       activeKey,
       errorSuggestions,
+      editable,
     } = this.state;
     return (
       <div className="writing-detail-container">
@@ -453,7 +440,7 @@ export default class WritingDetail extends React.Component {
             <div className="content-left">
               <div className="left-fir">
                 <div className="fir-word-num">
-                  词数统计：{this.computedTextCount(submitContent)}词
+                  词数统计：{this.computedTextCount(content)}词
                 </div>
                 <div className="fir-save">
                   {autoSaveTime ? `${autoSaveTime}已自动保存` : ""}{" "}
@@ -470,10 +457,28 @@ export default class WritingDetail extends React.Component {
                 />
               </div> 
               <div className="left-thr">
-                <div className="writing-text" style={{opacity:isSubmit? 0.7: 1}} suppressContentEditableWarning contentEditable={!isSubmit} ref={(ele) => (this.writingEditRef = ele)}>
-                    {this.getFinalContent()}
-                </div> 
-              </div>
+                {
+                    editable ?
+                    <TextArea
+                        placeholder="请输入正文"
+                        size="middle"
+                        value={content}
+                        bordered={false}
+                        disabled={isSubmit}
+                        onPaste={(e) => {
+                            // e.preventDefault();
+                            return false;
+                        }}
+                        onChange={this.handleContentChange.bind(this)}
+                    />: 
+                    <div className="writing-text" ref={(ele) => (this.writingEditRef = ele)}>
+                        {this.getFinalContent()}
+                        {
+                            !isSubmit ? <Button className="btn" type="primary" onClick={this.handleEditStateClick.bind(this)}>修改</Button> : ''
+                        }
+                    </div>
+                }
+            </div>
             </div>
             <div className="content-right">
               {examType === "practice" ? (
