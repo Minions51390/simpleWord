@@ -152,7 +152,6 @@ export default class WritingDetail extends React.Component {
         }
       })
       .catch((err) => {
-        console.log('err', err)
         message.error("获取作文失败!");
       });
   }
@@ -179,7 +178,6 @@ export default class WritingDetail extends React.Component {
   }
   // 保存作文
   handleWritingSave() {
-    console.log("handleWritingSave");
     const { paperId, title, content } = this.state;
     this.setState({
       autoSaveTime: moment().format(dateFormat),
@@ -272,7 +270,6 @@ export default class WritingDetail extends React.Component {
     const text3 = `您还有${aiDetectionTimes}次智能批改未用，且`
     const text4 = "提交后无法再修改和编辑作文内容。"
     const wordCount = this.computedTextCount(content);
-    console.log('wordCount', wordCount);
     let text2 = "";
     let returnText = "";
     if(wordCount < writing.minimum){
@@ -338,8 +335,6 @@ export default class WritingDetail extends React.Component {
         contentStr = `${contentStr.slice(0, pos)}|${contentStr.slice(pos)}`;
     })
     const contentSplits = splitByMultipleValues(contentStr, [...errorKeywords]);
-    console.log('contentSplits', contentSplits)
-    console.log('errorKeywords', errorKeywords)
     return (
         contentSplits.map((contentSplit, index)=>{
             return (
