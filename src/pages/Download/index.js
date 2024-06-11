@@ -1,18 +1,29 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import background from "./assets/background.png";
 import app from "./assets/app.png";
 import logo from "./assets/logo.png";
 import IOS from './assets/Apple.svg';
 import Android from './assets/Android.svg';
+import HTTP from "../../utils/api.js";
 import './index.less';
 import { Popover } from 'antd';
-
-
-
 const Download = () => {
-  const content = (
+  const [urlAndroid, setUrlAndroid] = useState("");
+  const [urlIos, setUrlIos] = useState("")
+  const getImgUrl = async () => {
+    const res = await HTTP.get('/app-download-info/')
+    setUrlAndroid(res?.data?.data?.apkQrCode)
+    setUrlIos(res?.data?.data?.iosUrl)
+  }
+  getImgUrl()
+  const contentAndroid = (
     <div style={{ height: '108px', width: '108px' }}>
-      <img />
+      <img style={{ height: '100%', width: '100%' }} src={urlAndroid} />
+    </div>
+  );
+  const contentIos = (
+    <div style={{ height: '108px', width: '108px' }}>
+      <img style={{ height: '100%', width: '100%' }} src={urlIos} />
     </div>
   );
   return (
@@ -36,13 +47,13 @@ const Download = () => {
 
             <div className="download">
               <div className="download-action">
-                <Popover content={content}>
+                <Popover content={contentIos}>
                   <div className="download-item">
                     <IOS className="os" />
                     <div>IOS版下载</div>
                   </div>
                 </Popover>
-                <Popover content={content}>
+                <Popover content={contentAndroid}>
                   <div className="download-item">
                     <Android className="os" />
                     <div>Android版下载</div>
