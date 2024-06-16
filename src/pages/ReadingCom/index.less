@@ -1,310 +1,366 @@
 #app {
-  height: 100%;
+	height: 100%;
 }
 
 .main_container {
-  height: 68px;
-  bottom: auto;
+	height: 68px;
+	bottom: auto;
 }
 
 .readingCom {
-  box-sizing: content-box;
-  height: 100%;
-  overflow: hidden;
-  .background-img {
-    position: fixed;
-    z-index: -1;
-    height: 100vh;
-    width: 100vw;
-  }
-  .readingNameTitle {
-    display: flex;
-    justify-content: space-between;
-    margin: 0 150px;
-    padding-top: 68px;
-    .left {
-      font-size: 20px;
-      font-weight: 600;
-      color: #000000;
-      height: 32px;
-      margin-top: 26px;
-    }
-    .right {
-      display: flex;
-      margin-top: 26px;
-      height: 32px;
-      .nextSay {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 88px;
-        height: 32px;
-        border-radius: 2px;
-        border: 1px solid #171c4b;
-        cursor: pointer;
-      }
-    }
-  }
+	box-sizing: content-box;
+	height: 100%;
+	overflow: hidden;
 
-  .readingContent {
-    display: flex;
-    margin-top: 22px;
-    height: calc(100% - 156px);
-    min-width: 1270px;
-    .nav {
-      width: 120px;
-      min-width: 120px;
-      .navBlock {
-        .part {
-          .partName {
-            display: flex;
-            align-items: center;
-            font-size: 18px;
-            font-weight: 500;
-            cursor: pointer;
-            margin-left: 19px;
-            color: #171c4b;
-            height: 32px;
-          }
-          .section {
-            .sectionName {
-              display: flex;
-              align-items: center;
-              position: relative;
-              font-size: 16px;
-              cursor: pointer;
-              margin-left: 38px;
-              color: #171c4b;
-              height: 32px;
-              &::before {
-                content: "";
-                width: 6px;
-                height: 6px;
-                background-color: black;
-                position: absolute;
-                top: 50%;
-                left: -10px;
-                transform: translateY(-50%);
-                border-radius: 50%;
-              }
-            }
-          }
-        }
-      }
-    }
-    .main {
-      overflow: auto;
-      flex: 1;
-      width: 0;
-      background-color: white;
-      padding: 8px 16px;
-      height: calc(100% - 20px);
-      &::-webkit-scrollbar {
-        display: none;
-      }
-      .mainItem {
-        .titleBlock {
-          display: flex;
-          .name {
-            font-size: 20px;
-            font-weight: 500;
-            color: #000000;
-          }
-          .title {
-            font-size: 20px;
-            font-weight: 500;
-            color: #000000;
-            margin-left: 24px;
-          }
-        }
-        .section {
-          margin-top: 12px;
-          .sectionBlock {
-            position: relative;
-            display: flex;
-            margin-bottom: 16px;
-            .sectionMain {
-              flex: 1;
-              width: 0;
-              background: rgba(57, 131, 198, 0.04);
-              border-radius: 4px;
-              padding: 8px 16px;
-              .title {
-                font-size: 20px;
-                font-weight: 500;
-              }
-              .directions {
-                margin-top: 8px;
-                font-size: 16px;
-              }
-              .paper {
-                margin-top: 8px;
-                font-size: 16px;
-                .answer {
-                  margin-bottom: 12px;
-                }
-              }
-            }
-            .sectionRes {
-              width: 250px;
-              min-width: 250px;
-              margin-left: 16px;
-              border-top: 1px solid #e3e3e3;
-              border-bottom: 1px solid #e3e3e3;
-              padding: 39px 0;
-              position: relative;
-              overflow-y: auto;
-              &::-webkit-scrollbar {
-                display: none;
-              }
-              .sectionPos {
-                position: absolute;
-                .answer {
-                  font-size: 16px;
-                  line-height: 20px;
-                  margin-bottom: 8px;
-                }
-                .question {
-                  font-weight: 500;
-                  font-size: 17px;
-                  line-height: 20px;
-                }
-                .questionAnswer {
-                  font-size: 16px;
-                  margin-left: 32px;
-                  margin-bottom: 16px;
-                  margin-top: 8px;
-                  line-height: 20px;
-                  .answerItem {
-                    margin-bottom: 8px;
-                  }
-                }
-              }
-            }
-          }
-		  .sectionChoice {
-			position: relative;
-			.sectionMain {
-			  background: rgba(57, 131, 198, 0.04);
-              border-radius: 4px;
-              padding: 8px 16px;
-              .title {
-                font-size: 20px;
-                font-weight: 500;
-              }
-              .directions {
-                margin-top: 8px;
-                font-size: 16px;
-              }
-              .paper {
-                margin-top: 8px;
-                font-size: 16px;
-				font-weight: 500;
-                .answer {
-                  margin-bottom: 12px;
-                }
-              }
+	.background-img {
+		position: fixed;
+		z-index: -1;
+		height: 100vh;
+		width: 100vw;
+	}
+
+	.readingNameTitle {
+		display: flex;
+		justify-content: space-between;
+		margin: 0 150px;
+		padding-top: 68px;
+
+		.left {
+			font-size: 20px;
+			font-weight: 600;
+			color: #000000;
+			height: 32px;
+			margin-top: 26px;
+		}
+
+		.right {
+			display: flex;
+			margin-top: 26px;
+			height: 32px;
+
+			.nextSay {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				width: 88px;
+				height: 32px;
+				border-radius: 2px;
+				border: 1px solid #171c4b;
+				cursor: pointer;
 			}
-			.sectionRes {
-				border-radius: 4px;
-				padding: 0 16px 8px 16px;
-				background: rgba(57, 131, 198, 0.04);
-				.answer {
-					font-size: 16px;
+		}
+	}
+
+	.readingContent {
+		display: flex;
+		margin-top: 22px;
+		height: calc(100% - 156px);
+		min-width: 1270px;
+
+		.nav {
+			width: 120px;
+			min-width: 120px;
+
+			.navBlock {
+				.part {
+					.partName {
+						display: flex;
+						align-items: center;
+						font-size: 18px;
+						font-weight: 500;
+						cursor: pointer;
+						margin-left: 19px;
+						color: #171c4b;
+						height: 32px;
+					}
+
+					.section {
+						.sectionName {
+							display: flex;
+							align-items: center;
+							position: relative;
+							font-size: 16px;
+							cursor: pointer;
+							margin-left: 38px;
+							color: #171c4b;
+							height: 32px;
+
+							&::before {
+								content: "";
+								width: 6px;
+								height: 6px;
+								background-color: black;
+								position: absolute;
+								top: 50%;
+								left: -10px;
+								transform: translateY(-50%);
+								border-radius: 50%;
+							}
+						}
+					}
 				}
 			}
-		  }
-        }
-      }
-    }
-    .response {
-      width: 275px;
-      min-width: 275px;
-      height: calc(100% - 20px);
-      background-color: #fff;
-      margin-left: 8px;
-      .card {
-        padding: 10px 8px;
-        height: 100%;
-        .headCon {
-          display: flex;
-          padding-bottom: 10px;
-          justify-content: space-between;
-          .leftTitle {
-            font-size: 16px;
-            line-height: 24px;
-          }
-          .rightFind {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 88px;
-            height: 24px;
-            border-radius: 14px;
-            border: 1px solid #de4a6a;
-            font-weight: 500;
-            color: #de4a6a;
-            font-size: 14px;
-            cursor: pointer;
-          }
-        }
-        .contentBlock {
-          height: calc(100% - 44px);
-          overflow-y: auto;
-          &::-webkit-scrollbar {
-            display: none;
-          }
-          .itemBlock {
-            border: 1px solid #e3e3e3;
-            padding: 0px 16px;
-            padding-top: 8px;
-            margin-bottom: 10px;
-            .blockLine {
-              display: flex;
-              .lineNum {
-                min-width: 18px;
-                font-size: 14px;
-                font-weight: 600;
-                line-height: 17px;
-              }
-              .lineContent {
-                display: flex;
-                flex-wrap: wrap;
-                margin-left: 14px;
-                .lineItem {
-                  display: flex;
-                  justify-content: center;
-                  align-items: center;
-                  width: 35px;
-                  height: 16px;
-                  margin-bottom: 8px;
-                  background-color: #e3e3e3;
-                  margin-right: 4px;
-                  cursor: pointer;
-                }
-				.lineItemActive {
+		}
+
+		.main {
+			overflow: auto;
+			flex: 1;
+			width: 0;
+			background-color: white;
+			padding: 8px 16px;
+			height: calc(100% - 20px);
+
+			&::-webkit-scrollbar {
+				display: none;
+			}
+
+			.mainItem {
+				.titleBlock {
 					display: flex;
-					justify-content: center;
-					align-items: center;
-					width: 35px;
-					height: 16px;
-					margin-bottom: 8px;
-					background-color: #000;
-					margin-right: 4px;
-					cursor: pointer;
-					color: #fff;
-				  }
-              }
-            }
-          }
-        }
-      }
-    }
-    .time {
-      height: calc(100% - 20px);
-      width: 220px;
-      min-width: 220px;
-      margin-left: 8px;
-    }
-  }
+
+					.name {
+						font-size: 20px;
+						font-weight: 500;
+						color: #000000;
+					}
+
+					.title {
+						font-size: 20px;
+						font-weight: 500;
+						color: #000000;
+						margin-left: 24px;
+					}
+				}
+
+				.section {
+					margin-top: 12px;
+
+					.sectionBlock {
+						position: relative;
+						display: flex;
+						margin-bottom: 16px;
+
+						.sectionMain {
+							flex: 1;
+							width: 0;
+							background: rgba(57, 131, 198, 0.04);
+							border-radius: 4px;
+							padding: 8px 16px;
+
+							.title {
+								font-size: 20px;
+								font-weight: 500;
+							}
+
+							.directions {
+								margin-top: 8px;
+								font-size: 16px;
+							}
+
+							.paper {
+								margin-top: 8px;
+								font-size: 16px;
+
+								.answer {
+									margin-bottom: 12px;
+								}
+							}
+						}
+
+						.sectionRes {
+							width: 250px;
+							min-width: 250px;
+							margin-left: 16px;
+							border-top: 1px solid #e3e3e3;
+							border-bottom: 1px solid #e3e3e3;
+							padding: 39px 0;
+							position: relative;
+							overflow-y: auto;
+
+							&::-webkit-scrollbar {
+								display: none;
+							}
+
+							.sectionPos {
+								position: absolute;
+
+								.answer {
+									font-size: 16px;
+									line-height: 20px;
+									margin-bottom: 8px;
+								}
+
+								.question {
+									font-weight: 500;
+									font-size: 17px;
+									line-height: 20px;
+								}
+
+								.questionAnswer {
+									font-size: 16px;
+									margin-left: 32px;
+									margin-bottom: 16px;
+									margin-top: 8px;
+									line-height: 20px;
+
+									.answerItem {
+										margin-bottom: 8px;
+									}
+								}
+							}
+						}
+					}
+
+					.sectionChoice {
+						position: relative;
+
+						.sectionMain {
+							background: rgba(57, 131, 198, 0.04);
+							border-radius: 4px;
+							padding: 8px 16px;
+
+							.title {
+								font-size: 20px;
+								font-weight: 500;
+							}
+
+							.directions {
+								margin-top: 8px;
+								font-size: 16px;
+							}
+
+							.paper {
+								margin-top: 8px;
+								font-size: 16px;
+								font-weight: 500;
+
+								.answer {
+									margin-bottom: 12px;
+								}
+							}
+						}
+
+						.sectionRes {
+							border-radius: 4px;
+							padding: 0 16px 8px 16px;
+							background: rgba(57, 131, 198, 0.04);
+
+							.answer {
+								font-size: 16px;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		.response {
+			width: 275px;
+			min-width: 275px;
+			height: calc(100% - 20px);
+			background-color: #fff;
+			margin-left: 8px;
+
+			.card {
+				padding: 10px 8px;
+				height: 100%;
+
+				.headCon {
+					display: flex;
+					padding-bottom: 10px;
+					justify-content: space-between;
+
+					.leftTitle {
+						font-size: 16px;
+						line-height: 24px;
+					}
+
+					.rightFind {
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						width: 88px;
+						height: 24px;
+						border-radius: 14px;
+						border: 1px solid #de4a6a;
+						font-weight: 500;
+						color: #de4a6a;
+						font-size: 14px;
+						cursor: pointer;
+					}
+				}
+
+				.contentBlock {
+					height: calc(100% - 44px);
+					overflow-y: auto;
+
+					&::-webkit-scrollbar {
+						display: none;
+					}
+
+					.itemBlock {
+						border: 1px solid #e3e3e3;
+						padding: 0px 16px;
+						margin-bottom: 10px;
+
+						.blockLine {
+							display: flex;
+							padding: 0 8px;
+							padding-top: 8px;
+							margin: 8px 0;
+
+							.lineNum {
+								min-width: 18px;
+								font-size: 14px;
+								font-weight: 600;
+								line-height: 17px;
+							}
+
+							.lineContent {
+								display: flex;
+								flex-wrap: wrap;
+								margin-left: 14px;
+
+								.lineItem {
+									display: flex;
+									justify-content: center;
+									align-items: center;
+									width: 35px;
+									height: 16px;
+									margin-bottom: 8px;
+									background-color: #e3e3e3;
+									margin-right: 4px;
+									cursor: pointer;
+								}
+
+								.lineItemActive {
+									display: flex;
+									justify-content: center;
+									align-items: center;
+									width: 35px;
+									height: 16px;
+									margin-bottom: 8px;
+									background-color: #000;
+									margin-right: 4px;
+									cursor: pointer;
+									color: #fff;
+								}
+							}
+						}
+
+						.blockLineActive {
+							background-color: rgba(255, 0, 0, 0.1);
+						}
+					}
+				}
+			}
+		}
+
+		.time {
+			height: calc(100% - 20px);
+			width: 220px;
+			min-width: 220px;
+			margin-left: 8px;
+		}
+	}
 }

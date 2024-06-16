@@ -2,21 +2,9 @@ import React from "react";
 import "./index.less";
 import Header from "../../components/Header/index";
 import whiteBookBg from "../../assets/whiteBookBg.png";
-import { Link } from "react-router-dom";
 import HTTP from "../../utils/api.js";
-import {
-  Form,
-  Input,
-  Button,
-  Checkbox,
-  Col,
-  Row,
-  Radio,
-  message,
-  Popconfirm,
-  Statistic,
-} from "antd";
-import baseUrl from "../../utils/config.js";
+import { Button, message, Statistic } from "antd";
+import { withRouter } from "react-router-dom";
 
 const BANK_TYPE_MAP = {
   choice: "单选",
@@ -48,12 +36,13 @@ const GetRequest = () => {
 
 const { Countdown } = Statistic;
 
-export default class ReadingCom extends React.Component {
+class ReadingCom extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       paperData: {},
       paperId: GetRequest()["paperId"],
+      showCheck: false,
     };
   }
 
@@ -98,8 +87,11 @@ export default class ReadingCom extends React.Component {
   }
 
   /** 交卷 */
-  onSubmit() {
+  onSubmit(submit) {
     const { paperData } = this.state;
+    if (!this.checkSubmit(submit)) {
+      return;
+    }
     let cards = [];
     paperData.card.forEach((item) => {
       cards = [...cards, ...item];
@@ -107,18 +99,43 @@ export default class ReadingCom extends React.Component {
     HTTP.post("/user-exam/submit-exam-paper", {
       paperId: paperData.id,
       cards,
-      submit: true,
+      submit,
     })
       .then((res) => {
         console.log(123123, res);
         message.success("交卷成功!");
         setTimeout(() => {
-          history.push("/examAndWrite");
-        }, 2000);
+          this.props.history.push("/examAndWrite");
+        }, 500);
       })
       .catch((err) => {
         message.error(err);
       });
+  }
+
+  /** 漏答检测 */
+  checkSubmit(submit) {
+    if (!submit) {
+      return true;
+    }
+    const { paperData } = this.state;
+    this.setState({
+      showCheck: true,
+    });
+    message.error("还有题目没有作答！");
+
+    let cards = [];
+    let ready = true;
+    paperData.card.forEach((item) => {
+      cards = [...cards, ...item];
+    });
+    for (let index = 0; index < cards.length; index++) {
+      if (!cards[index].choiceKey) {
+        ready = false;
+        break;
+      }
+    }
+    return ready;
   }
 
   /** 侧边栏 */
@@ -158,18 +175,35 @@ export default class ReadingCom extends React.Component {
   }
 
   /** 文章内容type=choice */
-  renderSectionChoice(data) {
+  renderSectionChoice(data, card) {
+    console.log(88888, data, card);
     return (
       <div className="sectionChoice">
         <div className="sectionMain">
           <div className="directions">{data.directions}</div>
-          <div className="paper">( ) {data.article}</div>
+          <div className="paper">
+            ({" "}
+            <span style={{ color: "#0076FF", textDecoration: "underline" }}>
+              {card[0].choiceKey}
+            </span>{" "}
+            ){data.article}
+          </div>
         </div>
         <div className="sectionRes">
           {data.answers.map((item) => {
             return (
-              <div className="answer">
-                <span style={{marginRight: '8px'}}>{item.key})</span>
+              <div
+                className="answer"
+                style={
+                  card[0].choiceKey === item.key
+                    ? {
+                        color: "#0076FF",
+                        textDecoration: "underline",
+                      }
+                    : {}
+                }
+              >
+                <span style={{ marginRight: "8px" }}>{item.key})</span>
                 {item.value}
               </div>
             );
@@ -179,8 +213,31 @@ export default class ReadingCom extends React.Component {
     );
   }
 
+  findAnswerVal(answer, key) {
+    if (!key) {
+      return;
+    }
+    return answer.filter((item) => {
+      return item.key === key;
+    })[0];
+  }
+
   /** 文章内容type=pack */
-  renderSectionTypeOne(data) {
+  renderSectionTypeOne(data, card) {
+    let answersMap = data.answers;
+
+    let article = data.article;
+
+    card.forEach((item, index) => {
+      const finVal = this.findAnswerVal(answersMap, item.choiceKey);
+      if (finVal) {
+        article = article.replace(
+          `( ${index + 1} )`,
+          `( <span style="color: #0076FF; text-decoration: underline;">${finVal.value}</span> )`
+        );
+      }
+    });
+
     return (
       <div className="sectionBlock">
         <div className="sectionMain">
@@ -188,7 +245,10 @@ export default class ReadingCom extends React.Component {
             {data.sectionName}
           </div>
           <div className="directions">{data.directions}</div>
-          <div className="paper">{data.article}</div>
+          <div
+            className="paper"
+            dangerouslySetInnerHTML={{ __html: article }}
+          ></div>
         </div>
         <div className="sectionRes">
           <div className="sectionPos">
@@ -204,7 +264,7 @@ export default class ReadingCom extends React.Component {
   }
 
   /** 文章内容type=cf_reading */
-  renderSectionTypeTwo(data) {
+  renderSectionTypeTwo(data, card) {
     return (
       <div className="sectionBlock">
         <div className="sectionMain">
@@ -219,13 +279,29 @@ export default class ReadingCom extends React.Component {
             {data.questions.map((item, index) => {
               return (
                 <div key={index}>
-                  <div className="question">（ ）{item.question}</div>
+                  <div className="question">
+                    ({" "}
+                    <span
+                      style={{ color: "#0076FF", textDecoration: "underline" }}
+                    >
+                      {card[index].choiceKey}
+                    </span>{" "}
+                    ){item.question}
+                  </div>
                   <div className="questionAnswer">
                     {item.answers.map((value, number) => {
                       return (
                         <div
                           key={number}
                           className="answerItem"
+                          style={
+                            card[index].choiceKey === value.key
+                              ? {
+                                  color: "#0076FF",
+                                  textDecoration: "underline",
+                                }
+                              : {}
+                          }
                         >{`${value.key}）${value.value}`}</div>
                       );
                     })}
@@ -240,7 +316,7 @@ export default class ReadingCom extends React.Component {
   }
 
   /** 文章内容type=long_reading */
-  renderSectionTypeThree(data) {
+  renderSectionTypeThree(data, card) {
     return (
       <div className="sectionBlock">
         <div className="sectionMain">
@@ -261,7 +337,13 @@ export default class ReadingCom extends React.Component {
             {data.questions.map((item, index) => {
               return (
                 <div key={index} className="answer">
-                  （ ）{item}
+                  ({" "}
+                  <span
+                    style={{ color: "#0076FF", textDecoration: "underline" }}
+                  >
+                    {card[index].choiceKey}
+                  </span>{" "}
+                  ){item}
                 </div>
               );
             })}
@@ -274,11 +356,12 @@ export default class ReadingCom extends React.Component {
   /** 文章内容 */
   renderMain() {
     const {
-      paperData: { part = [] },
+      paperData: { part = [], card = [] },
     } = this.state;
+
     return (
       <>
-        {part.map((item) => {
+        {part.map((item, index) => {
           return (
             <div className="mainItem">
               <div className="titleBlock">
@@ -288,15 +371,15 @@ export default class ReadingCom extends React.Component {
                 <div className="title">{item.title}</div>
               </div>
               <div className="section">
-                {item.section.map((data) => {
+                {item.section.map((data, key) => {
                   if (data.type === BankType["pack"]) {
-                    return this.renderSectionTypeOne(data);
+                    return this.renderSectionTypeOne(data, card[index + key]);
                   } else if (data.type === BankType["cf_reading"]) {
-                    return this.renderSectionTypeTwo(data);
+                    return this.renderSectionTypeTwo(data, card[index + key]);
                   } else if (data.type === BankType["long_reading"]) {
-                    return this.renderSectionTypeThree(data);
+                    return this.renderSectionTypeThree(data, card[index + key]);
                   } else {
-                    return this.renderSectionChoice(data);
+                    return this.renderSectionChoice(data, card[index + key]);
                   }
                 })}
               </div>
@@ -310,13 +393,19 @@ export default class ReadingCom extends React.Component {
   renderRes() {
     const {
       paperData: { card = [] },
+      showCheck,
     } = this.state;
     return (
       <>
         <div className="card">
           <div className="headCon">
             <div className="leftTitle">答题卡</div>
-            <div className="rightFind">漏答检测</div>
+            <div
+              className="rightFind"
+              onClick={this.checkSubmit.bind(this, true)}
+            >
+              漏答检测
+            </div>
           </div>
           <div className="contentBlock">
             {card.map((item, index) => {
@@ -324,7 +413,14 @@ export default class ReadingCom extends React.Component {
                 <div key={index} className="itemBlock">
                   {item.map((val, num) => {
                     return (
-                      <div key={num} className="blockLine">
+                      <div
+                        key={num}
+                        className={
+                          showCheck && !val.choiceKey
+                            ? "blockLine blockLineActive"
+                            : "blockLine"
+                        }
+                      >
                         <div className="lineNum">{val.index}</div>
                         <div className="lineContent">
                           {val.key.map((it, count) => {
@@ -373,11 +469,13 @@ export default class ReadingCom extends React.Component {
         <div className="readingNameTitle">
           <div className="left">{paperData.paperName}</div>
           <div className="right">
-            <div className="nextSay">下次再说</div>
+            <div className="nextSay" onClick={this.onSubmit.bind(this, false)}>
+              下次再说
+            </div>
             <Button
               type="primary"
               style={{ marginLeft: "16px", width: "88px" }}
-              onClick={this.onSubmit.bind(this)}
+              onClick={this.onSubmit.bind(this, true)}
             >
               交卷
             </Button>
@@ -399,3 +497,5 @@ export default class ReadingCom extends React.Component {
     );
   }
 }
+
+export default withRouter(ReadingCom);
