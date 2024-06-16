@@ -122,7 +122,6 @@ class ReadingCom extends React.Component {
     this.setState({
       showCheck: true,
     });
-    message.error("还有题目没有作答！");
 
     let cards = [];
     let ready = true;
@@ -134,6 +133,9 @@ class ReadingCom extends React.Component {
         ready = false;
         break;
       }
+    }
+    if (ready) {
+      message.error("还有题目没有作答！");
     }
     return ready;
   }
