@@ -178,7 +178,12 @@
 							overflow-y: auto;
 
 							&::-webkit-scrollbar {
-								display: none;
+								width: 6px;
+							}
+
+							&::-webkit-scrollbar-thumb {
+								background-color: #e5e7e9;
+								border-radius: 8px;
 							}
 
 							.sectionPos {
@@ -323,28 +328,33 @@
 
 								.lineItem {
 									display: flex;
-									justify-content: center;
+									justify-content: space-between;
 									align-items: center;
-									width: 35px;
+									width: 26px;
 									height: 16px;
 									margin-bottom: 8px;
-									background-color: #e3e3e3;
 									margin-right: 4px;
 									cursor: pointer;
+									color: #DE4A6A;
 								}
 
 								.lineItemActive {
 									display: flex;
-									justify-content: center;
+									justify-content: space-between;
 									align-items: center;
-									width: 35px;
+									width: 26px;
 									height: 16px;
 									margin-bottom: 8px;
-									background-color: #000;
 									margin-right: 4px;
+									background-color: #000;
 									cursor: pointer;
 									color: #fff;
+
+									.icon {
+										color: #000;
+									}
 								}
+
 							}
 						}
 

@@ -433,15 +433,17 @@ class ReadingCom extends React.Component {
                                     ? "lineItemActive"
                                     : "lineItem"
                                 }`}
-                                key={count}
                                 onClick={this.chooseAnswer.bind(
                                   this,
                                   it,
                                   num,
                                   index
                                 )}
+                                key={count}
                               >
-                                {it}
+                                <span className="icon">[</span>
+                                <span>{it}</span>
+                                <span className="icon">]</span>
                               </div>
                             );
                           })}
