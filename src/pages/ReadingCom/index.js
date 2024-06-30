@@ -469,7 +469,6 @@ class ReadingCom extends React.Component {
     return (
       <div className="readingCom">
         <img className="background-img" src={whiteBookBg}></img>
-        <Header />
         <div className="readingNameTitle">
           <div className="left">{paperData.paperName}</div>
           <div className="right">

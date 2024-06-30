@@ -19,6 +19,7 @@ const showHeaderList = [
   '/writingDetail',
   '/reciteWordsFallback',
   '/examAndWrite',
+  '/readingCom',
 ];
 
 export const LayoutContext = createContext({});
