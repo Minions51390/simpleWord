@@ -71,8 +71,12 @@ class ReadingCom extends React.Component {
   }
 
   scrollToView(id) {
-    let element = document.getElementById(id);
-    element.scrollIntoView();
+    let element = document.getElementById(`#${id}`);
+    let top = element.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo({
+      top: top - 68,
+      behavior: "smooth",
+    });
   }
 
   /** 切换选项 */
@@ -162,7 +166,10 @@ class ReadingCom extends React.Component {
                     <div
                       className="sectionName"
                       key={data.sectionName}
-                      onClick={this.scrollToView.bind(this, data.sectionName)}
+                      onClick={this.scrollToView.bind(
+                        this,
+                        `${item.partName}${data.sectionName}`
+                      )}
                     >
                       {data.sectionName}
                     </div>
@@ -177,11 +184,11 @@ class ReadingCom extends React.Component {
   }
 
   /** 文章内容type=choice */
-  renderSectionChoice(data, card) {
+  renderSectionChoice(data, card, partName) {
     console.log(88888, data, card);
     return (
       <div className="sectionChoice">
-        <div className="sectionMain">
+        <div id={`#${partName}${data.sectionName}`} className="sectionMain">
           <div className="directions">{data.directions}</div>
           <div className="paper">
             ({" "}
@@ -225,7 +232,7 @@ class ReadingCom extends React.Component {
   }
 
   /** 文章内容type=pack */
-  renderSectionTypeOne(data, card) {
+  renderSectionTypeOne(data, card, partName) {
     let answersMap = data.answers;
 
     let article = data.article;
@@ -243,7 +250,7 @@ class ReadingCom extends React.Component {
     return (
       <div className="sectionBlock">
         <div className="sectionMain">
-          <div id={`#${data.sectionName}`} className="title">
+          <div id={`#${partName}${data.sectionName}`} className="title">
             {data.sectionName}
           </div>
           <div className="directions">{data.directions}</div>
@@ -266,11 +273,11 @@ class ReadingCom extends React.Component {
   }
 
   /** 文章内容type=cf_reading */
-  renderSectionTypeTwo(data, card) {
+  renderSectionTypeTwo(data, card, partName) {
     return (
       <div className="sectionBlock">
         <div className="sectionMain">
-          <div id={`#${data.sectionName}`} className="title">
+          <div id={`#${partName}${data.sectionName}`} className="title">
             {data.sectionName}
           </div>
           <div className="directions">{data.directions}</div>
@@ -318,11 +325,11 @@ class ReadingCom extends React.Component {
   }
 
   /** 文章内容type=long_reading */
-  renderSectionTypeThree(data, card) {
+  renderSectionTypeThree(data, card, partName) {
     return (
       <div className="sectionBlock">
         <div className="sectionMain">
-          <div id={`#${data.sectionName}`} className="title">
+          <div id={`#${partName}${data.sectionName}`} className="title">
             {data.sectionName}
           </div>
           <div className="directions">{data.directions}</div>
@@ -375,13 +382,29 @@ class ReadingCom extends React.Component {
               <div className="section">
                 {item.section.map((data, key) => {
                   if (data.type === BankType["pack"]) {
-                    return this.renderSectionTypeOne(data, card[index + key]);
+                    return this.renderSectionTypeOne(
+                      data,
+                      card[index + key],
+                      item.partName
+                    );
                   } else if (data.type === BankType["cf_reading"]) {
-                    return this.renderSectionTypeTwo(data, card[index + key]);
+                    return this.renderSectionTypeTwo(
+                      data,
+                      card[index + key],
+                      item.partName
+                    );
                   } else if (data.type === BankType["long_reading"]) {
-                    return this.renderSectionTypeThree(data, card[index + key]);
+                    return this.renderSectionTypeThree(
+                      data,
+                      card[index + key],
+                      item.partName
+                    );
                   } else {
-                    return this.renderSectionChoice(data, card[index + key]);
+                    return this.renderSectionChoice(
+                      data,
+                      card[index + key],
+                      item.partName
+                    );
                   }
                 })}
               </div>
