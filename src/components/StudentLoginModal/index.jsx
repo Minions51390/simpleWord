@@ -94,9 +94,12 @@ export const StudentLoginModal = ({ visible, close, showRegister }) => {
 
   const sendCaptcha = async () => {
     setTimerLock(false)
-    await HTTPV2.post("/auth/code", {
+    const res = await HTTPV2.post("/auth/code", {
       phone: loginPhoneNumber.trim(),
     })
+    if(res?.data?.state !== 0){
+      message.error(res?.data?.msg)
+    }
   };
 
   const changeLoginType = (type) => {
@@ -105,6 +108,7 @@ export const StudentLoginModal = ({ visible, close, showRegister }) => {
 
   useEffect(() => {
     setLoginType('captcha');
+    setTimerLock(true)
   }, [visible])
 
   if (!visible) {
