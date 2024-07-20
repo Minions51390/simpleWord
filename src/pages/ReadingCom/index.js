@@ -107,7 +107,11 @@ class ReadingCom extends React.Component {
     })
       .then((res) => {
         console.log(123123, res);
-        message.success("交卷成功!");
+		if (submit) {
+			message.success("交卷成功!");
+		} else {
+			message.success("保存成功!");
+		}
         setTimeout(() => {
           this.props.history.push("/examAndWrite");
         }, 500);
