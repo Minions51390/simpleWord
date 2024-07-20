@@ -43,6 +43,7 @@ class ReadingCom extends React.Component {
       paperData: {},
       paperId: GetRequest()["paperId"],
       showCheck: false,
+	  topPos: 0,
     };
   }
 
@@ -50,6 +51,13 @@ class ReadingCom extends React.Component {
 
   componentDidMount() {
     this.fetchTextPaper();
+	window.addEventListener('scroll', this.handleScroll.bind(this), true)
+  }
+
+  handleScroll() {
+	this.setState({
+		topPos: window.pageYOffset || document.documentElement.scrollTop
+	});
   }
 
   /** 获取试题 */
@@ -152,9 +160,10 @@ class ReadingCom extends React.Component {
   renderNav() {
     const {
       paperData: { part = [] },
+	  topPos,
     } = this.state;
     return (
-      <div className="navBlock">
+      <div className="navBlock" style={{top: `${topPos > 68 ? '68px' : 148 - topPos}px`}}>
         {part.map((item) => {
           return (
             <div className="part" key={item.partName}>
@@ -257,7 +266,7 @@ class ReadingCom extends React.Component {
           <div id={`#${partName}${data.sectionName}`} className="title">
             {data.sectionName}
           </div>
-          <div className="directions">{data.directions}</div>
+          <div className="directions"><b>Directions: </b>ln this section, there is a passage with several blanks. You are required to select one word for eachblank from a list of choices given in a word bank following the passage. Read the passage through carefully beforemaking your choices. Each choice in the bank is identified by a lefter. <b>You may not use any of the words in thebank more than once.</b></div>
           <div
             className="paper"
             dangerouslySetInnerHTML={{ __html: article }}
@@ -284,7 +293,7 @@ class ReadingCom extends React.Component {
           <div id={`#${partName}${data.sectionName}`} className="title">
             {data.sectionName}
           </div>
-          <div className="directions">{data.directions}</div>
+          <div className="directions"><b>Directions: </b>There are several passages in this section. Each passage is followed by some questions or unfinishedstatements For each of them there are four choices marked A. B. C and D. You should decide on the bestchoice.</div>
           <div className="paper">{data.article}</div>
         </div>
         <div className="sectionRes">
@@ -336,7 +345,7 @@ class ReadingCom extends React.Component {
           <div id={`#${partName}${data.sectionName}`} className="title">
             {data.sectionName}
           </div>
-          <div className="directions">{data.directions}</div>
+          <div className="directions"><b>Directions: </b>In this section， you are going to read a passage with ten statements attached to it.Each statement contains information given in one of the paragraphs.Identify the paragraph from which the information is derived. You may choose a paragraph more than once.Each paragraph is marked with a letter.Answer the questions by marking the corresponding letter on <b>Answer Sheet.</b></div>
           <div className="paper">
             {data.answers.map((item, index) => {
               return (
@@ -423,10 +432,11 @@ class ReadingCom extends React.Component {
     const {
       paperData: { card = [] },
       showCheck,
+	  topPos,
     } = this.state;
     return (
       <>
-        <div className="card">
+        <div className="card" style={{top: `${topPos > 68 ? '68px' : 148 - topPos}px`}}>
           <div className="headCon">
             <div className="leftTitle">答题卡</div>
             <div

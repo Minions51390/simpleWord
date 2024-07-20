@@ -23,7 +23,6 @@
 		display: flex;
 		justify-content: space-between;
 		margin: 0 150px;
-		padding-top: 68px;
 
 		.left {
 			font-size: 20px;
@@ -148,6 +147,7 @@
 							background: rgba(57, 131, 198, 0.04);
 							border-radius: 4px;
 							padding: 8px 16px;
+							text-align: justify;
 
 							.title {
 								font-size: 20px;
@@ -262,6 +262,7 @@
 		}
 
 		.response {
+			position: relative;
 			width: 275px;
 			min-width: 275px;
 			height: calc(100% - 20px);
@@ -269,8 +270,12 @@
 			margin-left: 8px;
 
 			.card {
+				position: fixed;
+				width: 275px;
+				min-width: 275px;
 				padding: 10px 8px;
 				height: 100%;
+				background-color: #fff;
 
 				.headCon {
 					display: flex;
@@ -298,7 +303,7 @@
 				}
 
 				.contentBlock {
-					height: calc(100% - 44px);
+					height: calc(100% - 120px);
 					overflow-y: auto;
 
 					&::-webkit-scrollbar {
