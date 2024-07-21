@@ -3,18 +3,13 @@ import "./index.less";
 import HTTP from "../../../utils/api.js";
 import { Table, Pagination, message } from "antd";
 import baseUrl from "../../../utils/config.js";
-import Header from "../../../components/Header/index.js";
 
 function getTaskStatus(status) {
   switch (status) {
     case 1:
       return "进行中";
-      break;
-    case 2:
-      return "已结束";
-      break;
     default:
-      return "进行中";
+      return "已结束";
   }
 }
 
@@ -31,71 +26,44 @@ export default class WritingDetail extends React.Component {
           title: "序号",
           dataIndex: "key",
           render: (text, record, index) => (
-            <div>{index + 1 + (this.state.pageNo - 1) * this.state.pageSize}</div>
+            <div>
+              {index + 1 + (this.state.pageNo - 1) * this.state.pageSize}
+            </div>
           ),
         },
         {
           title: "考核测试名称",
           key: "testName",
-          render: (text, record, index) => (
-            <div
-              style={{
-                color: text.status === 2 && "rgba(3,35,82, 0.4)",
-              }}
-            >
-              {text.testName}
-            </div>
-          ),
+          render: (text, record, index) => <div>{text.testName}</div>,
         },
         {
-            title: "截止时间",
-            key: "endTime",
-            render: (text, record, index) => (
-              <div
-                style={{
-                  color: text.status === 2 && "rgba(3,35,82, 0.4)",
-                }}
-              >
-                {text.endTime}
-              </div>
-            ),
-          },
+          title: "截止时间",
+          key: "endTime",
+          render: (text, record, index) => <div>{text.endTime}</div>,
+        },
         {
-          title: "任务状态",
-          key: "status",
+          title: "考试状态",
+          key: "examStatus",
           render: (text, record, index) => (
             <div
               style={{
-                color: text.status === 2 && "rgba(3,35,82, 0.4)",
+                color: text.examStatus === 0 && "rgba(3,35,82, 0.4)",
               }}
             >
-              {getTaskStatus(text.status)}
+              {getTaskStatus(text.examStatus)}
             </div>
           ),
         },
         {
           title: "完成情况",
-          key: "completeState",
+          key: "paperFinish",
           render: (text, record, index) => (
             <div
               style={{
-                color:
-                  text.status === 2
-                    ? text.isSubmit
-                      ? "rgba(3,35,82, 0.4)"
-                      : "#FF2525"
-                    : text.isSubmit
-                    ? "#032352"
-                    : "#FF2525",
+                color: text.paperFinish === 1 ? "#032352" : "#FF2525",
               }}
             >
-              {text.status === 2
-                ? text.isSubmit
-                  ? "已完成"
-                  : "未提交"
-                : text.isSubmit
-                ? "已提交"
-                : "未提交"}
+              {text.paperFinish === 1 ? "已提交" : "未提交"}
             </div>
           ),
         },
@@ -105,29 +73,36 @@ export default class WritingDetail extends React.Component {
           render: (text, record, index) => (
             <div
               style={{
-                color: text.status === 2 && "rgba(3,35,82, 0.4)",
+                color: [-1, 0].includes(text.score) && "rgba(3,35,82, 0.4)",
               }}
             >
-              {text.isPublicScore ? text.score : "未公布" }
+              {![-1, 0].includes(text.score) ? text.score : "未公布"}
             </div>
           ),
         },
         {
           title: "操作",
           key: "edit",
-          render: (text) => (
-            <div className="edit">
+          render: (text) => {
+            return [-1, 0].includes(text.score) ? (
               <div
-                className="detail"
-                onClick={this.handleScoreClick.bind(
-                  this,
-                  text.paperId,
-                )}
+                style={{
+                  color: "rgba(3,35,82, 0.4)",
+                }}
               >
                 查看卷面
               </div>
-            </div>
-          ),
+            ) : (
+              <div className="edit">
+                <div
+                  className="detail"
+                  onClick={this.handleScoreClick.bind(this, text.paperId)}
+                >
+                  查看卷面
+                </div>
+              </div>
+            );
+          },
         },
       ],
     };
@@ -146,13 +121,13 @@ export default class WritingDetail extends React.Component {
   getWritingList() {
     const { pageNo, pageSize } = this.state;
     HTTP.get(
-      `/user-exam/exam-paper-info/list?status=0&submit=0&pageNo=${pageNo}&pageSize=${pageSize}`
+      `/user-exam/exam-paper-info/list?isAll=1&pageNo=${pageNo}&pageSize=${pageSize}`
     )
       .then((res) => {
         console.log(res);
         this.setState({
-          testList: res?.data?.data,
-          totalCount: res?.data?.totalCount,
+          testList: res?.data?.data?.examList,
+          totalCount: res?.data?.data?.totalCount,
         });
       })
       .catch((err) => {
@@ -160,12 +135,12 @@ export default class WritingDetail extends React.Component {
       });
   }
   handleScoreClick(val) {
-    console.log('跳转至详情页')
+    console.log("跳转至详情页");
     window.location.href = `${baseUrl}/#/readingCom?paperId=${val}`;
   }
   // 翻页
   handleNowPagChange(val) {
-    console.log('val', val)
+    console.log("val", val);
     this.setState(
       {
         pageNo: val,
