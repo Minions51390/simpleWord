@@ -84,22 +84,31 @@ export default class WritingDetail extends React.Component {
           title: "操作",
           key: "edit",
           render: (text) => {
-            return [-1, 0].includes(text.score) ? (
+            return text.examStatus === 1 && text.paperFinish === 0 ? (
+              <div className="edit">
+                <div
+                  className="detail"
+                  onClick={this.handleStartClick.bind(this, text)}
+                >
+                  开始考试
+                </div>
+              </div>
+            ) : text.examStatus === 0 && text.paperFinish === 1 ? (
+              <div className="edit">
+                <div
+                  className="detail"
+                  onClick={this.handleScoreClick.bind(this, text)}
+                >
+                  查看卷面
+                </div>
+              </div>
+            ) : (
               <div
                 style={{
                   color: "rgba(3,35,82, 0.4)",
                 }}
               >
                 查看卷面
-              </div>
-            ) : (
-              <div className="edit">
-                <div
-                  className="detail"
-                  onClick={this.handleScoreClick.bind(this, text.paperId)}
-                >
-                  查看卷面
-                </div>
               </div>
             );
           },
@@ -134,9 +143,13 @@ export default class WritingDetail extends React.Component {
         message.error("个人信息获取失败!");
       });
   }
+  handleStartClick(val) {
+    console.log("跳转至详情页");
+    window.location.href = `${baseUrl}/#/readingCom?paperId=${val.paperId}`;
+  }
   handleScoreClick(val) {
     console.log("跳转至详情页");
-    window.location.href = `${baseUrl}/#/readingCom?paperId=${val}`;
+    window.location.href = `${baseUrl}/#/readingCom?paperId=${val.paperId}&score=${val.score}`;
   }
   // 翻页
   handleNowPagChange(val) {

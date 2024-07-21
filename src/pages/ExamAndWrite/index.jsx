@@ -69,7 +69,7 @@ const ExamAndWrite = () => {
   };
 
   const getExamList = async () => {
-    const res = await HTTP.get("/user-exam/exam-paper-info/list?isAll=1&pageNo=1&pageSize=10");
+    const res = await HTTP.get("/user-exam/exam-paper-info/list?isAll=0&pageNo=1&pageSize=10");
     const examList = res?.data?.data?.examList;
     return examList;
   };
