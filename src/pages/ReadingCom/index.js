@@ -211,7 +211,7 @@ class ReadingCom extends React.Component {
             <span
               style={{
                 color: `${
-                  card[0].rightKey === card[0].choiceKey ? "#0076FF" : "#FF0000"
+					(card[0].rightKey ? card[0].rightKey === card[0].choiceKey : true) ? "#0076FF" : "#FF0000"
                 }`,
                 textDecoration: "underline",
               }}
@@ -227,12 +227,12 @@ class ReadingCom extends React.Component {
               <div
                 className="answer"
                 style={
-                  card[0].choiceKey === value.key
+                  card[0].choiceKey === item.key
                     ? {
                         color: "#0076FF",
                         textDecoration: "underline",
                       }
-                    : card[0].rightKey === value.key
+                    : card[0].rightKey === item.key
                     ? {
                         color: "#FF0000",
                         textDecoration: "underline",
@@ -270,7 +270,7 @@ class ReadingCom extends React.Component {
         answersMap,
         item.rightKey || item.choiceKey
       );
-      const right = item.choiceKey === item.rightKey;
+      const right = item.rightKey ? item.choiceKey === item.rightKey : true;
       if (finVal) {
         article = article.replace(
           `( ${index + 1} )`,
@@ -339,7 +339,7 @@ class ReadingCom extends React.Component {
                     <span
                       style={{
                         color: `${
-                          card[index].rightKey === card[index].choiceKey
+							(card[index].rightKey ? card[index].rightKey === card[index].choiceKey : true)
                             ? "#0076FF"
                             : "#FF0000"
                         }`,
@@ -416,7 +416,7 @@ class ReadingCom extends React.Component {
                   <span
                     style={{
                       color: `${
-                        card[index].rightKey === card[index].choiceKey
+                        (card[index].rightKey ? card[index].rightKey === card[index].choiceKey : true)
                           ? "#0076FF"
                           : "#FF0000"
                       }`,
