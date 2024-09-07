@@ -19,6 +19,8 @@ const BankType = {
   cf_reading: "cf_reading",
 };
 
+let autoTimer = null
+
 /** 截取url */
 const GetRequest = () => {
   const url = `?${window.location.href.split("?")[1]}`; //获取url中"?"符后的字串
@@ -53,24 +55,32 @@ class ReadingCom extends React.Component {
     this.fetchTextPaper();
     window.addEventListener("scroll", this.handleScroll.bind(this), true);
   }
+  componentWillUnmount() {
+    clearInterval(autoTimer)
+  }
 
   handleScroll() {
     this.setState({
       topPos: window.pageYOffset || document.documentElement.scrollTop,
     });
   }
-
+  // 自动保存试卷
+  autoSyncText(){
+    autoTimer = setInterval(()=>{
+        this.onSubmit(false, 1)
+    }, 60 * 1000)
+  }
   /** 获取试题 */
   fetchTextPaper() {
     const { paperId } = this.state;
     HTTP.get(`/user-exam/exam-paper?paperId=${paperId}`)
       .then((res) => {
-        console.log(123123123, res.data.data);
         let realRes = res.data.data;
         realRes.textTime = 90;
         this.setState({
           paperData: res.data.data,
         });
+        this.autoSyncText();
       })
       .catch((err) => {
         message.error("服务器开小差了");
@@ -90,8 +100,6 @@ class ReadingCom extends React.Component {
   /** 切换选项 */
   chooseAnswer(val, index, ceng) {
     let { paperData } = this.state;
-    console.log(123123123, val, index, ceng);
-    console.log(123123123, paperData.card);
     paperData.card[ceng][index].choiceKey = val;
     this.setState({
       paperData: JSON.parse(JSON.stringify(paperData)),
@@ -99,7 +107,7 @@ class ReadingCom extends React.Component {
   }
 
   /** 交卷 */
-  onSubmit(submit) {
+  onSubmit(submit, autoSync) {
     const { paperData } = this.state;
     if (!this.checkSubmit(submit)) {
       return;
@@ -112,17 +120,19 @@ class ReadingCom extends React.Component {
       paperId: paperData.id,
       cards,
       submit,
+      autoSync, 
     })
       .then((res) => {
-        console.log(123123, res);
-        if (submit) {
-          message.success("交卷成功!");
-        } else {
-          message.success("保存成功!");
+        if(!autoSync){
+            if (submit) {
+                message.success("交卷成功!");
+            } else {
+            message.success("保存成功!");
+            }
+            setTimeout(() => {
+            this.props.history.push("/examAndWrite");
+            }, 500);
         }
-        setTimeout(() => {
-          this.props.history.push("/examAndWrite");
-        }, 500);
       })
       .catch((err) => {
         message.error(err);
@@ -150,9 +160,12 @@ class ReadingCom extends React.Component {
         break;
       }
     }
-    if (ready) {
+    if (!ready) {
       message.error("还有题目没有作答！");
     }
+    // else{
+    //   message.success("所有题目均已作答！");
+    // }
     return ready;
   }
 
@@ -201,7 +214,6 @@ class ReadingCom extends React.Component {
 
   /** 文章内容type=choice */
   renderSectionChoice(data, card, partName) {
-    console.log(88888, data, card);
     return (
       <div className="sectionChoice">
         <div id={`#${partName}${data.sectionName}`} className="sectionMain">
@@ -649,14 +661,14 @@ class ReadingCom extends React.Component {
               <>
                 <div
                   className="nextSay"
-                  onClick={this.onSubmit.bind(this, false)}
+                  onClick={this.onSubmit.bind(this, false, 0)}
                 >
                   下次再说
                 </div>
                 <Button
                   type="primary"
                   style={{ marginLeft: "16px", width: "88px" }}
-                  onClick={this.onSubmit.bind(this, true)}
+                  onClick={this.onSubmit.bind(this, true, 0)}
                 >
                   交卷
                 </Button>
@@ -676,8 +688,8 @@ class ReadingCom extends React.Component {
             ) : (
               <Countdown
                 title="考试剩余时间"
-                value={Date.now() + paperData.textTime * 1000 * 60}
-                onFinish={this.onFinish.bind(this)}
+                value={paperData.deadLine * 1000}
+                onFinish={this.onSubmit.bind(this, false, 1)}
               />
             )}
           </div>
