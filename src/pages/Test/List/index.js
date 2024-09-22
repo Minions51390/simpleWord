@@ -73,10 +73,10 @@ export default class WritingDetail extends React.Component {
           render: (text, record, index) => (
             <div
               style={{
-                color: [-1, 0].includes(text.score) && "rgba(3,35,82, 0.4)",
+                color: [-1].includes(text.score) && "rgba(3,35,82, 0.4)",
               }}
             >
-              {![-1, 0].includes(text.score) ? text.score : "未公布"}
+              {![-1].includes(text.score) ? text.score : "未公布"}
             </div>
           ),
         },
@@ -149,7 +149,7 @@ export default class WritingDetail extends React.Component {
   }
   handleScoreClick(val) {
     console.log("跳转至详情页");
-    window.location.href = `${baseUrl}/#/readingCom?paperId=${val.paperId}&score=${val.score}`;
+    window.location.href = `${baseUrl}/#/readingCom?paperId=${val.paperId}`;
   }
   // 翻页
   handleNowPagChange(val) {

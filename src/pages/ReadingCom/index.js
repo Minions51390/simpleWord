@@ -45,14 +45,14 @@ class ReadingCom extends React.Component {
       paperId: GetRequest()["paperId"],
       showCheck: false,
       topPos: 0,
-      score: parseInt(GetRequest()["score"]),
     };
   }
 
-  componentWillMount() {}
+  componentWillMount() {
+    this.fetchTextPaper();
+  }
 
   componentDidMount() {
-    this.fetchTextPaper();
     window.addEventListener("scroll", this.handleScroll.bind(this), true);
   }
   componentWillUnmount() {
@@ -78,9 +78,11 @@ class ReadingCom extends React.Component {
         let realRes = res.data.data;
         realRes.textTime = 90;
         this.setState({
-          paperData: res.data.data,
+            paperData: realRes,
         });
-        this.autoSyncText();
+        if(!realRes.paperFinish){
+            this.autoSyncText();
+        }
       })
       .catch((err) => {
         message.error("服务器开小差了");
@@ -574,9 +576,8 @@ class ReadingCom extends React.Component {
 
   renderFinishRes() {
     const {
-      paperData: { card = [] },
+      paperData: { card = [], score = 0 },
       topPos,
-      score,
     } = this.state;
     return (
       <>
@@ -648,14 +649,14 @@ class ReadingCom extends React.Component {
   }
 
   render() {
-    const { paperData, score } = this.state;
+    const { paperData } = this.state;
     return (
       <div className="readingCom">
         <img className="background-img" src={whiteBookBg}></img>
         <div className="readingNameTitle">
           <div className="left">{paperData.paperName}</div>
           <div className="right">
-            {score ? (
+            {paperData.paperFinish ? (
               <div className="nextSay" onClick={this.exit.bind(this)}>退出</div>
             ) : (
               <>
@@ -680,10 +681,10 @@ class ReadingCom extends React.Component {
           <div className="nav">{this.renderNav()}</div>
           <div className="main">{this.renderMain()}</div>
           <div className="response">
-            {score ? this.renderFinishRes() : this.renderRes()}
+            {paperData.paperFinish ? this.renderFinishRes() : this.renderRes()}
           </div>
           <div className="time">
-            {score ? (
+            {paperData.paperFinish ? (
               <></>
             ) : (
               <Countdown
