@@ -4,6 +4,8 @@ import whiteBookBg from "../../assets/whiteBookBg.png";
 import HTTP from "../../utils/api.js";
 import { Button, message, Statistic } from "antd";
 import { withRouter } from "react-router-dom";
+import useBreakpoint from "antd/lib/grid/hooks/useBreakpoint.js";
+import { useCallback } from "react/cjs/react.production.min.js";
 
 const BANK_TYPE_MAP = {
   choice: "单选",
@@ -45,6 +47,7 @@ class ReadingCom extends React.Component {
       paperId: GetRequest()["paperId"],
       showCheck: false,
       topPos: 0,
+      sectionIndex: 0,
     };
   }
 
@@ -273,13 +276,13 @@ class ReadingCom extends React.Component {
     })[0];
   }
 
-  /** 文章内容type=pack */
+  /** 文章内容type=pack 阅读理解 */
   renderSectionTypeOne(data, card, partName) {
     let answersMap = data.answers;
 
     let article = data.article;
 
-    card.forEach((item, index) => {
+    card.forEach((item) => {
       const finVal = this.findAnswerVal(
         answersMap,
         item.rightKey || item.choiceKey
@@ -287,7 +290,7 @@ class ReadingCom extends React.Component {
       const right = item.rightKey ? item.choiceKey === item.rightKey : true;
       if (finVal) {
         article = article.replace(
-          `( ${index + 1} )`,
+          `__${item.index}__`,
           `( <span style="color: ${
             right ? "#0076FF" : "#FF0000"
           }; text-decoration: underline;">${finVal.value}</span> )`
@@ -327,7 +330,7 @@ class ReadingCom extends React.Component {
     );
   }
 
-  /** 文章内容type=cf_reading */
+  /** 文章内容type=cf_reading 仔细阅读 */
   renderSectionTypeTwo(data, card, partName) {
     return (
       <div className="sectionBlock">
@@ -396,7 +399,7 @@ class ReadingCom extends React.Component {
     );
   }
 
-  /** 文章内容type=long_reading */
+  /** 文章内容type=long_reading 长篇阅读*/
   renderSectionTypeThree(data, card, partName) {
     return (
       <div className="sectionBlock">
@@ -430,14 +433,14 @@ class ReadingCom extends React.Component {
                   <span
                     style={{
                       color: `${
-                        (card[index].rightKey ? card[index].rightKey === card[index].choiceKey : true)
+                        (card[index]?.rightKey ? card[index]?.rightKey === card[index]?.choiceKey : true)
                           ? "#0076FF"
                           : "#FF0000"
                       }`,
                       textDecoration: "underline",
                     }}
                   >
-                    {card[index].rightKey || card[index].choiceKey}
+                    {card[index]?.rightKey || card[index]?.choiceKey}
                   </span>{" "}
                   ){item}
                 </div>
@@ -451,54 +454,63 @@ class ReadingCom extends React.Component {
 
   /** 文章内容 */
   renderMain() {
+    console.log('renderMain')
     const {
-      paperData: { part = [], card = [] },
+        paperData: { part = [], card = [] },
     } = this.state;
-
+    const computedSection = (part, index) => {
+        let res = 0;
+        for (let i = 0; i < index; i++) {
+            res += part[i].section.length
+        }
+        return res
+    }
     return (
-      <>
-        {part.map((item, index) => {
-          return (
-            <div className="mainItem">
-              <div className="titleBlock">
-                <div id={`#${item.partName}`} className="name">
-                  {item.partName}
-                </div>
-                <div className="title">{item.title}</div>
-              </div>
-              <div className="section">
-                {item.section.map((data, key) => {
-                  if (data.type === BankType["pack"]) {
-                    return this.renderSectionTypeOne(
-                      data,
-                      card[index + key],
-                      item.partName
-                    );
-                  } else if (data.type === BankType["cf_reading"]) {
-                    return this.renderSectionTypeTwo(
-                      data,
-                      card[index + key],
-                      item.partName
-                    );
-                  } else if (data.type === BankType["long_reading"]) {
-                    return this.renderSectionTypeThree(
-                      data,
-                      card[index + key],
-                      item.partName
-                    );
-                  } else {
-                    return this.renderSectionChoice(
-                      data,
-                      card[index + key],
-                      item.partName
-                    );
-                  }
-                })}
-              </div>
-            </div>
-          );
-        })}
-      </>
+        <>
+            {part.map((item, index) => {
+                return (
+                    <div className="mainItem">
+                        <div className="titleBlock">
+                            <div id={`#${item.partName}`} className="name">
+                                {item.partName}
+                            </div>
+                            <div className="title">{item.title}</div>
+                        </div>
+                        <div className="section">
+                            {
+                                item.section.map((data, sectionIndex) => {
+                                    if (data.type === BankType["pack"]) {
+                                        return this.renderSectionTypeOne(
+                                                data,
+                                                card[computedSection(part, index) + sectionIndex],
+                                                item.partName
+                                            );
+                                    } else if (data.type === BankType["cf_reading"]) {
+                                        return this.renderSectionTypeTwo(
+                                                data,
+                                                card[computedSection(part, index) + sectionIndex],
+                                                item.partName
+                                            );
+                                    } else if (data.type === BankType["long_reading"]) {
+                                        return this.renderSectionTypeThree(
+                                            data,
+                                            card[computedSection(part, index) + sectionIndex],
+                                            item.partName
+                                        );
+                                    } else {
+                                        return this.renderSectionChoice(
+                                            data,
+                                            card[computedSection(part, index) + sectionIndex],
+                                            item.partName
+                                        );
+                                    }
+                                })
+                            }
+                        </div>
+                    </div>
+                );
+            })}
+        </>
     );
   }
 
