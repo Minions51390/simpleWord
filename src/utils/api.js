@@ -1,3 +1,11 @@
+/*
+ * @Author: yangqi06 yangqi06@kuaishou.com
+ * @Date: 2023-10-22 13:20:53
+ * @LastEditors: yangqi06 yangqi06@kuaishou.com
+ * @LastEditTime: 2024-05-25 15:29:13
+ * @FilePath: /simpleWord/src/utils/api.js
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 import axios from 'axios';
 
 const url = {
